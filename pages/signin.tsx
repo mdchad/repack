@@ -10,6 +10,7 @@ import LoadingDots from 'components/ui/LoadingDots';
 import Logo from 'components/icons/Logo';
 import { Provider } from '@supabase/supabase-js';
 import { getURL } from '@/utils/helpers';
+import { stringify } from 'querystring';
 
 const SignIn = () => {
     const [email, setEmail] = useState('');
@@ -20,6 +21,7 @@ const SignIn = () => {
         type: '',
         content: ''
     });
+
     const router = useRouter();
     const user = useUser();
     const supabaseClient = useSupabaseClient();
@@ -58,21 +60,19 @@ const SignIn = () => {
 
     const handleOAuthSignIn = async (provider: Provider) => {
         setLoading(true);
+
         const { error } = await supabaseClient.auth.signInWithOAuth({
             provider,
-            options: { redirectTo: getURL() }
+            options: {
+                redirectTo: getURL()
+            }
         });
+
         if (error) {
             setMessage({ type: 'error', content: error.message });
         }
         setLoading(false);
     };
-
-    useEffect(() => {
-        if (user) {
-            router.replace('/account');
-        }
-    }, [user]);
 
     if (!user)
         return (

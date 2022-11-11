@@ -3,21 +3,19 @@ import { getActiveProductsWithPrices } from 'utils/supabase-client';
 import { Product } from 'types';
 import { GetStaticPropsResult } from 'next';
 
-interface Props {
-    products: Product[];
+
+import Layout from "@/components/Layout/Layout";
+
+export default function Home() {
+    return (
+        <div className="h-screen">
+            <div>Home</div>
+        </div >
+    );
 }
 
-export default function PricingPage({ products }: Props) {
-    return <Pricing products={products} />;
-}
-
-export async function getStaticProps(): Promise<GetStaticPropsResult<Props>> {
-    const products = await getActiveProductsWithPrices();
-
-    return {
-        props: {
-            products
-        },
-        revalidate: 60
-    };
-}
+Home.getLayout = (page) => (
+    <Layout>
+        {page}
+    </Layout>
+);
