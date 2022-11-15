@@ -31,7 +31,7 @@ function Card({ title, description, footer, children }: Props) {
     );
 }
 
-export const getServerSideProps = withPageAuth({ redirectTo: '/signin' });
+// export const getServerSideProps = withPageAuth({ redirectTo: '/signin' });
 
 export default function Account({ user }: { user: User }) {
     const [loading, setLoading] = useState(false);
@@ -114,15 +114,7 @@ export default function Account({ user }: { user: User }) {
                     footer={<p>Please use 64 characters at maximum.</p>}
                 >
                     <div className="text-xl mt-8 mb-4 font-semibold">
-                        {userDetails ? (
-                            `${userDetails.full_name ??
-                            `${userDetails.first_name} ${userDetails.last_name}`
-                            }`
-                        ) : (
-                            <div className="h-8 mb-6">
-                                <LoadingDots />
-                            </div>
-                        )}
+                        {userDetails?.full_name}
                     </div>
                 </Card>
                 <Card

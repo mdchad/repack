@@ -25,7 +25,7 @@ const SignIn = () => {
                         theme="dark"
                         providers={['google', 'github']}
                         socialLayout="horizontal"
-                        redirectTo={'/dashboard/account'}
+                        redirectTo={getURL() + '/dashboard/account'}
                     />
                 </div>
             </div>
