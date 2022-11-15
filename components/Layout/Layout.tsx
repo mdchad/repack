@@ -14,7 +14,7 @@ interface Props {
 export default function Layout({ children, meta: pageMeta }: Props) {
     const router = useRouter();
     const meta = {
-        title: 'Next.js Subscription Starter',
+        title: 'Repack',
         description: 'Brought to you by Vercel, Stripe, and Supabase.',
         cardImage: '/og.png',
         ...pageMeta
@@ -39,8 +39,9 @@ export default function Layout({ children, meta: pageMeta }: Props) {
                 <meta name="twitter:description" content={meta.description} />
                 <meta name="twitter:image" content={meta.cardImage} />
             </Head>
+
             <Navbar />
-            <main id="skip" className="mx-auto max-w-6xl px-6">{children}</main>
+            <main className="">{children}</main>
             <Footer />
         </>
     );
