@@ -35,7 +35,9 @@ export const MyUserContextProvider = (props: Props) => {
     const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
     const [subscription, setSubscription] = useState<Subscription | null>(null);
 
-    const getUserDetails = () => supabase.from('users').select('*').single();
+    const getUserDetails = () => supabase.from('users').select('*').eq('id', user?.id).single();
+    console.log(getUserDetails);
+
     const getSubscription = () =>
         supabase
             .from('subscriptions')
@@ -48,6 +50,7 @@ export const MyUserContextProvider = (props: Props) => {
             setIsloadingData(true);
             Promise.allSettled([getUserDetails(), getSubscription()]).then(
                 (results) => {
+                    console.log(results);
                     const userDetailsPromise = results[0];
                     const subscriptionPromise = results[1];
 
