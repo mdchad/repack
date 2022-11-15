@@ -1,16 +1,24 @@
-import Pricing from 'components/Pricing';
-import { getActiveProductsWithPrices } from 'utils/supabase-client';
-import { Product } from 'types';
-import { GetStaticPropsResult } from 'next';
-
-
 import Layout from "@/components/Layout/Layout";
+
+import Hero from "@/components/section/Hero";
+import Services from "@/components/section/Services";
+import Process from "@/components/section/Process";
+import Pricing from "@/components/section/Pricing";
+import CustomerOpinion from "@/components/section/CustomerOpinion";
+import Contact from "@/components/section/Contact";
+import Faq from "@/components/section/Faq";
 
 export default function Home() {
     return (
-        <div className="h-screen">
-            <div>Home</div>
-        </div >
+        <>
+            <Hero />
+            <Services />
+            <Process />
+            <Pricing />
+            <CustomerOpinion />
+            <Contact />
+            <Faq />
+        </>
     );
 }
 

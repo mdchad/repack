@@ -8,11 +8,13 @@ import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { AppProps } from 'next/app';
 import { MyUserContextProvider } from 'utils/useUser';
 import type { Database } from 'types_db';
+import { ThemeProvider } from "next-themes";
 
 export default function MyApp({ Component, pageProps }: AppProps) {
     const [supabaseClient] = useState(() =>
         createBrowserSupabaseClient<Database>()
     );
+
     useEffect(() => {
         document.body.classList?.remove('loading');
     }, []);
@@ -22,12 +24,12 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     const getLayout = Component.getLayout || ((page) => <Layout>{page}</Layout>);
 
     return (
-        <div className="bg-black">
+        <ThemeProvider enableSystem={true} attribute="class">
             <SessionContextProvider supabaseClient={supabaseClient}>
                 <MyUserContextProvider>
                     {getLayout(<Component {...pageProps} />)}
                 </MyUserContextProvider>
             </SessionContextProvider>
-        </div>
+        </ThemeProvider>
     );
 }
