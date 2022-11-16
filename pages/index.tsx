@@ -22,7 +22,7 @@ export default function Home() {
     );
 }
 
-Home.getLayout = (page) => (
+Home.getLayout = (page: any) => (
     <Layout>
         {page}
     </Layout>

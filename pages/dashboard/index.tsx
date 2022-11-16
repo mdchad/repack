@@ -10,7 +10,7 @@ export default function Dashboard() {
     );
 }
 
-Dashboard.getLayout = (page) => (
+Dashboard.getLayout = (page: any) => (
     <Layout>
         {page}
     </Layout>
