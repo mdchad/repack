@@ -8,37 +8,33 @@ import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { AppProps } from 'next/app';
 import { MyUserContextProvider } from 'utils/useUser';
 import type { Database } from 'types_db';
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider } from 'next-themes';
 import { NextPage } from 'next';
 
-export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-    getLayout?: (page: ReactElement) => ReactNode
-}
+export default function MyApp({ Component, pageProps }: any) {
+  const [supabaseClient] = useState(() =>
+    createBrowserSupabaseClient<Database>()
+  );
 
-type AppPropsWithLayout = AppProps & {
-    Component: NextPageWithLayout
-}
+  useEffect(() => {
+    document.body.classList?.remove('loading');
+  }, []);
 
-export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-    const [supabaseClient] = useState(() =>
-        createBrowserSupabaseClient<Database>()
-    );
+  const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        document.body.classList?.remove('loading');
-    }, []);
+  const getLayout =
+    Component.getLayout || ((page: any) => <Layout>{page}</Layout>);
 
-    const [user, setUser] = useState(null);
-
-    const getLayout = Component.getLayout || ((page: any) => <Layout>{page}</Layout>);
-
-    return (
-        <ThemeProvider enableSystem={true} attribute="class">
-            <SessionContextProvider supabaseClient={supabaseClient}>
-                <MyUserContextProvider>
-                    {getLayout(<Component {...pageProps} />)}
-                </MyUserContextProvider>
-            </SessionContextProvider>
-        </ThemeProvider>
-    );
+  return (
+    <ThemeProvider enableSystem={true} attribute="class">
+      <SessionContextProvider
+        supabaseClient={supabaseClient}
+        initialSession={pageProps.initialSession}
+      >
+        <MyUserContextProvider>
+          {getLayout(<Component {...pageProps} />)}
+        </MyUserContextProvider>
+      </SessionContextProvider>
+    </ThemeProvider>
+  );
 }
