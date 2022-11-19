@@ -7,16 +7,18 @@ import Pricing from "@/components/section/Pricing";
 import CustomerOpinion from "@/components/section/CustomerOpinion";
 import Contact from "@/components/section/Contact";
 import Faq from "@/components/section/Faq";
+import Plans from "@/components/section/Plans";
 
 export default function Home() {
     return (
         <>
             <Hero />
             <Services />
-            <Process />
-            <Pricing />
+            {/* <Process /> */}
+            <Plans />
             <CustomerOpinion />
-            <Contact />
+            <Pricing />
+            {/* <Contact /> */}
             <Faq />
         </>
     );
@@ -27,3 +29,4 @@ Home.getLayout = (page: any) => (
         {page}
     </Layout>
 );
+

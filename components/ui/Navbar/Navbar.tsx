@@ -13,7 +13,7 @@ const Navbar = () => {
     const { user } = useUser();
 
     return (
-        <nav className="sticky top-0 bg-white dark:bg-[#293C4A] dark:text-white text-[#293C4A] z-40 transition-all duration-150">
+        <nav className="sticky top-0 backdrop-blur-sm z-40 transition-all duration-150">
             <a href="#skip" className="sr-only focus:not-sr-only">
                 Skip to content
             </a>
