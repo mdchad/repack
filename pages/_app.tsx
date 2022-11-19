@@ -21,6 +21,7 @@ export default function MyApp({ Component, pageProps }: any) {
         document.body.classList?.remove('loading');
     }, []);
 
+    // get user
     const [user, setUser] = useState(null);
 
     const getLayout = Component.getLayout || ((page: any) => <Layout>{page}</Layout>);
