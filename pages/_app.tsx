@@ -10,30 +10,32 @@ import { MyUserContextProvider } from 'utils/useUser';
 import type { Database } from 'types_db';
 import { ThemeProvider } from 'next-themes';
 import { NextPage } from 'next';
+import { Analytics } from '@vercel/analytics/react';
 
 export default function MyApp({ Component, pageProps }: any) {
-  const [supabaseClient] = useState(() =>
-    createBrowserSupabaseClient<Database>()
-  );
+    const [supabaseClient] = useState(() =>
+        createBrowserSupabaseClient<Database>()
+    );
 
-  useEffect(() => {
-    document.body.classList?.remove('loading');
-  }, []);
+    useEffect(() => {
+        document.body.classList?.remove('loading');
+    }, []);
 
-  const [user, setUser] = useState(null);
+    const [user, setUser] = useState(null);
 
-  const getLayout = Component.getLayout || ((page: any) => <Layout>{page}</Layout>);
+    const getLayout = Component.getLayout || ((page: any) => <Layout>{page}</Layout>);
 
-  return (
-    <ThemeProvider enableSystem={true} attribute="class">
-      <SessionContextProvider
-        supabaseClient={supabaseClient}
-        initialSession={pageProps.initialSession}
-      >
-        <MyUserContextProvider>
-          {getLayout(<Component {...pageProps} />)}
-        </MyUserContextProvider>
-      </SessionContextProvider>
-    </ThemeProvider>
-  );
+    return (
+        <ThemeProvider enableSystem={true} attribute="class">
+            <SessionContextProvider
+                supabaseClient={supabaseClient}
+                initialSession={pageProps.initialSession}
+            >
+                <MyUserContextProvider>
+                    {getLayout(<Component {...pageProps} />)}
+                    <Analytics />
+                </MyUserContextProvider>
+            </SessionContextProvider>
+        </ThemeProvider>
+    );
 }
