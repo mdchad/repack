@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-var Section_1 = require("../ui/Sections/Section");
+var Section_1 = require("../ui/Section/Section");
 var Card_1 = require("../ui/Card/Card");
 var Tags_1 = require("../ui/Tags/Tags");
 var services = [

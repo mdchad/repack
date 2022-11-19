@@ -1,4 +1,4 @@
-import Section from '../ui/Sections/Section'
+import Section from '../ui/Section/Section'
 import Card from '../ui/Card/Card'
 
 const plans = [

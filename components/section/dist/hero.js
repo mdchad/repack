@@ -2,7 +2,7 @@
 exports.__esModule = true;
 var react_1 = require("react");
 var image_1 = require("next/image");
-var Section_1 = require("@/components/ui/Sections/Section");
+var Section_1 = require("@/components/ui/Section/Section");
 var framer_motion_1 = require("framer-motion");
 var react_intersection_observer_1 = require("react-intersection-observer");
 function hero() {
