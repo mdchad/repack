@@ -8,35 +8,37 @@ import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { AppProps } from 'next/app';
 import { MyUserContextProvider } from 'utils/useUser';
 import type { Database } from 'types_db';
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider } from 'next-themes';
 import { NextPage } from 'next';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-    getLayout?: (page: ReactElement) => ReactNode
-}
+  getLayout?: (page: ReactElement) => ReactNode;
+};
 
-// set as generic to allow for type inference
 export default function MyApp({ Component, pageProps }: AppProps): ReactElement {
     const [supabaseClient] = useState(() =>
         createBrowserSupabaseClient<Database>()
     );
 
-    useEffect(() => {
-        document.body.classList?.remove('loading');
-    }, []);
+  useEffect(() => {
+    document.body.classList?.remove('loading');
+  }, []);
 
-    const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null);
 
-    const getLayout = Component.getLayout || ((page: any) => <Layout>{page}</Layout>);
+  const getLayout =
+    Component.getLayout || ((page: any) => <Layout>{page}</Layout>);
 
-    return (
-        <ThemeProvider enableSystem={true} attribute="class">
-            <SessionContextProvider supabaseClient={supabaseClient} initialSession={pageProps.initialSession}
-            >
-                <MyUserContextProvider>
-                    {getLayout(<Component {...pageProps} />)}
-                </MyUserContextProvider>
-            </SessionContextProvider>
-        </ThemeProvider>
-    );
+  return (
+    <ThemeProvider enableSystem={true} attribute="class">
+      <SessionContextProvider
+        supabaseClient={supabaseClient}
+        initialSession={pageProps.initialSession}
+      >
+        <MyUserContextProvider>
+          {getLayout(<Component {...pageProps} />)}
+        </MyUserContextProvider>
+      </SessionContextProvider>
+    </ThemeProvider>
+  );
 }
