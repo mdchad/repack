@@ -19,7 +19,9 @@ type AppPropsWithLayout = AppProps & {
     Component: NextPageWithLayout
 }
 
-export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+export default function MyApp({ Component, pageProps }: AppPropsWithLayout<{
+    initialSession: Session
+  }>) {
     const [supabaseClient] = useState(() =>
         createBrowserSupabaseClient<Database>()
     );
@@ -34,7 +36,8 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
     return (
         <ThemeProvider enableSystem={true} attribute="class">
-            <SessionContextProvider supabaseClient={supabaseClient}>
+            <SessionContextProvider supabaseClient={supabaseClient} initialSession={pageProps.initialSession}
+            >
                 <MyUserContextProvider>
                     {getLayout(<Component {...pageProps} />)}
                 </MyUserContextProvider>
