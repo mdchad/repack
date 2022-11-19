@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import Image from 'next/image';
-import Section from '@/components/ui/Section/Section'
+import Section from '@/components/ui/Sections/Section'
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 

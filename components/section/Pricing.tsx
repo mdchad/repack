@@ -1,5 +1,5 @@
 import React from 'react'
-import Section from '../ui/Section/Section'
+import Section from '../ui/Sections/Section'
 import Card from '../ui/Card/Card'
 
 const pricing = [
