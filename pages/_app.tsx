@@ -11,14 +11,10 @@ import type { Database } from 'types_db';
 import { ThemeProvider } from 'next-themes';
 import { NextPage } from 'next';
 
-export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-  getLayout?: (page: ReactElement) => ReactNode;
-};
-
-export default function MyApp({ Component, pageProps }: AppProps): ReactElement {
-    const [supabaseClient] = useState(() =>
-        createBrowserSupabaseClient<Database>()
-    );
+export default function MyApp({ Component, pageProps }: any) {
+  const [supabaseClient] = useState(() =>
+    createBrowserSupabaseClient<Database>()
+  );
 
   useEffect(() => {
     document.body.classList?.remove('loading');
@@ -26,8 +22,7 @@ export default function MyApp({ Component, pageProps }: AppProps): ReactElement 
 
   const [user, setUser] = useState(null);
 
-  const getLayout =
-    Component.getLayout || ((page: any) => <Layout>{page}</Layout>);
+  const getLayout = Component.getLayout || ((page: any) => <Layout>{page}</Layout>);
 
   return (
     <ThemeProvider enableSystem={true} attribute="class">

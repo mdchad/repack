@@ -50,4 +50,4 @@ function CustomerOpinion() {
     )
 }
 
-export default CustomerOpinion
+export default CustomerOpinion;

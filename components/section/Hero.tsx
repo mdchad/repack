@@ -56,4 +56,4 @@ function hero() {
     )
 }
 
-export default hero
+export default hero;

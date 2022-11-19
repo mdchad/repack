@@ -1,5 +1,4 @@
-import Layout from "@/components/Layout/Layout";
-
+import Layout from '@/components/Layout/Layout';
 import Hero from "@/components/section/Hero";
 import Services from "@/components/section/Services";
 import Process from "@/components/section/Process";
@@ -29,4 +28,3 @@ Home.getLayout = (page: any) => (
         {page}
     </Layout>
 );
-

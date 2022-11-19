@@ -146,4 +146,4 @@ function Pricing() {
     )
 }
 
-export default Pricing
+export default Pricing;
