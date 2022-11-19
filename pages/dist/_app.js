@@ -20,6 +20,7 @@ var auth_helpers_react_1 = require("@supabase/auth-helpers-react");
 var auth_helpers_nextjs_1 = require("@supabase/auth-helpers-nextjs");
 var useUser_1 = require("utils/useUser");
 var next_themes_1 = require("next-themes");
+var react_3 = require("@vercel/analytics/react");
 function MyApp(_a) {
     var Component = _a.Component, pageProps = _a.pageProps;
     var supabaseClient = react_1.useState(function () {
@@ -33,6 +34,8 @@ function MyApp(_a) {
     var getLayout = Component.getLayout || (function (page) { return react_2["default"].createElement(Layout_1["default"], null, page); });
     return (react_2["default"].createElement(next_themes_1.ThemeProvider, { enableSystem: true, attribute: "class" },
         react_2["default"].createElement(auth_helpers_react_1.SessionContextProvider, { supabaseClient: supabaseClient, initialSession: pageProps.initialSession },
-            react_2["default"].createElement(useUser_1.MyUserContextProvider, null, getLayout(react_2["default"].createElement(Component, __assign({}, pageProps)))))));
+            react_2["default"].createElement(useUser_1.MyUserContextProvider, null,
+                getLayout(react_2["default"].createElement(Component, __assign({}, pageProps))),
+                react_2["default"].createElement(react_3.Analytics, null)))));
 }
 exports["default"] = MyApp;
