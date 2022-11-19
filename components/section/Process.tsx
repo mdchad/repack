@@ -1,7 +1,6 @@
 import React from 'react'
-import Section from '@/components/ui/section/Section'
+import Section from '../ui/Section/Section'
 import Card from '../ui/Card/Card'
-import Tags from '../ui/Tags/Tags'
 
 const services = [
     {

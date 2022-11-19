@@ -1,6 +1,5 @@
-import Section from '@/components/ui/section/Section'
-import Card from '@/components/ui/Card/Card'
-import Tags from '@/components/ui/Tags/Tags'
+import Section from '../ui/Section/Section'
+import Card from '../ui/Card/Card'
 
 const questions = [
     {
