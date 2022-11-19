@@ -1,143 +1,78 @@
-import React from 'react';
+import Section from '../ui/Section/Section'
+import Card from '../ui/Card/Card'
+import Tags from '../ui/Tags/Tags'
+
+const services = [
+    {
+        title: 'Social Media',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        tags: ['Design', 'ui/ux'],
+        icon: 'web-design'
+    },
+    {
+        title: 'Brand Guide',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        tags: ['UI/UX', 'Frontend', 'Backend'],
+        icon: 'web-development'
+    },
+    {
+        title: 'SEO',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        tags: ['UI/UX', 'Frontend', 'Backend'],
+        icon: 'mobile-app'
+    },
+    {
+        title: 'Website Builder',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        tags: ['Branding', 'UI/UX'],
+        icon: 'branding'
+    },
+    {
+        title: 'Advertising',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        tags: ['Seo', 'Analytics', 'Marketing'],
+        icon: 'seo'
+    },
+    {
+        title: 'Marketing',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        tags: ['Seo', 'Analytics', 'Marketing'],
+        icon: 'seo'
+    },
+];
 
 function Services() {
-  return (
-    <section className="py-24 text-center bg-white text-[#293C4A] dark:bg-[#293C4A] dark:text-white px-12">
-      <div className="mx-auto max-w-6xl px-6 flex flex-start flex-col">
-        <h1 className="text-left pb-[25px] md:text-[39px] text-[25px] dark:text-[#EBD9A1] text-[#293C4A]">
-          Services
-        </h1>
+    return (
+        <Section id="services">
+            <div className="mx-auto max-w-6xl px-6 flex flex-start flex-col">
+                <p className='text-[#F1887A] uppercase tracking-[.25em]'>Features</p>
+                <h1 className='text-left pb-[25px] md:text-[39px] text-[25px] dark:text-[#EBD9A1] text-[#293C4A]'>Why repack?</h1>
 
-        <div className="flex flex-col">
-          <div className="grid grid-cols-3 gap-4">
-            <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
-              <a href="#">
-                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  Noteworthy technology acquisitions 2021
-                </h5>
-              </a>
-              <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                Here are the biggest enterprise technology acquisitions of 2021
-                so far, in reverse chronological order.
-              </p>
-              <a
-                href="#"
-                className="inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                Read more
-                <svg
-                  aria-hidden="true"
-                  className="ml-2 -mr-1 w-4 h-4"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-              </a>
-            </div>
+                <div className="grid gap-7 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+                    {services.map((service, index) => (
+                        <Card key={index}>
+                            <div className='text-center flex items-center flex-col'>
+                                {/* <div className="bg-[#293C4A] dark:bg-[#fff] rounded mb-3">
+                                    <img src={`/icons/${service.icon}.png`} alt={service.title} className='w-[50px] h-[50px] m-auto dark:invert' />
+                                </div> */}
+                                <img src={`/icons/${service.icon}.png`} alt={service.title} className='w-[50px] h-[50px] m-auto invert dark:invert-0' />
+                                <h3 className="text-[#F1887A] text-lg pb-3">{service.title}</h3>
+                                <p className='text-sm'>{service.description}</p>
+                            </div>
 
-            <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
-              <a href="#">
-                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  Noteworthy technology acquisitions 2021
-                </h5>
-              </a>
-              <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                Here are the biggest enterprise technology acquisitions of 2021
-                so far, in reverse chronological order.
-              </p>
-              <a
-                href="#"
-                className="inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                Read more
-                <svg
-                  aria-hidden="true"
-                  className="ml-2 -mr-1 w-4 h-4"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-              </a>
+                            <div className="flex flex-wrap gap-1">
+                                {service.tags.map((tag, index) => (
+                                    <Tags key={index}>
+                                        {tag}
+                                    </Tags>
+                                ))}
+                            </div>
+                        </Card>
+                    ))}
+                </div>
             </div>
-
-            <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
-              <a href="#">
-                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  Noteworthy technology acquisitions 2021
-                </h5>
-              </a>
-              <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                Here are the biggest enterprise technology acquisitions of 2021
-                so far, in reverse chronological order.
-              </p>
-              <a
-                href="#"
-                className="inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                Read more
-                <svg
-                  aria-hidden="true"
-                  className="ml-2 -mr-1 w-4 h-4"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-              </a>
-            </div>
-
-            <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
-              <a href="#">
-                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  Noteworthy technology acquisitions 2021
-                </h5>
-              </a>
-              <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                Here are the biggest enterprise technology acquisitions of 2021
-                so far, in reverse chronological order.
-              </p>
-              <a
-                href="#"
-                className="inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                Read more
-                <svg
-                  aria-hidden="true"
-                  className="ml-2 -mr-1 w-4 h-4"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+        </Section >
+    )
 }
 
 export default Services;
