@@ -18,11 +18,11 @@ const Navbar = () => {
                 Skip to content
             </a>
             <div className="mx-auto max-w-6xl px-6">
-                <div className="flex justify-between align-center flex-row py-4 md:py-6 relative">
+                <div className="flex justify-between items-center align-center flex-row py-4 md:py-6 relative">
                     <div className="flex flex-1 items-center">
                         <Link href="/">
                             <a className={s.logo} aria-label="Logo">
-                                <Logo />
+                                <Logo className='w-9' />
                             </a>
                         </Link>
                     </div>
@@ -32,7 +32,12 @@ const Navbar = () => {
                     <div className="flex flex-1 justify-end space-x-8">
                         {user ? (
                             <span
-                                className={s.link}
+                                className="rounded-md px-6 py-2
+                                    bg-[#F1887A] text-white hover:bg-[#293C4A] hover:text-white
+                                    dark:bg-[#fff] dark:text-[#F1887A] dark:hover:bg-[#F1887A] dark:hover:text-white
+                                    focus:outline-none 
+                                    focus:ring 
+                                    focus:ring-[#F1887A]/[.06] cursor-pointer"
                                 onClick={async () => {
                                     await supabaseClient.auth.signOut();
                                     router.push('/signin');
@@ -47,7 +52,7 @@ const Navbar = () => {
                                     dark:bg-[#fff] dark:text-[#F1887A] dark:hover:bg-[#F1887A] dark:hover:text-white
                                     focus:outline-none 
                                     focus:ring 
-                                    focus:ring-[#F1887A]/[.06]"
+                                    focus:ring-[#F1887A]/[.06] cursor-pointer"
                                 >
                                     Sign in
                                 </a>

@@ -10,7 +10,7 @@ export default function Footer() {
             <div className="mx-auto max-w-6xl px-6">
                 <div className="flex justify-between p-5 flex-col md:flex-row items-center gap-4">
                     <div className="flex gap-2 md:gap-[1em] flex-col-reverse md:flex-row items-center">
-                        <h1>Repack</h1> <GitHub />
+                        <h1 className='text-2xl'>Repack</h1> <Logo className='w-9' />
                     </div>
 
                     <div className="flex flex-col gap-[1em]">
