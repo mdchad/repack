@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useState, ReactNode } from 'react';
+import Layout from '@/components/Layout/DashboardLayout';
 
 import LoadingDots from 'components/ui/LoadingDots';
 import Button from 'components/ui/Button';
@@ -11,52 +12,52 @@ import { useSessionContext } from '@supabase/auth-helpers-react';
 import DashboardLayout from '@/components/Layout/DashboardLayout';
 
 interface Props {
-  title: string;
-  description?: string;
-  footer?: ReactNode;
-  children: ReactNode;
+    title: string;
+    description?: string;
+    footer?: ReactNode;
+    children: ReactNode;
 }
 
 function Card({ title, description, footer, children }: Props) {
-  return (
-    <div className="border border-zinc-700	max-w-3xl w-full p rounded-md m-auto my-8">
-      <div className="px-5 py-4">
-        <h3 className="text-2xl mb-1 font-medium">{title}</h3>
-        <p className="text-zinc-300">{description}</p>
-        {children}
-      </div>
-      <div className="border-t border-zinc-700 bg-zinc-900 p-4 text-zinc-500 rounded-b-md">
-        {footer}
-      </div>
-    </div>
-  );
+    return (
+        <div className="border border-zinc-700	max-w-3xl w-full p rounded-md m-auto my-8">
+            <div className="px-5 py-4">
+                <h3 className="text-2xl mb-1 font-medium">{title}</h3>
+                <p className="text-zinc-300">{description}</p>
+                {children}
+            </div>
+            <div className="border-t border-zinc-700 bg-zinc-900 p-4 text-zinc-500 rounded-b-md">
+                {footer}
+            </div>
+        </div>
+    );
 }
 
 export default function Account({ user }: { user: User }) {
-  const [loading, setLoading] = useState(false);
-  const { isLoading, subscription, userDetails } = useUser();
-  const { session, error } = useSessionContext();
+    const [loading, setLoading] = useState(false);
+    const { isLoading, subscription, userDetails } = useUser();
+    const { session, error } = useSessionContext();
 
-  const redirectToCustomerPortal = async () => {
-    setLoading(true);
-    try {
-      const { url, error } = await postData({
-        url: '/api/create-portal-link'
-      });
-      window.location.assign(url);
-    } catch (error) {
-      if (error) return alert((error as Error).message);
-    }
-    setLoading(false);
-  };
+    const redirectToCustomerPortal = async () => {
+        setLoading(true);
+        try {
+            const { url, error } = await postData({
+                url: '/api/create-portal-link'
+            });
+            window.location.assign(url);
+        } catch (error) {
+            if (error) return alert((error as Error).message);
+        }
+        setLoading(false);
+    };
 
-  const subscriptionPrice =
-    subscription &&
-    new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: subscription?.prices?.currency,
-      minimumFractionDigits: 0
-    }).format((subscription?.prices?.unit_amount || 0) / 100);
+    const subscriptionPrice =
+        subscription &&
+        new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: subscription?.prices?.currency,
+            minimumFractionDigits: 0
+        }).format((subscription?.prices?.unit_amount || 0) / 100);
 
   return (
     <section className="bg-black mb-32">

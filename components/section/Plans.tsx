@@ -70,7 +70,7 @@ function Plan() {
                                 <div className="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full invisible xl:visible">
                                     <h1 className="mx-auto font-semibold text-lg text-white">{index + 1}</h1>
                                 </div>
-                                <Card className="order-1 xl:w-5/12 p-6 flex flex-col flex-start gap-4">
+                                <Card className="order-1 xl:w-5/12 xl:p-6 flex flex-col flex-start gap-4">
                                     <img src={`/icons/${plan.icon}.png`} alt={plan.title} className='w-[50px] h-[50px] invert dark:invert-0' />
                                     <h3 className="font-bold text-[#F1887A] dark:text-[#F1887A] text-xl">{plan.title}</h3>
                                     {plan.data.map((item, index) => (
