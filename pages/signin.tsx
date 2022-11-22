@@ -4,7 +4,7 @@ import Google from '@/components/icons/Google';
 import Card from '@/components/ui/Card/Card';
 
 export default function Signin() {
-  const supabaseClient = useSupabaseClient();
+    const supabaseClient = useSupabaseClient();
 
   async function signInWithGitHub() {
     const { data, error } = await supabaseClient.auth.signInWithOAuth({
