@@ -9,7 +9,8 @@
     "stripe:listen": "stripe listen --forward-to=localhost:3000/api/webhooks --project-name=saas-starter"
   },
   "dependencies": {
-    "@heroicons/react": "v1",
+    "@headlessui/react": "^1.7.4",
+    "@heroicons/react": "^2.0.13",
     "@react-three/fiber": "^8.9.1",
     "@stripe/stripe-js": "1.22.0",
     "@supabase/auth-helpers-nextjs": "^0.4.0",

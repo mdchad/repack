@@ -1,11 +1,7 @@
-import Layout from '@/components/Layout/DashboardLayout';
-import { supabase } from '@/utils/supabase-client';
-import { withPageAuth } from '@supabase/auth-helpers-nextjs';
-
-export const getServerSideProps = withPageAuth({ redirectTo: '/signin' });
+import DashboardLayout from '@/components/Layout/DashboardLayout';
 
 export default function Dashboard() {
-  return <div>dashboard</div>;
+  return <div className="h-96 rounded-lg border-4 border-dashed border-gray-200" />;
 }
 
-Dashboard.getLayout = (page: any) => <Layout>{page}</Layout>;
+Dashboard.getLayout = (page: any) => <DashboardLayout>{page}</DashboardLayout>;

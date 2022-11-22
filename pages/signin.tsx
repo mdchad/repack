@@ -6,12 +6,12 @@ import Card from '@/components/ui/Card/Card';
 export default function Signin() {
     const supabaseClient = useSupabaseClient();
 
-    async function signInWithGitHub() {
-        const { data, error } = await supabaseClient.auth.signInWithOAuth({
-            provider: 'google',
-            options: { redirectTo: 'http://localhost:3000/dashboard/account' }
-        })
-    }
+  async function signInWithGitHub() {
+    const { data, error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: 'http://localhost:3000/dashboard' }
+    })
+  }
 
     return (
         <div className="h-screen w-full flex items-center justify-center">
