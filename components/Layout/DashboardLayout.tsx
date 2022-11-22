@@ -204,8 +204,7 @@ export default function DashboardLayout({ children }: any) {
                 <Bars3BottomLeftIcon className="h-6 w-6" aria-hidden="true" />
               </button>
               <div className="flex flex-1 justify-between px-4">
-                <div className="flex flex-1">
-                </div>
+                <div className="flex flex-1"></div>
                 <div className="ml-4 flex items-center md:ml-6">
                   <button
                     type="button"
