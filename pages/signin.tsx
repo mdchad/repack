@@ -8,7 +8,7 @@ export default function Signin() {
   async function signInWithGitHub() {
     const { data, error } = await supabaseClient.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: 'http://localhost:3000/dashboard/account' }
+      options: { redirectTo: 'http://localhost:3000/dashboard' }
     })
   }
 
