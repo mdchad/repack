@@ -2,19 +2,21 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import Logo from 'components/icons/Logo';
 import Google from '@/components/icons/Google';
 import Card from '@/components/ui/Card/Card';
+import Link from 'next/link';
+
 
 export default function Signin() {
     const supabaseClient = useSupabaseClient();
 
-  async function signInWithGitHub() {
-    const { data, error } = await supabaseClient.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: 'http://localhost:3000/dashboard' }
-    })
-  }
+    async function signInWithGitHub() {
+        const { data, error } = await supabaseClient.auth.signInWithOAuth({
+            provider: 'google',
+            options: { redirectTo: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/dashboard/account' : process.env.APP_URL + '/dashboard/account' }
+        })
+    }
 
     return (
-        <div className="h-screen w-full flex items-center justify-center">
+        <div className="h-screen w-full flex flex-col gap-4 items-center justify-center">
             <Card className="w-[90%] md:w-[max-content] mx-auto">
                 <div className="flex flex-1 flex-col justify-center">
                     <div className="mx-auto w-full max-w-sm lg:w-96">
@@ -65,7 +67,7 @@ export default function Signin() {
                                     </div>
                                 </div>
 
-                                <div className="relative mt-6">
+                                {/* <div className="relative mt-6">
                                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
                                         <div className="w-full border-t border-gray-300" />
                                     </div>
@@ -74,10 +76,10 @@ export default function Signin() {
                                             Or
                                         </span>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
 
-                            <div className="mt-6">
+                            {/* <div className="mt-6">
                                 <form action="#" method="POST" className="space-y-6">
                                     <div>
                                         <label
@@ -152,11 +154,14 @@ export default function Signin() {
                                         </button>
                                     </div>
                                 </form>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
             </Card>
+            {/* <div>
+                Don't have an account? <Link href="/signup">Sign up</Link>
+            </div> */}
         </div>
     );
 }

@@ -24,7 +24,6 @@ export default function MyApp({ Component, pageProps }: any) {
     const [user, setUser] = useState(null);
 
     const getLayout = Component.getLayout || ((page: any) => <Layout>{page}</Layout>);
-    console.log('getLayout', getLayout);
 
     return (
         <ThemeProvider enableSystem={true} attribute="class">
