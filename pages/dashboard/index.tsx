@@ -8,7 +8,7 @@ export default function Dashboard() {
             <section className="flex flex-col gap-3">
                 {/* <span className="text-2xl font-bold">Popular</span> */}
                 <div className='flex flex-row gap-4'>
-                    <a href="#" className="block p-3 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 overflow-hidden w-28">
+                    <a href="dashboard/seo" className="block p-3 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 overflow-hidden w-28">
                         <span className="flex flex-col items-center justify-center text-center gap-2">
                             <CloudIcon className="w-8 h-8" />
                             <p className='text-sm'>SEO</p>
