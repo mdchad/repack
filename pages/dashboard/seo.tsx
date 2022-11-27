@@ -7,8 +7,8 @@ const pageTitle = 'SEO';
 function Seo() {
     return (
         <section>
-            <div className="flex gap-4 items-start">
-                <div className="bg-gray border p-5 md:w-1/3 flex flex-col gap-4 rounded">
+            <div className="flex flex-col lg:flex-row gap-4 items-start">
+                <div className="bg-gray border p-5 w-full lg:w-1/3 flex flex-col gap-4 rounded">
                     <div>
                         <cite className="text-lg not-italic font-bold">Startup Name Generator</cite>
                         <p>Generate cool, creative, and catchy names for your startup in seconds.</p>
@@ -35,7 +35,7 @@ function Seo() {
 
                 </div>
 
-                <div className="flex-1 bg-white border h-screen rounded p-5 gap-4 flex flex-col items-center">
+                <div className="flex-1 w-full bg-white border h-screen rounded p-5 gap-4 flex flex-col items-center">
                     <span className="block text-sm text-center text-gray-500">Generate results by filling up the form on the left and clicking on "Generate".</span>
                 </div>
             </div>
