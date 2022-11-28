@@ -12,6 +12,7 @@
     "@headlessui/react": "^1.7.4",
     "@heroicons/react": "^2.0.13",
     "@react-three/fiber": "^8.9.1",
+    "@rstacruz/startup-name-generator": "0.3.0",
     "@stripe/stripe-js": "1.22.0",
     "@supabase/auth-helpers-nextjs": "^0.4.0",
     "@supabase/auth-helpers-react": "^0.3.0",

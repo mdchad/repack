@@ -38,12 +38,11 @@ const Navbar = () => {
                                     focus:outline-none 
                                     focus:ring 
                                     focus:ring-[#F1887A]/[.06] cursor-pointer"
-                                onClick={async () => {
-                                    await supabaseClient.auth.signOut();
-                                    router.push('/signin');
+                                onClick={() => {
+                                    router.push('/dashboard');
                                 }}
                             >
-                                Sign out
+                                Go to Dashboard
                             </span>
                         ) : (
                             <Link href="/signin">

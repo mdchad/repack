@@ -1,9 +1,5 @@
 import DashboardLayout from '@/components/Layout/DashboardLayout';
-import Link from 'next/link';
 import SettingNavBar from '@/components/ui/Setting/Navbar';
-import Account from '@/components/ui/Dashboard/Account';
-import { useSessionContext, useSupabaseClient } from '@supabase/auth-helpers-react';
-import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 function classNames(...classes: string[]) {

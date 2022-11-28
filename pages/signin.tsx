@@ -11,7 +11,7 @@ export default function Signin() {
     async function signInWithGitHub() {
         const { data, error } = await supabaseClient.auth.signInWithOAuth({
             provider: 'google',
-            options: { redirectTo: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/dashboard/account' : process.env.APP_URL + '/dashboard/account' }
+            options: { redirectTo: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/dashboard' : process.env.APP_URL + '/dashboard' }
         })
     }
 
