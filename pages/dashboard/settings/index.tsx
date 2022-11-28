@@ -16,7 +16,7 @@ function settings() {
 
     const [loading, setLoading] = useState(true)
     const [full_name, setFullName] = useState<Profiles['full_name']>(null)
-    const [email, setEmail] = useState<Profiles['email']>(null)
+    const [email, setEmail] = useState(null)
     const [avatar_url, setAvatarUrl] = useState<Profiles['avatar_url']>(null)
 
     useEffect(() => {
