@@ -3,7 +3,6 @@ import SettingNavBar from '@/components/ui/Setting/Navbar';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react'
 import { useUser, useSession, useSupabaseClient, useSessionContext } from '@supabase/auth-helpers-react'
-import Avatar from '@/components/Avatar';
 import { Database } from 'types_db';
 
 type Profiles = Database['public']['Tables']['users']['Row']
@@ -99,15 +98,6 @@ function settings() {
             <div className="bg-gray border p-5 w-full rounded-lg overflow-hidden">
                 <form>
                     <div className="grid gap-6 mb-6 md:grid-cols-2">
-                        {/* <Avatar
-                            uid={user?.id}
-                            url={avatar_url}
-                            size={150}
-                            onUpload={(url) => {
-                                setAvatarUrl(url)
-                                updateProfile({ avatar_url: url })
-                            }}
-                        /> */}
                         <div>
                             <label htmlFor="full_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Full Name</label>
                             <input
