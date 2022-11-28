@@ -35,7 +35,7 @@ export default function DashboardLayout({ children }: any) {
         {
             name: 'Settings',
             onClickEvent: async () => {
-                await router.push('/dashboard/account');
+                await router.push('/dashboard/settings');
             }
         },
         {
