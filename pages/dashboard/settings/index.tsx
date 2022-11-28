@@ -16,13 +16,16 @@ function settings() {
 
     const [loading, setLoading] = useState(true)
     const [full_name, setFullName] = useState<Profiles['full_name']>(null)
-    const [email, setEmail] = useState(null)
+    const [email, setEmail] = useState('')
     const [avatar_url, setAvatarUrl] = useState<Profiles['avatar_url']>(null)
 
     useEffect(() => {
         if (user) {
             getProfile()
-            setEmail(session?.user.email)
+
+            if (session) {
+                setEmail(session.user.email || '')
+            }
         }
     }, [user])
 
@@ -60,7 +63,6 @@ function settings() {
         full_name: Profiles['full_name']
         avatar_url: Profiles['avatar_url']
     }) {
-        console.log('updateProfile', full_name, avatar_url)
         try {
             setLoading(true)
             if (!user) throw new Error('No user')

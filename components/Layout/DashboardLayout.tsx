@@ -24,7 +24,6 @@ export default function DashboardLayout({ children }: any) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { session, error } = useSessionContext();
     const { user, isLoading, subscription } = useUser();
-    console.log(user);
 
     const userNavigation = [
         { name: 'Your Profile', href: '#' },
