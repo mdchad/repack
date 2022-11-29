@@ -71,6 +71,12 @@ export default function Account({ user }: { user: User }) {
         }
     }, [userDetails])
 
+    useEffect(() => {
+        if (userDetails) {
+            setEmail(session?.user.email || '')
+        }
+    }, [userDetails])
+
     return (
         <section className="xl:w-2/3 flex flex-col gap-4">
 

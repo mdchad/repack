@@ -25,6 +25,13 @@ function updateNotification(status: boolean) {
     }
 }
 
+function updateNotification(status: boolean) {
+    // hide notification
+    if (!status) {
+        document.getElementById('dropdown-cta')!.classList.add('hidden');
+    }
+}
+
 function Sidebar(props: any) {
     return (
         <>

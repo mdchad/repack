@@ -67,6 +67,47 @@ function settings() {
         }
     }
 
+    function notify(msg: string, type: 'success' | 'error' | 'warning') {
+        const duration = 2000;
+
+        if (type === 'success') {
+            toast.success(msg, {
+                position: "top-right",
+                autoClose: duration,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+                theme: "light",
+            });
+        } else if (type === 'error') {
+            toast.error(msg, {
+                position: "top-right",
+                autoClose: duration,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+                theme: "light",
+            });
+        }
+        else {
+            toast(msg, {
+                position: "top-right",
+                autoClose: duration,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+                theme: "light",
+            }
+            );
+        }
+    }
+
     useEffect(() => {
         if (user) {
             getProfile()
