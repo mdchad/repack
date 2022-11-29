@@ -1,8 +1,8 @@
 import {
-  CursorArrowRaysIcon,
-  FolderIcon,
-  SquaresPlusIcon,
-  UsersIcon
+    CursorArrowRaysIcon,
+    FolderIcon,
+    SquaresPlusIcon,
+    UsersIcon
 } from '@heroicons/react/24/outline';
 import LogoBrand from '@/components/icons/LogoBrand';
 import Link from 'next/link';
@@ -15,14 +15,7 @@ const navigation = [
 ];
 
 function classNames(...classes: any) {
-  return classes.filter(Boolean).join(' ');
-}
-
-function updateNotification(status: boolean) {
-    // hide notification
-    if (!status) {
-        document.getElementById('dropdown-cta')!.classList.add('hidden');
-    }
+    return classes.filter(Boolean).join(' ');
 }
 
 function updateNotification(status: boolean) {
@@ -67,20 +60,20 @@ function Sidebar(props: any) {
                     ))}
                 </nav>
 
-        <div id="bottom-section">
-          <div className="">
-            <p className="mb-2 text-sm">Free plan</p>
-            <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-              <div className="bg-gray-600 h-2.5 rounded-full w-[45%]"></div>
-            </div>
-            <div className="flex justify-between mb-1">
-              <span></span>
-              <span className="text-sm font-medium text-gray-900 dark:text-white">
-                <strong>378</strong> of 1,500
-              </span>
-              {/* <span className="text-sm font-medium text-gray-900 dark:text-white">45%</span> */}
-            </div>
-          </div>
+                <div id="bottom-section">
+                    <div className="">
+                        <p className="mb-2 text-sm">Free plan</p>
+                        <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                            <div className="bg-gray-600 h-2.5 rounded-full w-[45%]"></div>
+                        </div>
+                        <div className="flex justify-between mb-1">
+                            <span></span>
+                            <span className="text-sm font-medium text-gray-900 dark:text-white">
+                                <strong>378</strong> of 1,500
+                            </span>
+                            {/* <span className="text-sm font-medium text-gray-900 dark:text-white">45%</span> */}
+                        </div>
+                    </div>
 
                     <div id="dropdown-cta" className="p-4 mt-6 bg-gray-50 rounded-lg dark:bg-gray-900 transition-all" role="alert">
                         <div className="flex items-center mb-3">
