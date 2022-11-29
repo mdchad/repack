@@ -8,7 +8,7 @@ function team() {
     const pageName = router.pathname.split('/')[3];
 
     return (
-        <section className="md:w-2/3 flex flex-col gap-4">
+        <section className="xl:w-2/3 flex flex-col gap-4">
 
             <div className="">
                 <h1 className="text-3xl font-bold tracking-tight text-gray-900">{pageName}</h1>

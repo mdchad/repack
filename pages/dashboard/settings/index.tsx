@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react'
 import { useUser, useSession, useSupabaseClient, useSessionContext } from '@supabase/auth-helpers-react'
 import { Database } from 'types_db';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type Profiles = Database['public']['Tables']['users']['Row']
 
@@ -19,12 +21,53 @@ function settings() {
     const [email, setEmail] = useState('')
     const [avatar_url, setAvatarUrl] = useState<Profiles['avatar_url']>(null)
 
+    function notify(msg: string, type: 'success' | 'error' | 'warning') {
+        const duration = 2000;
+
+        if (type === 'success') {
+            toast.success(msg, {
+                position: "top-right",
+                autoClose: duration,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+                theme: "light",
+            });
+        } else if (type === 'error') {
+            toast.error(msg, {
+                position: "top-right",
+                autoClose: duration,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+                theme: "light",
+            });
+        }
+        else {
+            toast(msg, {
+                position: "top-right",
+                autoClose: duration,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+                theme: "light",
+            }
+            );
+        }
+    }
+
     useEffect(() => {
         if (user) {
             getProfile()
 
             if (session) {
-                setEmail(session.user.email || '')
+                setEmail(session?.user.email || '')
             }
         }
     }, [user])
@@ -78,10 +121,10 @@ function settings() {
 
             if (error) throw error
 
-            alert('Profile updated!')
+            notify('Profile updated!', 'success')
         } catch (error) {
-            alert('Error updating the data!')
-            console.log(error)
+            notify('Error updating profile!', 'error')
+            // console.log(error)
         } finally {
             setLoading(false)
         }
@@ -89,7 +132,7 @@ function settings() {
 
 
     return (
-        <section className="md:w-2/3 flex flex-col gap-4">
+        <section className="xl:w-2/3 flex flex-col gap-4">
 
             <div className="">
                 <h1 className="text-3xl font-bold tracking-tight text-gray-900">{pageName}</h1>

@@ -12,6 +12,7 @@ import { useRouter } from 'next/router';
 
 import DashboardSideBar from '@/components/ui/Dashboard/Sidebar/DashboardSidebar';
 import { useUser } from '@/utils/useUser';
+import { ToastContainer, toast } from 'react-toastify';
 
 function classNames(...classes: any) {
     return classes.filter(Boolean).join(' ');
@@ -26,7 +27,7 @@ export default function DashboardLayout({ children }: any) {
     const { user, isLoading, subscription } = useUser();
 
     const userNavigation = [
-        { name: 'Your Profile', href: '#' },
+        // { name: 'Your Profile', href: '#' },
         {
             name: 'Settings',
             onClickEvent: async () => {
@@ -106,6 +107,8 @@ export default function DashboardLayout({ children }: any) {
                         </div>
                     </Dialog>
                 </Transition.Root>
+
+                <ToastContainer />
 
                 {/* Static sidebar for desktop */}
                 <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
