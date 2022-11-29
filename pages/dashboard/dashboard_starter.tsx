@@ -1,12 +1,10 @@
-import React from 'react'
+import React from 'react';
 import DashboardLayout from '@/components/Layout/DashboardLayout';
 
 function settings() {
-    return (
-        <div>settings</div>
-    )
+  return <div>settings</div>;
 }
 
-export default settings
+export default settings;
 
 settings.getLayout = (page: any) => <DashboardLayout>{page}</DashboardLayout>;
