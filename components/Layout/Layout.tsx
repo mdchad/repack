@@ -16,8 +16,8 @@ export default function Layout({ children, meta: pageMeta }: Props) {
   const router = useRouter();
   const meta = {
     title: 'Repack',
-    description: 'Brought to you by Vercel, Stripe, and Supabase.',
-    cardImage: '/og.png',
+    description: 'Repack AI Tools',
+    cardImage: '/og2.png',
     ...pageMeta
   };
 
