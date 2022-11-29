@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useState, ReactNode } from 'react';
+import { useState, ReactNode, useEffect } from 'react';
 import Layout from '@/components/Layout/DashboardLayout';
 
 import LoadingDots from 'components/ui/LoadingDots';
@@ -36,9 +36,10 @@ function Card({ title, description, footer, children }: Props) {
 }
 
 export default function Account({ user }: { user: User }) {
-  const [loading, setLoading] = useState(false);
-  const { isLoading, subscription, userDetails } = useUser();
-  const { session, error } = useSessionContext();
+    const [loading, setLoading] = useState(false);
+    const { isLoading, subscription, userDetails } = useUser();
+    const { session, error } = useSessionContext();
+    const [email, setEmail] = useState('')
 
   const router = useRouter();
   const pageName = router.pathname.split('/')[3];
@@ -64,77 +65,80 @@ export default function Account({ user }: { user: User }) {
       minimumFractionDigits: 0
     }).format((subscription?.prices?.unit_amount || 0) / 100);
 
-  return (
-    <section className="md:w-2/3 flex flex-col gap-4">
-      <div className="">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-          {pageName}
-        </h1>
-      </div>
+    useEffect(() => {
+        if (userDetails) {
+            setEmail(session?.user.email || '')
+        }
+    }, [userDetails])
+
+    return (
+        <section className="xl:w-2/3 flex flex-col gap-4">
+
+            <div className="">
+                <h1 className="text-3xl font-bold tracking-tight text-gray-900">{pageName}</h1>
+            </div>
 
       <SettingNavBar />
 
-      <div className="bg-gray border p-5 w-full rounded-lg overflow-hidden">
-        <div className="p-4">
-          <Card
-            title="Your Plan"
-            description={
-              subscription
-                ? `You are currently on the ${subscription?.prices?.products?.name} plan.`
-                : ''
-            }
-            footer={
-              <div className="flex items-start justify-between flex-col sm:flex-row sm:items-center">
-                <p className="pb-4 sm:pb-0">
-                  Manage your subscription on Stripe.
-                </p>
-                <Button
-                  variant="slim"
-                  loading={loading}
-                  disabled={loading || !subscription}
-                  onClick={redirectToCustomerPortal}
+            <div className="bg-gray border p-5 w-full rounded-lg overflow-hidden">
+                <Card
+                    title="Your Plan"
+                    description={
+                        subscription
+                            ? `You are currently on the ${subscription?.prices?.products?.name} plan.`
+                            : ''
+                    }
+                    footer={
+                        <div className="flex items-start justify-between flex-col sm:flex-row sm:items-center">
+                            <p className="pb-4 sm:pb-0">
+                                Manage your subscription on Stripe.
+                            </p>
+                            <Button
+                                variant="slim"
+                                loading={loading}
+                                disabled={loading || !subscription}
+                                onClick={redirectToCustomerPortal}
+                            >
+                                Open customer portal
+                            </Button>
+                        </div>
+                    }
                 >
-                  Open customer portal
-                </Button>
-              </div>
-            }
-          >
-            <div className="text-xl mt-8 mb-4 font-semibold">
-              {isLoading ? (
-                <div className="h-12 mb-6">
-                  <LoadingDots />
-                </div>
-              ) : subscription ? (
-                `${subscriptionPrice}/${subscription?.prices?.interval}`
-              ) : (
-                <Link href="/">
-                  <a>Choose your plan</a>
-                </Link>
-              )}
+                    <div className="text-xl mt-8 mb-4 font-semibold">
+                        {isLoading ? (
+                            <div className="h-12 mb-6">
+                                <LoadingDots />
+                            </div>
+                        ) : subscription ? (
+                            `${subscriptionPrice}/${subscription?.prices?.interval}`
+                        ) : (
+                            <Link href="/">
+                                <a>Choose your plan</a>
+                            </Link>
+                        )}
+                    </div>
+                </Card>
+                <Card
+                    title="Your Name"
+                    description="Please enter your full name, or a display name you are comfortable with."
+                    footer={<p>Please use 64 characters at maximum.</p>}
+                >
+                    <div className="text-xl mt-8 mb-4 font-semibold">
+                        {userDetails?.full_name}
+                    </div>
+                </Card>
+                <Card
+                    title="Your Email"
+                    description="Please enter the email address you want to use to login."
+                    footer={<p>We will email you to verify the change.</p>}
+                >
+                    <p className="text-xl mt-8 mb-4 font-semibold">
+                        {userDetails ? email : undefined}
+                    </p>
+                </Card>
             </div>
-          </Card>
-          <Card
-            title="Your Name"
-            description="Please enter your full name, or a display name you are comfortable with."
-            footer={<p>Please use 64 characters at maximum.</p>}
-          >
-            <div className="text-xl mt-8 mb-4 font-semibold">
-              {userDetails?.full_name}
-            </div>
-          </Card>
-          <Card
-            title="Your Email"
-            description="Please enter the email address you want to use to login."
-            footer={<p>We will email you to verify the change.</p>}
-          >
-            <p className="text-xl mt-8 mb-4 font-semibold">
-              {user ? user.email : undefined}
-            </p>
-          </Card>
-        </div>
-      </div>
-    </section>
-  );
+        </section>
+    );
 }
 
 Account.getLayout = (page: any) => <DashboardLayout>{page}</DashboardLayout>;

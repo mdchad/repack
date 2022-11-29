@@ -1,43 +1,37 @@
 import DashboardLayout from '@/components/Layout/DashboardLayout';
 import { ArrowUpRightIcon, CloudIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
 
 export default function Dashboard() {
-  return (
-    <div className="flex flex-col gap-10">
-      {/* <div className="border-solid border-[1px] rounded p-5"> */}
-      <section className="flex flex-col gap-3">
-        {/* <span className="text-2xl font-bold">Popular</span> */}
-        <div className="flex flex-row gap-4">
-          <a
-            href="dashboard/name-generator"
-            className="block p-3 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 overflow-hidden w-28"
-          >
-            <span className="flex flex-col items-center justify-center text-center gap-2">
-              <CloudIcon className="w-8 h-8" />
-              <p className="text-sm">Name Generator</p>
-            </span>
-          </a>
-          <a
-            href="#"
-            className="block p-3 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 overflow-hidden w-28"
-          >
-            <span className="flex flex-col items-center justify-center text-center gap-2">
-              <CloudIcon className="w-8 h-8" />
-              <p className="text-sm">Blog</p>
-            </span>
-          </a>
-          <a
-            href="#"
-            className="block p-3 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 overflow-hidden w-28"
-          >
-            <span className="flex flex-col items-center justify-center text-center gap-2">
-              <CloudIcon className="w-8 h-8" />
-              <p className="text-sm">Ads</p>
-            </span>
-          </a>
-        </div>
-      </section>
-      {/* </div> */}
+    return (
+        <div className='flex flex-col gap-10'>
+            {/* <div className="border-solid border-[1px] rounded p-5"> */}
+            <section className="flex flex-col gap-3">
+                {/* <span className="text-2xl font-bold">Popular</span> */}
+                <div className='flex flex-row gap-4'>
+                    <Link href="dashboard/name-generator">
+                        <a className="block p-3 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 overflow-hidden w-28">
+                            <span className="flex flex-col items-center justify-center text-center gap-2">
+                                <CloudIcon className="w-8 h-8" />
+                                <p className='text-sm'>Name Generator</p>
+                            </span>
+                        </a>
+                    </Link>
+                    <a href="#" className="block p-3 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 overflow-hidden w-28">
+                        <span className="flex flex-col items-center justify-center text-center gap-2">
+                            <CloudIcon className="w-8 h-8" />
+                            <p className='text-sm'>Blog</p>
+                        </span>
+                    </a>
+                    <a href="#" className="block p-3 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 overflow-hidden w-28">
+                        <span className="flex flex-col items-center justify-center text-center gap-2">
+                            <CloudIcon className="w-8 h-8" />
+                            <p className='text-sm'>Ads</p>
+                        </span>
+                    </a>
+                </div>
+            </section>
+            {/* </div> */}
 
       <section className="flex flex-col gap-3">
         <span className="text-2xl font-bold">Popular</span>
