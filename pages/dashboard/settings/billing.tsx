@@ -14,25 +14,25 @@ import SettingNavBar from '@/components/ui/Setting/Navbar';
 import { useRouter } from 'next/router';
 
 interface Props {
-    title: string;
-    description?: string;
-    footer?: ReactNode;
-    children: ReactNode;
+  title: string;
+  description?: string;
+  footer?: ReactNode;
+  children: ReactNode;
 }
 
 function Card({ title, description, footer, children }: Props) {
-    return (
-        <div className="border border-zinc-700	max-w-3xl w-full p rounded-md m-auto my-8">
-            <div className="px-5 py-4">
-                <h3 className="text-2xl mb-1 font-medium">{title}</h3>
-                <p className="text-zinc-300">{description}</p>
-                {children}
-            </div>
-            <div className="border-t border-zinc-700 bg-zinc-900 p-4 text-zinc-500 rounded-b-md">
-                {footer}
-            </div>
-        </div>
-    );
+  return (
+    <div className="border border-zinc-700	max-w-3xl w-full p rounded-md m-auto my-8">
+      <div className="px-5 py-4">
+        <h3 className="text-2xl mb-1 font-medium">{title}</h3>
+        <p className="text-zinc-300">{description}</p>
+        {children}
+      </div>
+      <div className="border-t border-zinc-700 bg-zinc-900 p-4 text-zinc-500 rounded-b-md">
+        {footer}
+      </div>
+    </div>
+  );
 }
 
 export default function Account({ user }: { user: User }) {
@@ -41,29 +41,35 @@ export default function Account({ user }: { user: User }) {
     const { session, error } = useSessionContext();
     const [email, setEmail] = useState('')
 
-    const router = useRouter();
-    const pageName = router.pathname.split('/')[3];
+  const router = useRouter();
+  const pageName = router.pathname.split('/')[3];
 
-    const redirectToCustomerPortal = async () => {
-        setLoading(true);
-        try {
-            const { url, error } = await postData({
-                url: '/api/create-portal-link'
-            });
-            window.location.assign(url);
-        } catch (error) {
-            if (error) return alert((error as Error).message);
+  const redirectToCustomerPortal = async () => {
+    setLoading(true);
+    try {
+      const { url, error } = await postData({
+        url: '/api/create-portal-link'
+      });
+      window.location.assign(url);
+    } catch (error) {
+      if (error) return alert((error as Error).message);
+    }
+    setLoading(false);
+  };
+
+  const subscriptionPrice =
+    subscription &&
+    new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: subscription?.prices?.currency,
+      minimumFractionDigits: 0
+    }).format((subscription?.prices?.unit_amount || 0) / 100);
+
+    useEffect(() => {
+        if (userDetails) {
+            setEmail(session?.user.email || '')
         }
-        setLoading(false);
-    };
-
-    const subscriptionPrice =
-        subscription &&
-        new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: subscription?.prices?.currency,
-            minimumFractionDigits: 0
-        }).format((subscription?.prices?.unit_amount || 0) / 100);
+    }, [userDetails])
 
     useEffect(() => {
         if (userDetails) {
@@ -78,7 +84,7 @@ export default function Account({ user }: { user: User }) {
                 <h1 className="text-3xl font-bold tracking-tight text-gray-900">{pageName}</h1>
             </div>
 
-            <SettingNavBar />
+      <SettingNavBar />
 
             <div className="bg-gray border p-5 w-full rounded-lg overflow-hidden">
                 <Card

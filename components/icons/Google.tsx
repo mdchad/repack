@@ -1,9 +1,6 @@
 const GitHub = ({ ...props }) => {
   return (
-    <svg
-      viewBox="0 0 32 32"
-      className="h-5 w-5"
-    >
+    <svg viewBox="0 0 32 32" className="h-5 w-5">
       <defs>
         <path
           id="A"

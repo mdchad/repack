@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import LoadingDots from '../LoadingDots';
@@ -11,23 +11,23 @@ const tabs = [
 ]
 
 function Navbar() {
-    const router = useRouter();
-    const [loading, setLoading] = useState(false);
-    const [pageName, setPageName] = useState('');
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [pageName, setPageName] = useState('');
 
-    useEffect(() => {
-        const currentTab = tabs.find((tab) => tab.href === router.pathname);
-        tabs.forEach((tab) => tab.current = false);
+  useEffect(() => {
+    const currentTab = tabs.find((tab) => tab.href === router.pathname);
+    tabs.forEach((tab) => (tab.current = false));
 
-        if (currentTab) {
-            currentTab.current = true;
-            setLoading(true);
-            setPageName(currentTab.name);
-        } else {
-            // set all tabs to false
-            setLoading(true);
-        }
-    }, [router.pathname]);
+    if (currentTab) {
+      currentTab.current = true;
+      setLoading(true);
+      setPageName(currentTab.name);
+    } else {
+      // set all tabs to false
+      setLoading(true);
+    }
+  }, [router.pathname]);
 
     if (!loading) {
         return <LoadingDots />;
@@ -55,4 +55,4 @@ function Navbar() {
     }
 }
 
-export default Navbar
+export default Navbar;

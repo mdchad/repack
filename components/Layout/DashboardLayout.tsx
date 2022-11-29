@@ -1,9 +1,6 @@
 import { Fragment, useState } from 'react';
 import { Dialog, Menu, Transition } from '@headlessui/react';
-import {
-    Bars3BottomLeftIcon,
-    XMarkIcon
-} from '@heroicons/react/24/outline';
+import { Bars3BottomLeftIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import {
     useSessionContext,
     useSupabaseClient
