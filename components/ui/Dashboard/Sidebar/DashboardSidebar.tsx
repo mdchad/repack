@@ -2,10 +2,14 @@ import {
     CursorArrowRaysIcon,
     FolderIcon,
     SquaresPlusIcon,
-    UsersIcon
+    UsersIcon,
+    ArrowRightOnRectangleIcon,
 } from '@heroicons/react/24/outline';
 import LogoBrand from '@/components/icons/LogoBrand';
 import Link from 'next/link';
+import SidebarProfile from './SidebarProfile';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useRouter } from 'next/router';
 
 const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: SquaresPlusIcon, current: true },
@@ -13,6 +17,7 @@ const navigation = [
     { name: 'Team', href: '/dashboard/team', icon: UsersIcon, current: false },
     { name: 'Activity', href: '/dashboard/activity', icon: CursorArrowRaysIcon, current: false }
 ];
+
 
 function classNames(...classes: any) {
     return classes.filter(Boolean).join(' ');
@@ -26,53 +31,74 @@ function updateNotification(status: boolean) {
 }
 
 function Sidebar(props: any) {
+    const supabaseClient = useSupabaseClient();
+    const router = useRouter();
+
+    const userNavigation = [
+        {
+            name: 'Sign out',
+            icon: ArrowRightOnRectangleIcon,
+            onClickEvent: async () => {
+                await supabaseClient.auth.signOut();
+                await router.push('/signin');
+            }
+        }
+    ];
+
     return (
         <>
             <div className="flex flex-shrink-0 items-center px-4">
                 <LogoBrand />
             </div>
+
             <div className="h-0 flex-1 overflow-y-auto p-5 flex flex-col justify-between">
-                <nav className="space-y-1" id="top-section">
-                    {navigation.map((item, index) => (
-                        <Link key={index}
-                            href={item.href}
-                        >
-                            <a
-                                className={classNames(
-                                    item.current
-                                        ? 'bg-gray-100 text-gray-900 font-normal'
-                                        : 'text-gray hover:bg-gray-50 font-bold hover:text-gray-900',
-                                    'group flex items-center px-2 py-2 text-base rounded-md font-thin hover:font-normal'
-                                )}
+                <div id="top-section" className="flex flex-col gap-4">
+                    <SidebarProfile user={props.user} />
+
+                    <nav className="flex flex-col gap-4" >
+                        {navigation.map((item, index) => (
+                            <Link key={index}
+                                href={item.href}
                             >
-                                <item.icon
+                                <a
                                     className={classNames(
                                         item.current
-                                            ? 'text-gray-900'
-                                            : 'text-gray group-hover:text-gray-900',
-                                        'mr-4 flex-shrink-0 h-6 w-6'
+                                            ? 'bg-gray-100 text-gray-900 font-normal'
+                                            : 'text-gray hover:bg-gray-50 font-bold hover:text-gray-900',
+                                        'group flex items-center px-2 py-2 text-base rounded-md font-thin hover:font-normal'
                                     )}
-                                    aria-hidden="true"
-                                />
-                                {item.name}
-                            </a>
-                        </Link>
-                    ))}
-                </nav>
+                                >
+                                    <item.icon
+                                        className={classNames(
+                                            item.current
+                                                ? 'text-gray-900'
+                                                : 'text-gray group-hover:text-gray-900',
+                                            'mr-4 flex-shrink-0 h-6 w-6'
+                                        )}
+                                        aria-hidden="true"
+                                    />
+                                    {item.name}
+                                </a>
+                            </Link>
+                        ))}
+                    </nav>
+                </div>
 
                 <div id="bottom-section">
-                    <div className="">
-                        <p className="mb-2 text-sm">Free plan</p>
-                        <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                            <div className="bg-gray-600 h-2.5 rounded-full w-[45%]"></div>
-                        </div>
-                        <div className="flex justify-between mb-1">
-                            <span></span>
-                            <span className="text-sm font-medium text-gray-900 dark:text-white">
-                                <strong>378</strong> of 1,500
-                            </span>
-                            {/* <span className="text-sm font-medium text-gray-900 dark:text-white">45%</span> */}
-                        </div>
+
+                    <div className="flex flex-shrink-0 border-t border-gray-200 pt-3">
+                        {/* bottom content */}
+                        {userNavigation.map((item) => (
+                            <div key={item.name} className="w-full">
+                                <button
+                                    onClick={item.onClickEvent}
+                                    className={classNames('w-full text-left px-4 py-2 text-sm text-gray-700 flex gap-3 items-center')}
+                                >
+                                    <item.icon className="w-6 h-6"/>
+                                    {item.name}
+                                </button>
+                            </div>
+                        ))}
                     </div>
 
                     <div id="dropdown-cta" className="p-4 mt-6 bg-gray-50 rounded-lg dark:bg-gray-900 transition-all" role="alert">
@@ -88,6 +114,7 @@ function Sidebar(props: any) {
                         </p>
                         <a className="text-sm text-blue-900 underline hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300" href="#">Upgrade now</a>
                     </div>
+
                 </div>
 
 
