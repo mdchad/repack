@@ -12,6 +12,9 @@ import SidebarProfile from './SidebarProfile';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import SidebarProfile from './SidebarProfile';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useRouter } from 'next/router';
 
 const navigation = [
   {
