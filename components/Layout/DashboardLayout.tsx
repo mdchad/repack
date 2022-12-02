@@ -18,7 +18,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useSessionContext, useSupabaseClient } from '@supabase/auth-helpers-react';
 
 function classNames(...classes: any) {
-    return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(' ');
 }
 
 const navigation = [
@@ -32,29 +32,29 @@ const navigation = [
 
 
 export default function DashboardLayout({ children }: any) {
-    const supabaseClient = useSupabaseClient();
-    const router = useRouter();
+  const supabaseClient = useSupabaseClient();
+  const router = useRouter();
 
-    const [sidebarOpen, setSidebarOpen] = useState(false);
-    const { session, error } = useSessionContext();
-    const { user, isLoading, subscription } = useUser();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { session, error } = useSessionContext();
+  const { user, isLoading, subscription } = useUser();
 
-    const userNavigation = [
-        // { name: 'Your Profile', href: '#' },
-        {
-            name: 'Settings',
-            onClickEvent: async () => {
-                await router.push('/dashboard/settings');
-            }
-        },
-        {
-            name: 'Sign out',
-            onClickEvent: async () => {
-                await supabaseClient.auth.signOut();
-                await router.push('/signin');
-            }
-        }
-    ];
+  const userNavigation = [
+    // { name: 'Your Profile', href: '#' },
+    {
+      name: 'Settings',
+      onClickEvent: async () => {
+        await router.push('/dashboard/settings');
+      }
+    },
+    {
+      name: 'Sign out',
+      onClickEvent: async () => {
+        await supabaseClient.auth.signOut();
+        await router.push('/signin');
+      }
+    }
+  ];
 
     if (session) {
         return (

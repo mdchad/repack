@@ -1,10 +1,11 @@
 import {
-    CursorArrowRaysIcon,
-    FolderIcon,
-    SquaresPlusIcon,
-    UsersIcon,
-    ArrowRightOnRectangleIcon,
+  CursorArrowRaysIcon,
+  FolderIcon,
+  SquaresPlusIcon,
+  UsersIcon,
+  ArrowRightOnRectangleIcon,
 } from '@heroicons/react/24/outline';
+import { useState } from 'react';
 import LogoBrand from '@/components/icons/LogoBrand';
 import Link from 'next/link';
 import SidebarProfile from './SidebarProfile';
@@ -12,25 +13,37 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/router';
 
 const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: SquaresPlusIcon, current: true },
-    { name: 'Projects', href: '/dashboard/projects', icon: FolderIcon, current: false },
-    { name: 'Team', href: '/dashboard/team', icon: UsersIcon, current: false },
-    { name: 'Activity', href: '/dashboard/activity', icon: CursorArrowRaysIcon, current: false }
+  {
+    name: 'Dashboard',
+    href: '/dashboard',
+    icon: SquaresPlusIcon,
+    current: true
+  },
+  { name: 'Saved', href: '/dashboard/saved', icon: FolderIcon, current: false },
+  { name: 'Team', href: '/dashboard/team', icon: UsersIcon, current: false },
+  {
+    name: 'Activity',
+    href: '/dashboard/activity',
+    icon: CursorArrowRaysIcon,
+    current: false
+  }
 ];
 
 
 function classNames(...classes: any) {
-    return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(' ');
 }
 
 function updateNotification(status: boolean) {
-    // hide notification
-    if (!status) {
-        document.getElementById('dropdown-cta')!.classList.add('hidden');
-    }
+  // hide notification
+  if (!status) {
+    document.getElementById('dropdown-cta')!.classList.add('hidden');
+  }
 }
 
 function Sidebar(props: any) {
+    const [currentTab, setCurrentTab] = useState('Dashboard');
+
     const supabaseClient = useSupabaseClient();
     const router = useRouter();
 
@@ -62,7 +75,8 @@ function Sidebar(props: any) {
                             >
                                 <a
                                     className={classNames(
-                                        item.current
+
+                                      currentTab === item.name
                                             ? 'bg-gray-100 text-gray-900 font-normal'
                                             : 'text-gray hover:bg-gray-50 font-bold hover:text-gray-900',
                                         'group flex items-center px-2 py-2 text-base rounded-md font-thin hover:font-normal'
@@ -70,7 +84,7 @@ function Sidebar(props: any) {
                                 >
                                     <item.icon
                                         className={classNames(
-                                            item.current
+                                          currentTab === item.name
                                                 ? 'text-gray-900'
                                                 : 'text-gray group-hover:text-gray-900',
                                             'mr-4 flex-shrink-0 h-6 w-6'
