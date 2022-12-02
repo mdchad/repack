@@ -1,9 +1,9 @@
 import {
-    CursorArrowRaysIcon,
-    FolderIcon,
-    SquaresPlusIcon,
-    UsersIcon,
-    ArrowRightOnRectangleIcon,
+  CursorArrowRaysIcon,
+  FolderIcon,
+  SquaresPlusIcon,
+  UsersIcon,
+  ArrowRightOnRectangleIcon,
 } from '@heroicons/react/24/outline';
 import LogoBrand from '@/components/icons/LogoBrand';
 import Link from 'next/link';
