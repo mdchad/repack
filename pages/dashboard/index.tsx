@@ -2,6 +2,7 @@ import DashboardLayout from '@/components/Layout/DashboardLayout';
 import { ArrowUpRightIcon, CloudIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { useState } from 'react';
+import { Tabs } from '@/utils/enums';
 
 const features = [
   {
@@ -35,12 +36,6 @@ const features = [
       'Turn a title and an outline into a fully SEO-optimized and long article with this AI editor.'
   }
 ];
-
-enum Tabs {
-  Branding = 'branding',
-  Website = 'website',
-  Blog = 'blog'
-}
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('branding');
