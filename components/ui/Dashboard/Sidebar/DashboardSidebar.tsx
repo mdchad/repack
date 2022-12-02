@@ -8,6 +8,8 @@ import {
 import LogoBrand from '@/components/icons/LogoBrand';
 import Link from 'next/link';
 import { useState } from 'react';
+import LogoBrand from '@/components/icons/LogoBrand';
+import Link from 'next/link';
 import SidebarProfile from './SidebarProfile';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/router';
@@ -28,6 +30,7 @@ const navigation = [
     current: false
   }
 ];
+
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ');
@@ -74,6 +77,7 @@ function Sidebar(props: any) {
                             >
                                 <a
                                     className={classNames(
+
                                       currentTab === item.name
                                             ? 'bg-gray-100 text-gray-900 font-normal'
                                             : 'text-gray hover:bg-gray-50 font-bold hover:text-gray-900',
@@ -83,6 +87,7 @@ function Sidebar(props: any) {
                                     <item.icon
                                         className={classNames(
                                           currentTab === item.name
+                                            item.current
                                                 ? 'text-gray-900'
                                                 : 'text-gray group-hover:text-gray-900',
                                             'mr-4 flex-shrink-0 h-6 w-6'
