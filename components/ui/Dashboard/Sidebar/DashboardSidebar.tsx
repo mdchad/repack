@@ -5,8 +5,6 @@ import {
   UsersIcon,
   ArrowRightOnRectangleIcon,
 } from '@heroicons/react/24/outline';
-import LogoBrand from '@/components/icons/LogoBrand';
-import Link from 'next/link';
 import { useState } from 'react';
 import LogoBrand from '@/components/icons/LogoBrand';
 import Link from 'next/link';
@@ -87,7 +85,6 @@ function Sidebar(props: any) {
                                     <item.icon
                                         className={classNames(
                                           currentTab === item.name
-                                            item.current
                                                 ? 'text-gray-900'
                                                 : 'text-gray group-hover:text-gray-900',
                                             'mr-4 flex-shrink-0 h-6 w-6'
