@@ -74,8 +74,8 @@ function Sidebar(props: any) {
                                 href={item.href}
                             >
                                 <a
+                                    onClick={() => setCurrentTab(item.name)}
                                     className={classNames(
-
                                       currentTab === item.name
                                             ? 'bg-gray-100 text-gray-900 font-normal'
                                             : 'text-gray hover:bg-gray-50 font-bold hover:text-gray-900',
