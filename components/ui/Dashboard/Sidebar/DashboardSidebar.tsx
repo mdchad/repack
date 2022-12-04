@@ -63,15 +63,15 @@ function Sidebar(props: any) {
                                 <a
                                     className={classNames(
                                         item.current
-                                            ? 'bg-gray-100 text-gray-900 font-normal'
-                                            : 'text-gray hover:bg-gray-50 font-bold hover:text-gray-900',
+                                            ? 'bg-[#F38A7A]/10 text-[#F38A7A] font-normal'
+                                            : 'text-gray hover:bg-[#F38A7A]/10 hover:text-[#F38A7A]',
                                         'group flex items-center px-2 py-2 text-base rounded-md font-thin hover:font-normal'
                                     )}
                                 >
                                     <item.icon
                                         className={classNames(
                                             item.current
-                                                ? 'text-gray-900'
+                                                ? 'text-[#F1887A]'
                                                 : 'text-gray group-hover:text-gray-900',
                                             'mr-4 flex-shrink-0 h-6 w-6'
                                         )}
@@ -92,7 +92,7 @@ function Sidebar(props: any) {
                             <div key={item.name} className="w-full">
                                 <button
                                     onClick={item.onClickEvent}
-                                    className={classNames('w-full text-left px-4 py-2 text-sm text-gray-700 flex gap-3 items-center')}
+                                    className={classNames('w-full text-left px-4 py-2 text-sm hover:bg-[#F38A7A]/10 hover:text-[#F38A7A] flex gap-3 items-center')}
                                 >
                                     <item.icon className="w-6 h-6"/>
                                     {item.name}

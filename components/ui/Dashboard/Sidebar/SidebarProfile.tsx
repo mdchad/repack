@@ -2,21 +2,20 @@ import Link from 'next/link'
 import React from 'react'
 
 function SidebarProfile({ user }: any) {
-    console.log(user)
     return (
         <div className="flex flex-col gap-5 flex-shrink-0 border-b border-gray-200 pb-3">
             <div className="flex items-center">
-                <div>
+                <div className="border-2 border-[#F38A7A] rounded-full">
                     <img
                         className="inline-block h-12 w-12 rounded-full"
                         src={user.user_metadata.avatar_url ?? ''}
-                        alt=""
+                        alt="avatar"
                     />
                 </div>
                 <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">{user.user_metadata.full_name ?? ''}</p>
+                    <p className="text-sm font-bold text-gray-700 group-hover:text-gray-900">{user.user_metadata.full_name ?? ''}</p>
                     <Link href="/dashboard/settings">
-                        <a className="text-xs font-medium text-gray-500 group-hover:text-gray-700">View profile</a>
+                        <a className="text-xs font-medium text-gray-500 group-hover:text-gray-700 hover:text-[#F38A7A]">View profile</a>
                     </Link>
                 </div>
             </div>
