@@ -7,13 +7,13 @@ import {
 
 import DashboardSideBar from '@/components/ui/Dashboard/Sidebar/DashboardSidebar';
 import { useUser } from '@/utils/useUser';
-import { ToastContainer, toast } from 'react-toastify';
 import { useSessionContext, useSupabaseClient } from '@supabase/auth-helpers-react';
+import { ToastContainer } from 'react-toastify';
 
 export default function DashboardLayout({ children }: any) {
-    const [sidebarOpen, setSidebarOpen] = useState(false);
-    const { session, error } = useSessionContext();
-    const { user, isLoading, subscription } = useUser();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { session, error } = useSessionContext();
+  const { user, isLoading, subscription } = useUser();
 
     if (session) {
         return (

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import DashboardLayout from '@/components/Layout/DashboardLayout';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
 const name = require('@rstacruz/startup-name-generator');
 
 function NameGenerator() {
@@ -72,7 +73,6 @@ function NameGenerator() {
 
             <button
               type="submit"
-              //   onClick={(e) => generateWords(e)}
               className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
               Generate
@@ -80,22 +80,24 @@ function NameGenerator() {
           </form>
         </div>
 
-        <div className="flex-1 w-full bg-white border h-screen rounded p-5 gap-4 flex flex-col">
+        <div className="flex-1 w-full bg-white border h-screen rounded p-5 gap-4 flex flex-col bg-gray-100">
           <span className="block text-sm text-center text-gray-500">
             Generate results by filling up the form on the left and clicking on
             "Generate".
           </span>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-4 overflow-auto">
-            {brandNameResult.map((person, i) => (
+            {brandNameResult.map((brandName, i) => (
               <div
                 key={i}
-                className="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400"
+                className="relative flex items-center space-x-3 bg-white px-2 py-1 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2"
               >
                 <div className="min-w-0 flex-1">
-                  <a href="#">
-                    <span className="absolute inset-0" aria-hidden="true" />
-                    <p className="truncate text-sm text-gray-500">{person}</p>
-                  </a>
+                  <Link href={`/dashboard/name-generator/${brandName}`}>
+                    <a>
+                      <span className="absolute inset-0" aria-hidden="true" />
+                      <p className="truncate text-sm text-gray-500">{brandName}</p>
+                    </a>
+                  </Link>
                 </div>
               </div>
             ))}

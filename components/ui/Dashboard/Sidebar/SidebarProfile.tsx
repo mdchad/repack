@@ -10,6 +10,7 @@ function SidebarProfile({ user }: any) {
                         className="inline-block h-12 w-12 rounded-full"
                         src={user.user_metadata.avatar_url ?? ''}
                         alt="avatar"
+                        referrerPolicy="no-referrer"
                     />
                 </div>
                 <div className="ml-3">
