@@ -18,14 +18,6 @@ export default function DashboardLayout({ children }: any) {
     if (session) {
         return (
             <>
-                {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-gray-100">
-        <body class="h-full">
-        ```
-      */}
                 <div>
                     <ToastContainer />
                     <Transition.Root show={sidebarOpen} as={Fragment}>
@@ -85,7 +77,7 @@ export default function DashboardLayout({ children }: any) {
                     </Transition.Root>
 
                     {/* Static sidebar for desktop */}
-                    <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
+                    <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col bg-white-500">
                         <DashboardSideBar user={user} />
                     </div>
 
@@ -101,7 +93,7 @@ export default function DashboardLayout({ children }: any) {
                             </button>
                         </div>
                         <main className="flex-1">
-                            <div className="m-5 p-5 bg-[#FAFBFC] rounded-t-lg">
+                            <div className=" bg-[#F38A7A]/10 rounded-t-lg">
                                 {children}
                             </div>
                         </main>
