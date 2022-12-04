@@ -52,8 +52,8 @@ function Sidebar(props: any) {
             name: 'Sign out',
             icon: ArrowRightOnRectangleIcon,
             onClickEvent: async () => {
-                await supabaseClient.auth.signOut();
                 await router.push('/signin');
+                await supabaseClient.auth.signOut();
             }
         }
     ];

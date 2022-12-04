@@ -2,59 +2,18 @@ import { Fragment, useState } from 'react';
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import {
     Bars3Icon,
-    CalendarIcon,
-    ChartBarIcon,
-    FolderIcon,
-    HomeIcon,
-    InboxIcon,
-    UsersIcon,
     XMarkIcon,
 } from '@heroicons/react/24/outline'
-import { useRouter } from 'next/router';
 
 import DashboardSideBar from '@/components/ui/Dashboard/Sidebar/DashboardSidebar';
 import { useUser } from '@/utils/useUser';
-import { ToastContainer, toast } from 'react-toastify';
 import { useSessionContext, useSupabaseClient } from '@supabase/auth-helpers-react';
-
-function classNames(...classes: any) {
-  return classes.filter(Boolean).join(' ');
-}
-
-const navigation = [
-    { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-    { name: 'Team', href: '#', icon: UsersIcon, current: false },
-    { name: 'Projects', href: '#', icon: FolderIcon, current: false },
-    { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-    { name: 'Documents', href: '#', icon: InboxIcon, current: false },
-    { name: 'Reports', href: '#', icon: ChartBarIcon, current: false },
-]
-
+import { ToastContainer } from 'react-toastify';
 
 export default function DashboardLayout({ children }: any) {
-  const supabaseClient = useSupabaseClient();
-  const router = useRouter();
-
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { session, error } = useSessionContext();
   const { user, isLoading, subscription } = useUser();
-
-  const userNavigation = [
-    // { name: 'Your Profile', href: '#' },
-    {
-      name: 'Settings',
-      onClickEvent: async () => {
-        await router.push('/dashboard/settings');
-      }
-    },
-    {
-      name: 'Sign out',
-      onClickEvent: async () => {
-        await supabaseClient.auth.signOut();
-        await router.push('/signin');
-      }
-    }
-  ];
 
     if (session) {
         return (
@@ -68,6 +27,7 @@ export default function DashboardLayout({ children }: any) {
         ```
       */}
                 <div>
+                    <ToastContainer />
                     <Transition.Root show={sidebarOpen} as={Fragment}>
                         <Dialog as="div" className="relative z-40 md:hidden" onClose={setSidebarOpen}>
                             <Transition.Child
