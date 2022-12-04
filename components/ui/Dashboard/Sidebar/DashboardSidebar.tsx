@@ -12,12 +12,21 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/router';
 
 const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: SquaresPlusIcon, current: true },
-    { name: 'Projects', href: '/dashboard/projects', icon: FolderIcon, current: false },
+    {
+      name: 'Dashboard',
+      href: '/dashboard',
+      icon: SquaresPlusIcon,
+      current: true
+    },
+    { name: 'Saved', href: '/dashboard/saved', icon: FolderIcon, current: false },
     { name: 'Team', href: '/dashboard/team', icon: UsersIcon, current: false },
-    { name: 'Activity', href: '/dashboard/activity', icon: CursorArrowRaysIcon, current: false }
-];
-
+    {
+      name: 'Activity',
+      href: '/dashboard/activity',
+      icon: CursorArrowRaysIcon,
+      current: false
+    }
+  ];
 
 function classNames(...classes: any) {
     return classes.filter(Boolean).join(' ');
