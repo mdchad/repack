@@ -31,19 +31,19 @@ const data = [
         id: 0,
         title: 'What do you want your brand name to signify in terms of values?',
         placeholder: 'e.g. trustworthy, innovative, etc.',
-        background: 'bg-red-500'
+        background: 'bg-white-500'
     },
     {
         id: 1,
         title: 'What are the keywords that describe your brand?',
         placeholder: 'e.g. tech, fashion, etc.',
-        background: 'bg-green-500'
+        background: 'bg-white-500'
     },
     {
         id: 2,
         title: 'What type of brand are you?',
         placeholder: 'e.g. product, service, etc.',
-        background: 'bg-pink-500'
+        background: 'bg-white-500'
     },
 ]
 
@@ -69,17 +69,17 @@ function NameGenerator() {
         setTimeout(() => {
             if (page !== 1) {
                 setbuttonLeftDisabled(false);
+            }else{
+                setbuttonLeftDisabled(true);
             }
 
             if (page === data.length) {
                 setbuttonRightDisabled(true)
-            }
-            //
-            if (page === 1) {
-                setbuttonLeftDisabled(true);
+            }else{
                 setbuttonRightDisabled(false)
             }
-        }, 1000)
+
+        }, 800)
     }, [page]);
 
     const paginate = (newDirection: number) => {
@@ -128,7 +128,7 @@ function NameGenerator() {
                                 data-index={item.id}
                                 ref={refArr.current[item.id]}
                             >
-                                <div className="flex flex-col items-center justify-center rounded-lg h-screen">
+                                <div className="w-full flex flex-col items-center justify-center rounded-lg h-screen">
                                     <label htmlFor={`field-${item.id}`}>{item.title}</label>
                                     <input type="text" id={`field-${index}`} className="p-2 text-2xl lg:text-5xl bg-transparent border-none w-screen text-center focus:ring-0 text-black placeholder-[#F38A7A]/50" onChange={(e) => setValues(e.target.value)} placeholder={item.placeholder} autoComplete="off" />
 
