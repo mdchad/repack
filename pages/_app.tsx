@@ -1,4 +1,5 @@
 import 'styles/main.css';
+import 'styles/custom.scss';
 import 'styles/chrome-bug.css';
 import { ReactElement, ReactNode, useEffect, useState } from 'react';
 import React from 'react';
