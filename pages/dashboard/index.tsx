@@ -34,13 +34,6 @@ const features = [
     }
 ];
 
-enum Tabs {
-    All = 'all',
-    Branding = 'branding',
-    Website = 'website',
-    Blog = 'blog'
-}
-
 const tabs = [
     {
         name: Tabs.Branding,
@@ -66,7 +59,7 @@ export default function Dashboard() {
     const [activeTab, setActiveTab] = useState('branding');
 
     return (
-        <div className="flex flex-col gap-5 p-5">
+        <div className="flex flex-col gap-5 p-5 h-full">
             <Card>
                 <section className="flex flex-row flex-wrap">
                     {/* <span className="text-2xl font-bold">Popular</span> */}
@@ -81,7 +74,7 @@ export default function Dashboard() {
                 </section>
             </Card>
 
-            <Card className="min-h-screen">
+            <Card className="h-full grow">
                 <section className="flex flex-col gap-3">
                     <span className="text-2xl font-bold">Popular</span>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 divide-x gap-4 m-1">

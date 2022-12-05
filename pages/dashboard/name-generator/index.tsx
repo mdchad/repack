@@ -16,7 +16,7 @@ function NameGenerator() {
     setBrandNameResult(result);
   }
   return (
-    <section>
+    <section className="flex flex-col gap-5 p-5 h-full">
       <div className="flex flex-col lg:flex-row gap-4 items-start">
         <div className="bg-gray border p-5 w-full lg:w-1/3 flex flex-col gap-4 rounded">
           <div>
@@ -80,12 +80,12 @@ function NameGenerator() {
           </form>
         </div>
 
-        <div className="flex-1 w-full bg-white border h-screen rounded p-5 gap-4 flex flex-col bg-gray-100">
+        <div className="flex-1 w-full border h-screen rounded p-5 gap-4 flex flex-col bg-gray-100 overflow-scroll">
           <span className="block text-sm text-center text-gray-500">
             Generate results by filling up the form on the left and clicking on
             "Generate".
           </span>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-4 overflow-auto">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-4">
             {brandNameResult.map((brandName, i) => (
               <div
                 key={i}
