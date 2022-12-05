@@ -34,13 +34,6 @@ const features = [
     }
 ];
 
-enum Tabs {
-    All = 'all',
-    Branding = 'branding',
-    Website = 'website',
-    Blog = 'blog'
-}
-
 const tabs = [
     {
         name: Tabs.Branding,
