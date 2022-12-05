@@ -48,7 +48,7 @@ const social_urls = [
     },
 ];
 
-function CheckMark({data, social}: any) {
+function CheckMark({ data, social }: any) {
     if (!data) {
         return null
     }
@@ -158,12 +158,10 @@ function Name() {
                             <ul className="list-none grid grid-cols-2 md:grid-cols-5 gap-3">
                                 {urls.map((url, index) => (
                                     <li key={index} className="p-3 grid place-content-center uppercase">
-                                        <Link href={`https://www.namecheap.com/domains/whois/result?domain=${name}${url.title}`}>
-                                            <a className='flex flex-col text-center hover:text-[#F38A7A]'>
-                                                {url.title}
-                                                <span className="text-sm text-gray-400">WHOIS</span>
-                                            </a>
-                                        </Link>
+                                        <a href={`https://www.namecheap.com/domains/whois/result?domain=${name}${url.title}`} target="_blank" className='flex flex-col text-center hover:text-[#F38A7A]'>
+                                            {url.title}
+                                            <span className="text-sm text-gray-400">WHOIS</span>
+                                        </a>
                                     </li>
                                 ))}
                             </ul>
@@ -177,18 +175,18 @@ function Name() {
                         {social_urls.map((social, index) => (
                             <div key={index} className="flex py-3">
                                 <img src={social.icon} className="h-6 w-6 mr-3" />
-                                <Link href="#">
-                                    <a>
-                                        {social.url}{name}
-                                    </a>
-                                </Link>
+                                {/*// @ts-ignore*/}
+                                <a href={`${social.url}${name?.toLowerCase()}`} target="_blank">
+                                    {/*// @ts-ignore*/}
+                                    {social.url}{name?.toLowerCase()}
+                                </a>
                                 {/*// @ts-ignore*/}
                                 {loading && <div className="ml-auto"><svg className="animate-spin h-5 w-5 text-gray-500"
-                                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                            strokeWidth="4"></circle>
+                                        strokeWidth="4"></circle>
                                     <path className="opacity-75" fill="currentColor"
-                                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg></div>}
                                 <CheckMark data={data} social={social} />
                             </div>

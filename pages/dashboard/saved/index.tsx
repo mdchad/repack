@@ -35,7 +35,7 @@ function Saved() {
     setSaved(favourites);
   }
 
-  console.log(saved)
+//   console.log(saved)
   return (
     <div>
       <div className="sm:hidden">
