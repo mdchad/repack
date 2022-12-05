@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/Layout/DashboardLayout';
 import { useRouter } from 'next/router';
 import { HeartIcon } from '@heroicons/react/24/outline';
-import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { HeartIcon as HeartSolidIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/solid';
 import { toast } from 'react-toastify';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import Link from 'next/link';
@@ -48,12 +48,46 @@ const social_urls = [
     },
 ];
 
+function CheckMark({data, social}: any) {
+    if (!data) {
+        return null
+    }
+
+    return data && data[social.title.toLowerCase()]?.available ? <CheckCircleIcon className="ml-auto h-6 w-6 text-green-400" /> : <XCircleIcon className="ml-auto items-end h-6 w-6 text-red-400" />
+}
+
 function Name() {
     const router = useRouter();
     const { name } = router.query;
     const [save, setSave] = useState(false);
     const supabase = useSupabaseClient();
     const user = useUser();
+    const [data, setData] = useState(null)
+    const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        if (name) {
+            getData()
+        }
+    }, [name])
+
+    async function getData() {
+        setLoading(true)
+        const res = await fetch('/api/get-social?name=' + name, {
+            method: 'GET',
+            headers: new Headers({ 'Content-Type': 'application/json' }),
+            credentials: 'same-origin',
+        });
+
+        if (!res.ok) {
+            throw Error(res.statusText);
+        }
+
+        const bodyResponse = await res.json()
+        setData(bodyResponse)
+        setLoading(false)
+    }
+    console.log('data', data)
 
     async function saveName() {
         setSave(true);
@@ -141,13 +175,22 @@ function Name() {
                     <div className="bg-white overflow-hidden rounded-lg p-5 mb-3">
                         <p className="text-sm text-gray-500 pb-5">Social Networks</p>
                         {social_urls.map((social, index) => (
-                            <div key={index} className="flex items-center py-3">
+                            <div key={index} className="flex py-3">
                                 <img src={social.icon} className="h-6 w-6 mr-3" />
                                 <Link href="#">
                                     <a>
                                         {social.url}{name}
                                     </a>
                                 </Link>
+                                {/*// @ts-ignore*/}
+                                {loading && <div className="ml-auto"><svg className="animate-spin h-5 w-5 text-gray-500"
+                                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor"
+                                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg></div>}
+                                <CheckMark data={data} social={social} />
                             </div>
                         ))}
                     </div>

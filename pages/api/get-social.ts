@@ -10,9 +10,8 @@ export default async function handler(req: any, res: any) {
   const response = await page.waitForResponse((response: any) => response.url().includes('facebook') && response.status() === 200);
   console.log('RESPONSE ' + (await response.body()));
   const bodyResponse = await response.body()
-  console.log('RESPONSE1 ' + JSON.parse(bodyResponse));
 
   await browser.close();
 
-  res.end(`Finish: ${bodyResponse}`)
+  res.end(bodyResponse)
 }

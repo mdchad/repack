@@ -1681,11 +1681,6 @@ suspend-react@^0.0.8:
   resolved "https://registry.npmjs.org/suspend-react/-/suspend-react-0.0.8.tgz"
   integrity sha512-ZC3r8Hu1y0dIThzsGw0RLZplnX9yXwfItcvaIzJc2VQVi8TGyGDlu92syMB5ulybfvGLHAI5Ghzlk23UBPF8xg==
 
-swr@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.npmjs.org/swr/-/swr-1.2.0.tgz"
-  integrity sha512-C3IXeKOREn0jQ1ewXRENE7ED7jjGbFTakwB64eLACkCqkF/A0N2ckvpCTftcaSYi5yV36PzoehgVCOVRmtECcA==
-
 syllable@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/syllable/-/syllable-2.0.0.tgz#d4118d4fe8df943a045bad8b411748453c3613f1"
