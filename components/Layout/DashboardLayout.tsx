@@ -11,9 +11,9 @@ import { useSessionContext, useSupabaseClient } from '@supabase/auth-helpers-rea
 import { ToastContainer } from 'react-toastify';
 
 export default function DashboardLayout({ children }: any) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { session, error } = useSessionContext();
-  const { user, isLoading, subscription } = useUser();
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const { session, error } = useSessionContext();
+    const { user, isLoading, subscription } = useUser();
 
     if (session) {
         return (
@@ -93,7 +93,7 @@ export default function DashboardLayout({ children }: any) {
                             </button>
                         </div>
                         <main className="flex-1">
-                            <div className=" bg-[#F38A7A]/10 rounded-t-lg">
+                            <div className=" bg-[#F38A7A]/10 md:h-screen">
                                 {children}
                             </div>
                         </main>
