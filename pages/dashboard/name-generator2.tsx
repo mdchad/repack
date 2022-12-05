@@ -108,9 +108,9 @@ function NameGenerator() {
     }
 
     return (
-        <section className="h-full overflow-hidden relative">
-            <div className="h-screen flex flex-row flex-wrap">
-                <section className="question w-full h-screen relative overflow-hidden">
+        <section className="flex flex-col gap-5 p-5 h-[calc(100vh-50px)] md:h-full">
+            <div className="h-full bg-white overflow-hidden rounded-lg">
+                <section className="question w-full relative">
                     {
                         data.map((item, index) => (
                             <motion.div
@@ -120,7 +120,7 @@ function NameGenerator() {
                                 initial="enter"
                                 animate="center"
                                 exit="exit"
-                                className="h-full lg:h-screen p-5 w-full page-{index}"
+                                className="h-screen flex flex-col justify-center items-center"
                                 data-index={item.id}
                                 ref={refArr.current[item.id]}
                             >
@@ -157,15 +157,9 @@ function NameGenerator() {
                         <ArrowSmallLeftIcon className="h-5 w-5" />
                     </button>
 
-                    {buttonRightDisabled ? (
-                        <button type="button" className="bg-gray-100 text-black rounded-lg p-5 cursor-not-allowed text-center" disabled onClick={() => paginate(-1)}>
-                            <ArrowSmallRightIcon className="h-5 w-5" />
-                        </button>
-                    ) : (
-                        <button className="bg-gray-200 text-black rounded-lg p-5" onClick={() => paginate(1)}>
-                            <ArrowSmallRightIcon className="h-5 w-5" />
-                        </button>
-                    )}
+                    <button type="button" className={`bg-gray-100 text-black rounded-lg p-5 text-center` + (buttonRightDisabled ? ' opacity-50 cursor-not-allowed' : '')} onClick={() => paginate(1)} disabled={buttonRightDisabled}>
+                        <ArrowSmallRightIcon className="h-5 w-5" />
+                    </button>
                 </div>
             </div>
         </section>
