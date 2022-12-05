@@ -107,7 +107,6 @@ function NameGenerator() {
 
     return (
         <section className="h-full overflow-hidden relative">
-            {/*<AnimatePresence exitBeforeEnter onExitComplete={handExitComplete}>*/}
             <div className="h-screen flex flex-row flex-wrap">
                 <section className="question w-full h-screen relative overflow-hidden">
                     {
@@ -160,7 +159,6 @@ function NameGenerator() {
                     </div>
                 </section>
             </div>
-            {/*</AnimatePresence>*/}
 
             <div className="flex flex-col overflow-hidden mb-3 gap-3 p-5 hidden">
                 <div className="flex flex-col">
