@@ -3,6 +3,7 @@ import DashboardLayout from '@/components/Layout/DashboardLayout';
 import { ExclamationCircleIcon, ArrowSmallLeftIcon, ArrowSmallRightIcon } from '@heroicons/react/24/outline';
 const name = require('@rstacruz/startup-name-generator');
 import { AnimatePresence, motion, useInView, useScroll } from 'framer-motion';
+import Link from 'next/link';
 
 const variants = {
     enter: (direction: number) => {
@@ -30,16 +31,19 @@ const data = [
         id: 0,
         title: 'What do you want your brand name to signify in terms of values?',
         placeholder: 'e.g. trustworthy, innovative, etc.',
+        background: 'bg-red-500'
     },
     {
         id: 1,
         title: 'What are the keywords that describe your brand?',
         placeholder: 'e.g. tech, fashion, etc.',
+        background: 'bg-green-500'
     },
     {
         id: 2,
         title: 'What type of brand are you?',
         placeholder: 'e.g. product, service, etc.',
+        background: 'bg-pink-500'
     },
 ]
 
@@ -75,7 +79,7 @@ function NameGenerator() {
                 setbuttonLeftDisabled(true);
                 setbuttonRightDisabled(false)
             }
-        }, 600)
+        }, 1000)
     }, [page]);
 
     const paginate = (newDirection: number) => {
@@ -86,17 +90,10 @@ function NameGenerator() {
         }
 
         // @ts-ignore
-        refArr.current[currentPage - 1].current.scrollIntoView({ behavior: 'smooth' })
+        refArr.current[currentPage - 1].current.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+
         setPage([currentPage, newDirection]);
     };
-
-    function generateWords(e: any) {
-        console.log(brandName);
-        e.preventDefault();
-
-        let result = name(brandName);
-        setBrandNameResult(result);
-    }
 
     function goToLastPage() {
         console.log('goToLastPage');
@@ -105,12 +102,19 @@ function NameGenerator() {
         resultPage?.scrollIntoView({ behavior: 'smooth' });
 
         document.querySelector('.button-navigation')?.classList.add('hidden');
+
+        let result = name(brandName);
+
+        // take the first 15 results
+        result = result.slice(0, 8);
+
+        setBrandNameResult(result);
     }
 
     return (
-        <section className="flex flex-col gap-5 p-5 h-[calc(100vh-50px)] md:h-full">
-            <div className="h-full bg-white overflow-hidden rounded-lg">
-                <section className="question w-full relative">
+        <section className="h-[calc(100vh-50px)] md:h-screen p-5">
+            <div className="bg-white overflow-hidden rounded-lg w-full h-full">
+                <section className="question">
                     {
                         data.map((item, index) => (
                             <motion.div
@@ -120,13 +124,13 @@ function NameGenerator() {
                                 initial="enter"
                                 animate="center"
                                 exit="exit"
-                                className="h-screen flex flex-col justify-center items-center"
+                                className={`h-screen flex flex-1 grow flex-col justify-center items-center ${item.background}`}
                                 data-index={item.id}
                                 ref={refArr.current[item.id]}
                             >
-                                <div className="h-full bg-white flex flex-col items-center justify-center rounded-lg">
+                                <div className="flex flex-col items-center justify-center rounded-lg h-screen">
                                     <label htmlFor={`field-${item.id}`}>{item.title}</label>
-                                    <input type="text" id={`field-${index}`} className="p-2 text-2xl lg:text-5xl bg-transparent border-none w-full text-center focus:ring-0 text-black placeholder-[#F38A7A]/50" onChange={(e) => setValues(e.target.value)} placeholder={item.placeholder} autoComplete="off" />
+                                    <input type="text" id={`field-${index}`} className="p-2 text-2xl lg:text-5xl bg-transparent border-none w-screen text-center focus:ring-0 text-black placeholder-[#F38A7A]/50" onChange={(e) => setValues(e.target.value)} placeholder={item.placeholder} autoComplete="off" />
 
                                     {
                                         index === data.length - 1 && (
@@ -143,11 +147,17 @@ function NameGenerator() {
                         initial="enter"
                         animate="center"
                         exit="exit"
-                        className="h-screen flex flex-col justify-center items-center"
-                        data-index={data.length + 1}
+                        className="h-screen w-full bg-white"
+                        data-index={data.length}
                     >
-                        <div className="display-answer h-full bg-white flex flex-col items-center justify-center rounded-lg">
-                            display result
+                        <div className=" display-answer grid place-content-start grid-cols-2 lg:grid-cols-3 gap-4 p-5">
+                            {brandNameResult.map((brandName, i) => (
+                                <Link href={`/dashboard/name-generator2/${brandName}`} key={i}>
+                                    <a className="bg-white shadow rounded-lg flex justify-center items-center p-6 hover:text-black hover:bg-[#F38A7A]/10">
+                                        {brandName}
+                                    </a>
+                                </Link>
+                            ))}
                         </div>
                     </motion.div>
                 </section>

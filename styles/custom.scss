@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css?family=Work+Sans:200,400,700,900');
+
+.display-answer {
+  a {
+    font-family: 'work sans', sans-serif !important;
+
+    &:nth-child(3n + 2) {
+      text-transform: none;
+      font-weight: 200;
+      letter-spacing: 0;
+      font-size: 1.9em;
+    }
+
+    &:nth-child(7n + 3) {
+      text-transform: none;
+      font-weight: 700;
+      letter-spacing: -0.05em;
+      font-size: 1.7em;
+    }
+
+    &:nth-child(5n + 0) {
+      text-transform: uppercase;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      font-size: 1.1em;
+    }
+  }
+}
