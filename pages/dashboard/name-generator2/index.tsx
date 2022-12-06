@@ -185,17 +185,17 @@ function NameGenerator() {
             initial="enter"
             animate="center"
             exit="exit"
-            className="h-screen w-full bg-white"
+            className="min-h-full h-screen w-full bg-white overflow-y-auto pb-10"
             data-index={data.length}
           >
             {!loading ? (
-              <div className="display-answer grid place-content-start grid-cols-2 lg:grid-cols-3 gap-4 p-5 h-full overflow-y-scroll">
+              <div className="display-answer columns-1 md:columns-2 lg:columns-3 p-5">
                 {brandNameResult.map((brandName, i) => (
                   <Link
                     href={`/dashboard/name-generator2/${brandName}`}
                     key={i}
                   >
-                    <a className="bg-white shadow rounded-lg flex justify-center items-center p-6 hover:text-black hover:bg-[#F38A7A]/10">
+                    <a className="bg-white shadow rounded-lg flex justify-center items-center p-6 hover:text-black hover:bg-[#F38A7A]/10 mb-5 text-center">
                       {brandName}
                     </a>
                   </Link>
