@@ -8,12 +8,6 @@ const features = [
     {
         tab: 'branding',
         title: 'Startup name generator',
-        description: 'Generate cool, creative, and catchy names for your startup in seconds.',
-        href: '/name-generator'
-    },
-    {
-        tab: 'branding',
-        title: 'Startup name generator v2',
         description: 'Generate your own startup brand guide.',
         href: '/name-generator'
     },
