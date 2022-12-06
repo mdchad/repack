@@ -53,7 +53,7 @@ const social_urls = [
 ];
 
 function CheckMark({ data, social }: any) {
-  if (!data) {
+  if (Object.keys(data).length === 0) {
     return null;
   }
 
@@ -70,7 +70,7 @@ function Name() {
   const [save, setSave] = useState(false);
   const supabase = useSupabaseClient();
   const user = useUser();
-  const [data, setData] = useState(null);
+  const [data, setData] = useState({});
   const [savedData, setSavedData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
@@ -83,18 +83,18 @@ function Name() {
 
   async function getData() {
     setLoading(true);
-    const res = await fetch('/api/get-social?name=' + name, {
-      method: 'GET',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
-      credentials: 'same-origin'
-    });
+    const urls = [
+      '/api/get-social?name=' + name,
+      '/api/get-instagram?name=' + name,
+    ];
 
-    if (!res.ok) {
-      throw Error(res.statusText);
-    }
+    const data = await Promise.all(urls.map(async url => {
+      const resp = await fetch(url);
+      return resp.json();
+    }));
+    const mergeObj = Object.assign({}, ...data)
 
-    const bodyResponse = await res.json();
-    setData(bodyResponse);
+    setData(mergeObj)
     setLoading(false);
   }
 
