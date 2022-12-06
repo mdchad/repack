@@ -10,13 +10,14 @@ import Link from 'next/link';
 import SidebarProfile from './SidebarProfile';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 const navigation = [
     {
       name: 'Dashboard',
       href: '/dashboard',
       icon: SquaresPlusIcon,
-      current: true
+      current: false
     },
     { name: 'Saved', href: '/dashboard/saved', icon: FolderIcon, current: false },
     { name: 'Team', href: '/dashboard/team', icon: UsersIcon, current: false },
@@ -42,6 +43,7 @@ function updateNotification(status: boolean) {
 function Sidebar(props: any) {
     const supabaseClient = useSupabaseClient();
     const router = useRouter();
+    const [pageName, setPageName] = useState('');
 
     const userNavigation = [
         {
@@ -53,6 +55,18 @@ function Sidebar(props: any) {
             }
         }
     ];
+
+    useEffect(() => {
+        const navigations = navigation.find((nav) => nav.href === router.pathname);
+        navigation.forEach((nav) => (nav.current = false));
+
+        if(navigations) {
+            navigations.current = true;
+            setPageName(navigations.name);
+        }
+
+        // console.log(navigation)
+      }, [router.pathname]);
 
     return (
         <>
