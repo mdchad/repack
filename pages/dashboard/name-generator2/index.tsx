@@ -189,7 +189,7 @@ function NameGenerator() {
             data-index={data.length}
           >
             {!loading ? (
-              <div className="display-answer grid place-content-start grid-cols-2 lg:grid-cols-3 gap-4 p-5 h-full overflow-auto">
+              <div className="display-answer grid place-content-start grid-cols-2 lg:grid-cols-3 gap-4 p-5 h-full overflow-y-scroll">
                 {brandNameResult.map((brandName, i) => (
                   <Link
                     href={`/dashboard/name-generator2/${brandName}`}
