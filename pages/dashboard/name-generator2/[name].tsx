@@ -63,11 +63,13 @@ function Name() {
     const supabase = useSupabaseClient();
     const user = useUser();
     const [data, setData] = useState(null)
+    const [savedData, setSavedData] = useState<any>(null)
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         if (name) {
             getData()
+            getSaved()
         }
     }, [name])
 
@@ -87,11 +89,19 @@ function Name() {
         setData(bodyResponse)
         setLoading(false)
     }
-    console.log('data', data)
+
+    async function getSaved() {
+        let { data, error } = await supabase.from('favourites').select().eq('value', name).single()
+        setSavedData(data)
+    }
 
     async function saveName() {
         setSave(true);
         const duration = 2000;
+
+        if (savedData) {
+            return
+        }
 
         const newSave = {
             created_at: new Date().toISOString(),
@@ -143,12 +153,11 @@ function Name() {
                                     onClick={() => saveName()}
                                     className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                 >
-                                    {save ? (
-                                        <HeartSolidIcon className="h-4 w-4 mr-2" aria-hidden="true" />
+                                    {(savedData || save) ? (
+                                        <><HeartSolidIcon className="h-4 w-4 mr-2" aria-hidden="true" /> Saved</>
                                     ) : (
-                                        <HeartIcon className="h-4 w-4 mr-2" aria-hidden="true" />
+                                        <><HeartIcon className="h-4 w-4 mr-2" aria-hidden="true" /> Save</>
                                     )}
-                                    Save
                                 </button>
                             </div>
                         </div>
