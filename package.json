@@ -26,6 +26,7 @@
     "dotenv": "^16.0.3",
     "feather-icons": "^4.29.0",
     "framer-motion": "^7.6.7",
+    "moment": "^2.29.4",
     "next": "^12.2.5",
     "next-themes": "^0.2.1",
     "playwright": "^1.28.1",
