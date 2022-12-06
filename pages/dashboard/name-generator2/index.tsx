@@ -8,6 +8,7 @@ import {
 const name = require('@rstacruz/startup-name-generator');
 import { AnimatePresence, motion, useInView, useScroll } from 'framer-motion';
 import Link from 'next/link';
+import LoadingDots from '@/components/ui/LoadingDots';
 
 const variants = {
   enter: (direction: number) => {
@@ -33,18 +34,21 @@ const variants = {
 const data = [
   {
     id: 0,
+    tag: 'values',
     title: 'What do you want your brand name to signify in terms of values?',
     placeholder: 'e.g. trustworthy, innovative, etc.',
     background: 'bg-white-500'
   },
   {
     id: 1,
+    tag: 'words',
     title: 'What are the keywords that describe your brand?',
     placeholder: 'e.g. tech, fashion, etc.',
     background: 'bg-white-500'
   },
   {
     id: 2,
+    tag: 'type',
     title: 'What type of brand are you?',
     placeholder: 'e.g. product, service, etc.',
     background: 'bg-white-500'
@@ -52,10 +56,12 @@ const data = [
 ];
 
 function NameGenerator() {
-  const [loading, setLoading] = useState('');
-  const [values, setValues] = useState('');
-  const [keywords, setKeywords] = useState('');
-  const [type, setType] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [bodyReq, setBodyReq] = useState({
+    values: '',
+    words: '',
+    type: ''
+  });
   const [[page, direction], setPage] = useState([1, 0]);
   const [buttonLeftDisabled, setbuttonLeftDisabled] = useState(page === 1);
   const [buttonRightDisabled, setbuttonRightDisabled] = useState(
@@ -103,20 +109,34 @@ function NameGenerator() {
     setPage([currentPage, newDirection]);
   };
 
-  function goToLastPage() {
-    console.log('goToLastPage');
-
+  async function goToLastPage() {
+    setLoading(true);
     const resultPage = document.querySelector('.display-answer');
     resultPage?.scrollIntoView({ behavior: 'smooth' });
 
     document.querySelector('.button-navigation')?.classList.add('hidden');
 
+    const res: Response = await fetch('/api/generate-name', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify(bodyReq)
+    });
+
+    if (!res.ok) {
+      console.log('Error in postData');
+
+      throw Error(res.statusText);
+    }
+
+    const response = await res.json()
+    setLoading(false);
     let result = name(brandName);
 
     // take the first 15 results
     result = result.slice(0, 8);
 
-    setBrandNameResult(result);
+    setBrandNameResult(response.result);
   }
 
   return (
@@ -141,7 +161,9 @@ function NameGenerator() {
                   type="text"
                   id={`field-${index}`}
                   className="p-2 text-2xl lg:text-5xl bg-transparent border-none w-screen text-center focus:ring-0 text-black placeholder-[#F38A7A]/50"
-                  onChange={(e) => setValues(e.target.value)}
+                  onChange={(e) =>
+                    setBodyReq({ ...bodyReq, [item.tag]: e.target.value })
+                  }
                   placeholder={item.placeholder}
                   autoComplete="off"
                 />
@@ -166,15 +188,24 @@ function NameGenerator() {
             className="h-screen w-full bg-white"
             data-index={data.length}
           >
-            <div className=" display-answer grid place-content-start grid-cols-2 lg:grid-cols-3 gap-4 p-5">
-              {brandNameResult.map((brandName, i) => (
-                <Link href={`/dashboard/name-generator2/${brandName}`} key={i}>
-                  <a className="bg-white shadow rounded-lg flex justify-center items-center p-6 hover:text-black hover:bg-[#F38A7A]/10">
-                    {brandName}
-                  </a>
-                </Link>
-              ))}
-            </div>
+            {!loading ? (
+              <div className="display-answer grid place-content-start grid-cols-2 lg:grid-cols-3 gap-4 p-5">
+                {brandNameResult.map((brandName, i) => (
+                  <Link
+                    href={`/dashboard/name-generator2/${brandName}`}
+                    key={i}
+                  >
+                    <a className="bg-white shadow rounded-lg flex justify-center items-center p-6 hover:text-black hover:bg-[#F38A7A]/10">
+                      {brandName}
+                    </a>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="flex h-screen items-center justify-center">
+                <LoadingDots />
+              </div>
+            )}
           </motion.div>
         </section>
 
