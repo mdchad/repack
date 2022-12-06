@@ -74,7 +74,7 @@ export default function Dashboard() {
                 </section>
             </Card>
 
-            <Card className="h-full grow">
+            <Card className="flex-1">
                 <section className="flex flex-col gap-3">
                     <span className="text-2xl font-bold">Popular</span>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 divide-x gap-4 m-1">
