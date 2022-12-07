@@ -107,6 +107,9 @@ function NameGenerator() {
 
     async function goToLastPage() {
         setLoading(true);
+
+        document.querySelector('.question')?.classList.add('hidden');
+
         // const resultPage = document.querySelector('.display-answer');
         // resultPage?.scrollIntoView({ behavior: 'smooth' });
 
@@ -146,7 +149,7 @@ function NameGenerator() {
     return (
         <section className="h-[calc(100vh-50px)] md:h-screen p-5">
             <div className="bg-white overflow-hidden rounded-lg w-full h-full">
-                <section className="question hidden">
+                {/* <section className="question hidden">
                     {data.map((item, index) => (
                         <motion.div
                             id={`${item.id}`}
@@ -211,9 +214,9 @@ function NameGenerator() {
                             </div>
                         )}
                     </motion.div>
-                </section>
+                </section> */}
 
-                <motion.div animate={controls} className="h-screen w-full">
+                <motion.div animate={controls} className="h-screen w-full question">
                     {data.map((item, index) => (
                         <div className="w-full h-screen flex flex-col text-center items-center justify-center" ref={refArr.current[item.id]}>
                             <label htmlFor={`field-${item.id}`}>{item.title}</label>
@@ -238,26 +241,26 @@ function NameGenerator() {
                             )}
                         </div>
                     ))}
-
-                    {!loading ? (
-                        <div className="display-answer w-full h-screen columns-1 md:columns-2 lg:columns-3 p-5" ref={resultPage}>
-                            {brandNameResult.map((brandName, i) => (
-                                <Link
-                                    href={`/dashboard/name-generator2/${brandName}`}
-                                    key={i}
-                                >
-                                    <a className="bg-white shadow rounded-lg flex justify-center items-center p-6 hover:text-black hover:bg-[#F38A7A]/10 mb-5 text-center">
-                                        {brandName}
-                                    </a>
-                                </Link>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="flex h-screen items-center justify-center">
-                            <LoadingDots />
-                        </div>
-                    )}
                 </motion.div>
+
+                {!loading ? (
+                    <div className="display-answer w-full h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 p-5 overflow-y-auto" ref={resultPage}>
+                        {brandNameResult.map((brandName, i) => (
+                            <Link
+                                href={`/dashboard/name-generator2/${brandName}`}
+                                key={i}
+                            >
+                                <a className="bg-white shadow rounded-lg flex justify-center items-center p-6 hover:text-black hover:bg-[#F38A7A]/10 mb-5 text-center">
+                                    {brandName}
+                                </a>
+                            </Link>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="flex h-screen items-center justify-center">
+                        <LoadingDots />
+                    </div>
+                )}
 
                 <div className="absolute bottom-5 right-5 z-10 p-5 flex gap-3 button-navigation">
                     <button
