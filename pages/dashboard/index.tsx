@@ -8,14 +8,26 @@ const features = [
     {
         tab: 'branding',
         title: 'Startup name generator',
-        description: 'Generate cool, creative, and catchy names for your startup in seconds.',
-        href: '/name-generator'
+        description: 'Generate your own startup name.',
+        href: 'name-generator'
     },
     {
         tab: 'branding',
-        title: 'Startup name generator v2',
+        title: 'Color palette generator',
+        description: 'Generate your own color palette.',
+        href: 'color-generator'
+    },
+    {
+        tab: 'branding',
+        title: 'Font pairing generator',
+        description: 'Generate your own font pairing.',
+        href: 'font-generator'
+    },
+    {
+        tab: 'branding',
+        title: 'Brand guide generator',
         description: 'Generate your own startup brand guide.',
-        href: '/name-generator2'
+        href: 'brand-guide-generator'
     },
     {
         tab: 'website',
