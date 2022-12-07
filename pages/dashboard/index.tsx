@@ -35,11 +35,6 @@ const features = [
         description: 'Turn a title and an outline into a fully SEO-optimized and long article with this AI editor.'
     },
     {
-        tab: 'branding',
-        title: 'Article Generator',
-        description: 'Turn a title and an outline into a fully SEO-optimized and long article with this AI editor.'
-    },
-    {
         tab: 'blog',
         title: 'Article Generator',
         description: 'Turn a title and an outline into a fully SEO-optimized and long article with this AI editor.'
