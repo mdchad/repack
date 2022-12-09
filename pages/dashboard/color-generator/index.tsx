@@ -78,7 +78,7 @@ const GeneratePallete = () => {
     const [convertedValue, setconvertedValue] = useState([]);
     const [type, setType] = useState('');
 
-    const paletteType = useRef();
+    const paletteType = useRef(null);
 
     useEffect(() => {
         handleGeneratePalette();
