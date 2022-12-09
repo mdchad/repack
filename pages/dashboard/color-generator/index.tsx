@@ -84,7 +84,7 @@ const GeneratePallete = () => {
         handleGeneratePalette();
 
         // detect if G key is pressed
-        const handleSpaceBar = (e) => {
+        const handleSpaceBar = (e: any) => {
             if (e.keyCode === 71) {
                 handleGeneratePalette();
             }
