@@ -5,7 +5,7 @@ var nicePalette = require("nice-color-palettes");
 
 const MIN_CONTRAST_RATIO = 4.5;
 
-const isColorAccessible = (color1, color2) => {
+const isColorAccessible = (color1:any , color2:any) => {
     const contrastRatio = chroma.contrast(color1, color2);
     return contrastRatio >= MIN_CONTRAST_RATIO;
 };
@@ -73,7 +73,6 @@ const generateTetradicPalette: any = () => {
     return scale;
 };
 
-
 const GeneratePallete = () => {
     const [palette, setPalette] = useState([]);
     const [convertedValue, setconvertedValue] = useState([]);
@@ -83,7 +82,7 @@ const GeneratePallete = () => {
 
     useEffect(() => {
         handleGeneratePalette();
-        
+
         // detect if G key is pressed
         const handleSpaceBar = (e) => {
             if (e.keyCode === 71) {
@@ -150,7 +149,7 @@ const GeneratePallete = () => {
         };
 
         if (convert === 'hsl') {
-            const hsl = palette.map((color) => {
+            const hsl: any = palette.map((color) => {
                 return chroma(color).hsl().map((value) => {
                     // return 2 decimal places and comma seperated
                     return Math.round(value * 100) / 100 + ', ';
@@ -161,7 +160,7 @@ const GeneratePallete = () => {
         }
 
         if (convert === 'rgb') {
-            const rgb = palette.map((color) => {
+            const rgb:any = palette.map((color) => {
                 return chroma(color).rgb().map((value) => {
                     return Math.round(value * 100) / 100;
                 });
@@ -246,10 +245,10 @@ const GeneratePallete = () => {
                         <h1 className="text-2xl">Color Palette Inspiration</h1>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                            {nicePalette.map((palette, index) => (
+                            {nicePalette.map((palette:any, index:number) => (
                                 <div className='overflow-hidden rounded-lg'>
                                     <div key={index} className="flex mb-1">
-                                        {palette.map((color, i) => (
+                                        {palette.map((color:any, i:number) => (
                                             <span
                                                 key={i}
                                                 style={{ backgroundColor: color }}
