@@ -86,7 +86,7 @@ function Saved() {
                         {saved?.map((saveContent, id) => {
                             if (saveContent.type === currentTab) {
                                 return <li key={id}>
-                                    <Link href={`/dashboard/name-generator2/${saveContent.value}`}>
+                                    <Link href={`/dashboard/name-generator/${saveContent.value}`}>
                                         <a className="border rounded-lg p-5 flex justify-between items-center hover:bg-[#F38A7A]/10 hover:border-[#F38A7A]" target="_blank">
                                             <div className="flex flex-col gap-1">
                                                 <span className="text-lg font-semibold">{saveContent.value}</span>
