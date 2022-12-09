@@ -1,4 +1,5 @@
 import { Configuration, OpenAIApi } from "openai";
+import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -6,6 +7,19 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 export default async function (req: any, res: any) {
+  const supabase = createServerSupabaseClient({ req, res })
+  // Check if we have a session
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
+
+  if (!session) {
+    return res.status(401).json({
+      error: 'not_authenticated',
+      description: 'The user does not have an active session or is not authenticated',
+    })
+  }
+
   const { values, words, type } = req.body
   const completion = await openai.createCompletion({
     model: "text-davinci-003",
