@@ -93,7 +93,7 @@ export default function DashboardLayout({ children }: any) {
                             </button>
                         </div>
                         <main className="flex-1">
-                            <div className=" bg-[#F38A7A]/10 md:h-screen">
+                            <div className=" bg-[#F38A7A]/10 md:min-h-screen">
                                 {children}
                             </div>
                         </main>

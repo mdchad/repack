@@ -1,299 +1,273 @@
-import { createRef, useEffect, useRef, useState } from 'react';
 import DashboardLayout from '@/components/Layout/DashboardLayout';
-import {
-    ExclamationCircleIcon,
-    ArrowSmallLeftIcon,
-    ArrowSmallRightIcon
-} from '@heroicons/react/24/outline';
-const name = require('@rstacruz/startup-name-generator');
-import { motion, useAnimation } from 'framer-motion';
-import Link from 'next/link';
-import LoadingDots from '@/components/ui/LoadingDots';
+import React, { useState, useRef, useEffect } from "react";
+import chroma from "chroma-js";
+var nicePalette = require("nice-color-palettes");
 
-const variants = {
-    enter: (direction: number) => {
-        return {
-            x: direction > 0 ? 1000 : -1000,
-            opacity: 0
-        };
-    },
-    center: {
-        zIndex: 1,
-        x: 0,
-        opacity: 1
-    },
-    exit: (direction: number) => {
-        return {
-            zIndex: 0,
-            x: direction < 0 ? 1000 : -1000,
-            opacity: 0
-        };
-    }
+const MIN_CONTRAST_RATIO = 4.5;
+
+const isColorAccessible = (color1:any , color2:any) => {
+    const contrastRatio = chroma.contrast(color1, color2);
+    return contrastRatio >= MIN_CONTRAST_RATIO;
 };
 
-const data = [
-    {
-        id: 0,
-        tag: 'values',
-        title: 'What do you want your brand name to signify in terms of values?',
-        placeholder: 'e.g. trustworthy, innovative, etc.',
-        background: 'bg-white-500'
-    },
-    {
-        id: 1,
-        tag: 'words',
-        title: 'What are the keywords that describe your brand?',
-        placeholder: 'e.g. tech, fashion, etc.',
-        background: 'bg-white-500'
-    },
-    {
-        id: 2,
-        tag: 'type',
-        title: 'What type of brand are you?',
-        placeholder: 'e.g. product, service, etc.',
-        background: 'bg-white-500'
-    }
-];
+const generateHarmoniousPalette: any = () => {
+    const color = chroma.random();
+    const scale = chroma.scale([color, chroma.random()]).colors(5);
+    return scale;
+};
 
-function NameGenerator() {
-    const controls = useAnimation();
-    const resultPage = useRef(null);
-    const [loading, setLoading] = useState(false);
-    const [bodyReq, setBodyReq] = useState({
-        values: '',
-        words: '',
-        type: ''
-    });
-    const [[page, direction], setPage] = useState([1, 0]);
-    const [buttonLeftDisabled, setbuttonLeftDisabled] = useState();
-    const [buttonRightDisabled, setbuttonRightDisabled] = useState();
+const generateAnalogousPalette: any = () => {
+    const color = chroma.random();
+    const h = color.get("hsl.h");
+    const s = color.get("hsl.s");
+    const l = color.get("hsl.l");
+    const color1 = chroma.hsl(h - 30, s, l);
+    const color2 = chroma.hsl(h + 30, s, l);
+    const scale = chroma.scale([color1, color2]).mode("hsl").colors(3);
+    return scale;
+};
 
-    const refArr: any = useRef([]);
-    refArr.current = data.map((item, index) => {
-        return refArr.current[index] || createRef();
-    });
+const generateComplimentaryPalette: any = () => {
+    const color = chroma.random();
+    const h = color.get("hsl.h");
+    const s = color.get("hsl.s");
+    const l = color.get("hsl.l");
+    const complement = chroma.hsl(h - 180, s, l);
+    const scale = chroma.scale([color, complement]).colors(2);
+    return scale;
+};
 
-    const [brandName, setBrandName] = useState('');
-    const [brandNameResult, setBrandNameResult] = useState([]);
+const generateMonochromaticPalette: any = () => {
+    const color = chroma.random();
+    const l = color.get("lch.l");
+    const c = color.get("lch.c");
+    const h = color.get("lch.h");
+    const brighter = chroma.lch(l + 10, c, h);
+    const scale = chroma.scale([color, brighter]).colors(3);
+    return scale;
+};
 
-    const paginate = (newDirection: number) => {
-        const currentPage = page + newDirection;
+const generateTriadicPalette: any = () => {
+    const color = chroma.random();
+    const h = color.get("hsl.h");
+    const s = color.get("hsl.s");
+    const l = color.get("hsl.l");
+    const color1 = chroma.hsl(h - 120, s, l);
+    const color2 = chroma.hsl(h + 120, s, l);
+    const scale = chroma.scale([color, color1, color2]).mode("hsl").colors(3);
+    return scale;
+};
 
-        if (currentPage < 1 || currentPage > data.length) {
-            return;
-        }
+const generateTetradicPalette: any = () => {
+    const color = chroma.random();
+    const h = color.get("hsl.h");
+    const s = color.get("hsl.s");
+    const l = color.get("hsl.l");
+    const color1 = chroma.hsl(h - 90, s, l);
+    const color2 = chroma.hsl(h + 90, s, l);
+    const color3 = chroma.hsl(h + 180, s, l);
+    const scale = chroma
+        .scale([color, color1, color2, color3])
+        .mode("hsl")
+        .colors(4);
+    return scale;
+};
 
-        if (refArr.current[currentPage - 1]) {
+const GeneratePallete = () => {
+    const [palette, setPalette] = useState([]);
+    const [convertedValue, setconvertedValue] = useState([]);
+    const [type, setType] = useState('');
 
-            if (newDirection === 1) {
-                controls.start({
-                    y: -refArr.current[currentPage - 1].current.offsetTop,
-                    transition: { duration: 0.5 }
-                });
+    const paletteType = useRef();
 
-                setPage([currentPage, newDirection]);
+    useEffect(() => {
+        handleGeneratePalette();
+
+        // detect if G key is pressed
+        const handleSpaceBar = (e) => {
+            if (e.keyCode === 71) {
+                handleGeneratePalette();
             }
+        };
 
-            if (newDirection === -1) {
-                controls.start({
-                    y: -refArr.current[currentPage - 1].current.offsetTop,
-                    transition: { duration: 0.5 }
-                });
+        // add event listener
+        document.addEventListener("keydown", handleSpaceBar);
 
-                setPage([currentPage, newDirection]);
-            }
+        // remove event listener on unmount
+        return () => {
+            document.removeEventListener("keydown", handleSpaceBar);
+        };
+
+    }, []);
+
+    const handleGeneratePalette = () => {
+        const list = [
+            "harmonious",
+            "analogous",
+            "complimentary",
+            "monochromatic",
+            "triadic",
+            "tetradic",
+        ];
+
+        // select random value from list
+        const randomizer = list[Math.floor(Math.random() * list.length)];
+        setType(randomizer);
+
+        switch (randomizer) {
+            // switch (paletteType.current.value) {
+            case "harmonious":
+                setPalette(generateHarmoniousPalette());
+                break;
+            case "analogous":
+                setPalette(generateAnalogousPalette());
+                break;
+            case "complimentary":
+                setPalette(generateComplimentaryPalette());
+                break;
+            case "monochromatic":
+                setPalette(generateMonochromaticPalette());
+                break;
+            case "triadic":
+                setPalette(generateTriadicPalette());
+                break;
+            case "tetradic":
+                setPalette(generateTetradicPalette());
+                break;
+            default:
+                break;
         }
     };
 
-    async function goToLastPage() {
-        setLoading(true);
+    const convertValueTo = (convert: string) => {
+        if (convert === 'hex') {
+            palette.map((color) => {
+                return chroma(color).hex()
+            })
 
-        document.querySelector('.question')?.classList.add('hidden');
+            setconvertedValue(palette)
+        };
 
-        // const resultPage = document.querySelector('.display-answer');
-        // resultPage?.scrollIntoView({ behavior: 'smooth' });
+        if (convert === 'hsl') {
+            const hsl: any = palette.map((color) => {
+                return chroma(color).hsl().map((value) => {
+                    // return 2 decimal places and comma seperated
+                    return Math.round(value * 100) / 100 + ', ';
+                });
+            })
 
-        if (resultPage !== null) {
-            controls.start({
-                // @ts-ignore
-                y: -resultPage.current.offsetTop,
-                transition: { duration: 0.5 }
-            });
-
-            document.querySelector('.button-navigation')?.classList.add('hidden');
-
-            const res: Response = await fetch('/api/generate-name', {
-                method: 'POST',
-                headers: new Headers({ 'Content-Type': 'application/json' }),
-                credentials: 'same-origin',
-                body: JSON.stringify(bodyReq)
-            });
-
-            if (!res.ok) {
-                console.log('Error in postData');
-
-                throw Error(res.statusText);
-            }
-
-            const response = await res.json()
-            setLoading(false);
-            let result = name(brandName);
-
-            // take the first 15 results
-            result = result.slice(0, 8);
-
-            setBrandNameResult(response.result);
+            setconvertedValue(hsl)
         }
-    }
+
+        if (convert === 'rgb') {
+            const rgb:any = palette.map((color) => {
+                return chroma(color).rgb().map((value) => {
+                    return Math.round(value * 100) / 100;
+                });
+            })
+
+            setconvertedValue(rgb)
+        }
+    };
+
+    const savePalette = () => {
+        console.log('save palette')
+    };
+
 
     return (
-        <section className="h-[calc(100vh-50px)] md:h-screen p-5">
-            <div className="bg-white overflow-hidden rounded-lg w-full h-full">
-                {/* <section className="question hidden">
-                    {data.map((item, index) => (
-                        <motion.div
-                            id={`${item.id}`}
-                            key={item.id}
-                            variants={variants}
-                            initial="enter"
-                            animate="center"
-                            exit="exit"
-                            className={`h-screen flex flex-1 grow flex-col justify-center items-center ${item.background}`}
-                            data-index={item.id}
-                            ref={refArr.current[item.id]}
-                        >
-                            <div className="w-full flex flex-col items-center justify-center rounded-lg h-screen">
-                                <label htmlFor={`field-${item.id}`}>{item.title}</label>
-                                <input
-                                    type="text"
-                                    id={`field-${index}`}
-                                    className="p-2 text-2xl lg:text-5xl bg-transparent border-none w-screen text-center focus:ring-0 text-black placeholder-[#F38A7A]/50"
-                                    onChange={(e) =>
-                                        setBodyReq({ ...bodyReq, [item.tag]: e.target.value })
-                                    }
-                                    placeholder={item.placeholder}
-                                    autoComplete="off"
-                                />
+        <div className="flex flex-col p-5">
+            <div className="hidden">
+                <select defaultValue="harmonious" ref={paletteType}>
+                    <option value="harmonious">Harmonious</option>
+                    <option value="analogous">Analogous</option>
+                    <option value="complimentary">Complimentary</option>
+                    <option value="monochromatic">Monochromatic</option>
+                    <option value="triadic">Triadic</option>
+                    <option value="tetradic">Tetradic</option>
+                </select>
+                <button onClick={handleGeneratePalette} className="bg-red-500 p-3">
+                    Generate Palette
+                </button>
+            </div>
 
-                                {index === data.length - 1 && (
-                                    <button
-                                        className="mt-5 bg-[#F38A7A] text-white p-2 rounded-lg"
-                                        onClick={goToLastPage}
-                                    >
-                                        Generate
-                                    </button>
-                                )}
-                            </div>
-                        </motion.div>
-                    ))}
+            <div className="flex flex-row justify-between items-end bg-white p-5 rounded-lg overflow-hidden">
+                <div className="flex gap-3 sticky top-0">
+                    {/* <button className="py-3 px-8 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" onClick={() => convertValueTo('hex')} > HEX </button>
+                    <button className="py-3 px-8 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" onClick={() => convertValueTo('hsl')}> HSL </button>
+                    <button className="py-3 px-8 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" onClick={() => convertValueTo('rgb')}> RGB </button> */}
 
-                    <motion.div
-                        variants={variants}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        className="min-h-full h-screen w-full bg-white overflow-y-auto pb-10"
-                        data-index={data.length}
-                    >
-                        {!loading ? (
-                            <div className="display-answer columns-1 md:columns-2 lg:columns-3 p-5">
-                                {brandNameResult.map((brandName, i) => (
-                                    <Link
-                                        href={`/dashboard/name-generator2/${brandName}`}
-                                        key={i}
-                                    >
-                                        <a className="bg-white shadow rounded-lg flex justify-center items-center p-6 hover:text-black hover:bg-[#F38A7A]/10 mb-5 text-center">
-                                            {brandName}
-                                        </a>
-                                    </Link>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="flex h-screen items-center justify-center">
-                                <LoadingDots />
-                            </div>
-                        )}
-                    </motion.div>
-                </section> */}
-
-                <motion.div animate={controls} className="h-screen w-full question">
-                    {data.map((item, index) => (
-                        <div className="w-full h-screen flex flex-col text-center items-center justify-center" ref={refArr.current[item.id]}>
-                            <label htmlFor={`field-${item.id}`}>{item.title}</label>
-                            <input
-                                type="text"
-                                id={`field-${index}`}
-                                className="p-2 text-2xl lg:text-5xl bg-transparent border-none text-center focus:ring-0 text-black placeholder-[#F38A7A]/50 w-full"
-                                onChange={(e) =>
-                                    setBodyReq({ ...bodyReq, [item.tag]: e.target.value })
-                                }
-                                placeholder={item.placeholder}
-                                autoComplete="off"
-                            />
-
-                            {index === data.length - 1 && (
-                                <button
-                                    className="mt-5 bg-[#F38A7A] text-white p-2 rounded-lg"
-                                    onClick={goToLastPage}
-                                >
-                                    Generate
-                                </button>
-                            )}
-                        </div>
-                    ))}
-                </motion.div>
-
-                {!loading ? (
-                    <div className="display-answer w-full h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 p-5 overflow-y-auto" ref={resultPage}>
-                        {brandNameResult.map((brandName, i) => (
-                            <Link
-                                href={`/dashboard/name-generator2/${brandName}`}
-                                key={i}
-                            >
-                                <a className="bg-white shadow rounded-lg flex justify-center items-center p-6 hover:text-black hover:bg-[#F38A7A]/10 mb-5 text-center">
-                                    {brandName}
-                                </a>
-                            </Link>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="flex h-screen items-center justify-center">
-                        <LoadingDots />
-                    </div>
-                )}
-
-                <div className="absolute bottom-5 right-5 z-10 p-5 flex gap-3 button-navigation">
-                    <button
-                        type="button"
-                        className={
-                            `bg-gray-100 text-black rounded-lg p-5 text-center` +
-                            (page === 1 ? ' opacity-50 cursor-not-allowed' : '')
-                        }
-                        onClick={() => paginate(-1)}
-                        disabled={page === 1}
-                    >
-                        <ArrowSmallLeftIcon className="h-5 w-5" />
-                    </button>
-
-                    <button
-                        type="button"
-                        className={
-                            `bg-gray-100 text-black rounded-lg p-5 text-center` +
-                            (page === data.length ? ' opacity-50 cursor-not-allowed' : '')
-                        }
-                        onClick={() => paginate(1)}
-                        disabled={page === data.length}
-                    >
-                        <ArrowSmallRightIcon className="h-5 w-5" />
+                    <button className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400" onClick={handleGeneratePalette}>
+                        <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                            Generate Palette
+                        </span>
                     </button>
                 </div>
+
+                <div>
+                    <button className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700" onClick={savePalette}> Save this palette </button>
+                </div>
             </div>
-        </section >
+
+            <div>
+                <div className="flex gap-3 mb-5">
+                    {convertedValue.map((color) => (
+                        <span key={color} style={{ backgroundColor: chroma(color).hex() }} className="w-50 h-50 p-5">
+                            {color}
+                        </span>
+                    ))}
+                </div>
+
+                {/* palette container */}
+                <div className="w-full bg-white p-5 gap-12 flex flex-col rounded-lg">
+                    <div className="flex flex-col gap-5">
+                        <div>
+                            <h1 className="text-2xl">Color Palette Generator</h1>
+                            <span className="text-sm color-gray-300">Press "G" to generate.</span>
+                        </div>
+
+                        <div>
+                            <span className="text-base text-gray-400 capitalize mb-2 block"> {type} </span>
+
+                            <div className="flex items-center justify-center overflow-hidden rounded-xl">
+                                {palette.map((color) => (
+                                    <div key={color} style={{ backgroundColor: color }} className="flex w-full h-96 items-end justify-center pb-5 overflow-hidden">
+                                        <span className={`${chroma.contrast(color, 'white') > 4.5 ? 'text-white' : 'text-black'}`}>
+                                            {color}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col gap-5">
+                        <h1 className="text-2xl">Color Palette Inspiration</h1>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                            {nicePalette.map((palette:any, index:number) => (
+                                <div className='overflow-hidden rounded-lg'>
+                                    <div key={index} className="flex mb-1">
+                                        {palette.map((color:any, i:number) => (
+                                            <span
+                                                key={i}
+                                                style={{ backgroundColor: color }}
+                                                className="h-40 w-full"
+                                            >
+                                                {/* {color} */}
+                                            </span>
+                                        ))}
+                                    </div>
+                                    <p className="text-gray-500">Color Palette {index + 1}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
-}
+};
 
-export default NameGenerator;
-
-NameGenerator.getLayout = (page: any) => (
-    <DashboardLayout>{page}</DashboardLayout>
-);
+export default GeneratePallete;
+GeneratePallete.getLayout = (page: any) => <DashboardLayout>{page}</DashboardLayout>;
