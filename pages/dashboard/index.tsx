@@ -3,6 +3,7 @@ import Card from '@/components/ui/Dashboard/Card';
 import { ArrowUpRightIcon, CloudIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import { Tabs } from '@/utils/enums';
+import Link from 'next/link';
 
 const features = [
     {
@@ -88,18 +89,17 @@ export default function Dashboard() {
                         {features.map((feature) => {
                             if (feature.tab === activeTab) {
                                 return (
-                                    <a
-                                        href={`/dashboard/${feature.href}`}
-                                        className="block p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 overflow-hidden ring-inset"
-                                    >
-                                        <span className="mb-3 text-md font-bold tracking-tight text-gray-900 dark:text-white flex flex-grow justify-between items-center">
-                                            {feature.title}
-                                            <ArrowUpRightIcon className="w-4 h-4" />
-                                        </span>
-                                        <p className="font-normal text-gray-700 dark:text-gray-400">
-                                            {feature.description}
-                                        </p>
-                                    </a>
+                                    <Link href={`/dashboard/${feature.href}`}>
+                                        <a className="block p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 overflow-hidden ring-inset">
+                                            <span className="mb-3 text-md font-bold tracking-tight text-gray-900 dark:text-white flex flex-grow justify-between items-center">
+                                                {feature.title}
+                                                <ArrowUpRightIcon className="w-4 h-4" />
+                                            </span>
+                                            <p className="font-normal text-gray-700 dark:text-gray-400">
+                                                {feature.description}
+                                            </p>
+                                        </a>
+                                    </Link>
                                 );
                             }
                         })}
