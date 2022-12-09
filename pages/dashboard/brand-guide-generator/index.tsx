@@ -199,7 +199,7 @@ function NameGenerator() {
                             <div className="display-answer columns-1 md:columns-2 lg:columns-3 p-5">
                                 {brandNameResult.map((brandName, i) => (
                                     <Link
-                                        href={`/dashboard/name-generator2/${brandName}`}
+                                        href={`/dashboard/name-generator/${brandName}`}
                                         key={i}
                                     >
                                         <a className="bg-white shadow rounded-lg flex justify-center items-center p-6 hover:text-black hover:bg-[#F38A7A]/10 mb-5 text-center">
@@ -247,7 +247,7 @@ function NameGenerator() {
                     <div className="display-answer w-full h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 p-5 overflow-y-auto" ref={resultPage}>
                         {brandNameResult.map((brandName, i) => (
                             <Link
-                                href={`/dashboard/name-generator2/${brandName}`}
+                                href={`/dashboard/name-generator/${brandName}`}
                                 key={i}
                             >
                                 <a className="bg-white shadow rounded-lg flex justify-center items-center p-6 hover:text-black hover:bg-[#F38A7A]/10 mb-5 text-center">
