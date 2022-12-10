@@ -1,5 +1,6 @@
 import { Configuration, OpenAIApi } from "openai";
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
+import { Tabs } from '@/utils/enums';
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -28,16 +29,31 @@ export default async function (req: any, res: any) {
     presence_penalty: 0.5,
     frequency_penalty: 0.5,
     max_tokens: 256,
-    top_p: 1
+    top_p: 1,
+    user: session.user.id
   });
 
   if (!completion.data.choices) {
     res.status(422).json({ result: 'error on openAPI' });
   }
 
-  console.log(completion.data)
+
   // @ts-ignore
   const formattedResult = completion.data.choices[0].text.trim().replace(/[.\s]/g, "").split(',')
+
+  const outputLogs = {
+    created_at:  new Date().toISOString(),
+    user_id: session.user.id,
+    type: Tabs.Branding,
+    // @ts-ignore
+    output: completion.data.choices[0].text.trim(),
+    meta: completion.data
+  }
+
+  const { data, error } = await supabase
+    .from('output_logs')
+    .insert(outputLogs)
+
   res.status(200).json({ result: formattedResult });
 }
 
