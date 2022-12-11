@@ -9,7 +9,8 @@
 
 @font-face {
   font-family: face;
-  src: url('./font/JANGKUY-RegularExpanded.otf');
+  /* src: url('./font/JANGKUY-RegularExpanded.otf'); */
+  src: url('./font/Unbounded-Regular.ttf');
 }
 
 h1,
