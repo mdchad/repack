@@ -1,6 +1,7 @@
 import DashboardLayout from '@/components/Layout/DashboardLayout';
 import React, { useState, useRef, useEffect } from "react";
 import chroma from "chroma-js";
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 var nicePalette = require("nice-color-palettes");
 
 const MIN_CONTRAST_RATIO = 4.5;
@@ -77,10 +78,13 @@ const GeneratePallete = () => {
     const [palette, setPalette] = useState([]);
     const [convertedValue, setconvertedValue] = useState([]);
     const [type, setType] = useState('');
+    const [colorData, setColorData] = useState<any>([]);
+    const supabaseClient = useSupabaseClient();
 
     const paletteType = useRef(null);
 
     useEffect(() => {
+        getColors()
         handleGeneratePalette();
 
         // detect if G key is pressed
@@ -138,6 +142,13 @@ const GeneratePallete = () => {
                 break;
         }
     };
+
+    async function getColors() {
+        let { data, error } = await supabaseClient
+          .from('colors')
+          .select()
+        setColorData(data)
+    }
 
     const convertValueTo = (convert: string) => {
         if (convert === 'hex') {
@@ -245,10 +256,10 @@ const GeneratePallete = () => {
                         <h1 className="text-2xl">Color Palette Inspiration</h1>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                            {nicePalette.map((palette:any, index:number) => (
-                                <div className='overflow-hidden rounded-lg'>
-                                    <div key={index} className="flex mb-1">
-                                        {palette.map((color:any, i:number) => (
+                            {colorData.map((palette:any, index:number) => (
+                                <div className='overflow-hidden rounded-lg' key={index}>
+                                    <div className="flex mb-1">
+                                        {JSON.parse(palette.color).map((color:any, i:number) => (
                                             <span
                                                 key={i}
                                                 style={{ backgroundColor: color }}
