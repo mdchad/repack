@@ -72,11 +72,22 @@ function NameGenerator() {
     refArr.current = data.map((item, index) => {
         return refArr.current[index] || createRef();
     });
+    const refInputArr: any = useRef([]);
+    refInputArr.current = data.map((item, index) => {
+        return refInputArr.current[index] || createRef();
+    });
 
     const [brandName, setBrandName] = useState('');
     const [brandNameResult, setBrandNameResult] = useState([]);
 
-    const paginate = (newDirection: number) => {
+    useEffect(() => {
+        if (refInputArr.current) {
+            refInputArr.current[0].current.focus()
+        }
+    }, [])
+
+    async function paginate(newDirection: number, e: any) {
+        e.preventDefault()
         const currentPage = page + newDirection;
 
         if (currentPage < 1 || currentPage > data.length) {
@@ -84,37 +95,36 @@ function NameGenerator() {
         }
 
         if (refArr.current[currentPage - 1]) {
-
             if (newDirection === 1) {
-                controls.start({
+                await controls.start({
                     y: -refArr.current[currentPage - 1].current.offsetTop,
                     transition: { duration: 0.5 }
                 });
 
+                refInputArr.current[currentPage - 1].current.focus()
                 setPage([currentPage, newDirection]);
             }
 
             if (newDirection === -1) {
-                controls.start({
+                await controls.start({
                     y: -refArr.current[currentPage - 1].current.offsetTop,
                     transition: { duration: 0.5 }
                 });
 
+                refInputArr.current[currentPage - 1].current.focus()
                 setPage([currentPage, newDirection]);
             }
         }
-    };
+    }
 
-    async function goToLastPage() {
+    async function goToLastPage(e: any) {
+        e.preventDefault()
         setLoading(true);
 
         document.querySelector('.question')?.classList.add('hidden');
 
-        // const resultPage = document.querySelector('.display-answer');
-        // resultPage?.scrollIntoView({ behavior: 'smooth' });
-
         if (resultPage !== null) {
-            controls.start({
+            await controls.start({
                 // @ts-ignore
                 y: -resultPage.current.offsetTop,
                 transition: { duration: 0.5 }
@@ -149,94 +159,30 @@ function NameGenerator() {
     return (
         <section className="h-[calc(100vh-50px)] md:h-screen p-5">
             <div className="bg-white overflow-hidden rounded-lg w-full h-full">
-                {/* <section className="question hidden">
+                <motion.div animate={controls} className="h-screen w-full question">
                     {data.map((item, index) => (
-                        <motion.div
-                            id={`${item.id}`}
-                            key={item.id}
-                            variants={variants}
-                            initial="enter"
-                            animate="center"
-                            exit="exit"
-                            className={`h-screen flex flex-1 grow flex-col justify-center items-center ${item.background}`}
-                            data-index={item.id}
-                            ref={refArr.current[item.id]}
-                        >
-                            <div className="w-full flex flex-col items-center justify-center rounded-lg h-screen">
+                        <div key={item.id} className="w-full h-screen flex flex-col text-center items-center justify-center" ref={refArr.current[item.id]}>
+                            <form onSubmit={(e) => index === data.length - 1 ? goToLastPage(e) : paginate(1, e)}>
                                 <label htmlFor={`field-${item.id}`}>{item.title}</label>
                                 <input
                                     type="text"
+                                    ref={refInputArr.current[item.id]}
                                     id={`field-${index}`}
-                                    className="p-2 text-2xl lg:text-5xl bg-transparent border-none w-screen text-center focus:ring-0 text-black placeholder-[#F38A7A]/50"
+                                    className="p-2 text-2xl lg:text-5xl bg-transparent border-none text-center focus:ring-0 text-black placeholder-[#F38A7A]/50 w-full"
                                     onChange={(e) =>
                                         setBodyReq({ ...bodyReq, [item.tag]: e.target.value })
                                     }
                                     placeholder={item.placeholder}
                                     autoComplete="off"
                                 />
-
-                                {index === data.length - 1 && (
-                                    <button
-                                        className="mt-5 bg-[#F38A7A] text-white p-2 rounded-lg"
-                                        onClick={goToLastPage}
-                                    >
-                                        Generate
-                                    </button>
-                                )}
-                            </div>
-                        </motion.div>
-                    ))}
-
-                    <motion.div
-                        variants={variants}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        className="min-h-full h-screen w-full bg-white overflow-y-auto pb-10"
-                        data-index={data.length}
-                    >
-                        {!loading ? (
-                            <div className="display-answer columns-1 md:columns-2 lg:columns-3 p-5">
-                                {brandNameResult.map((brandName, i) => (
-                                    <Link
-                                        href={`/dashboard/name-generator/${brandName}`}
-                                        key={i}
-                                    >
-                                        <a className="bg-white shadow rounded-lg flex justify-center items-center p-6 hover:text-black hover:bg-[#F38A7A]/10 mb-5 text-center">
-                                            {brandName}
-                                        </a>
-                                    </Link>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="flex h-screen items-center justify-center">
-                                <LoadingDots />
-                            </div>
-                        )}
-                    </motion.div>
-                </section> */}
-
-                <motion.div animate={controls} className="h-screen w-full question">
-                    {data.map((item, index) => (
-                        <div className="w-full h-screen flex flex-col text-center items-center justify-center" ref={refArr.current[item.id]}>
-                            <label htmlFor={`field-${item.id}`}>{item.title}</label>
-                            <input
-                                type="text"
-                                id={`field-${index}`}
-                                className="p-2 text-2xl lg:text-5xl bg-transparent border-none text-center focus:ring-0 text-black placeholder-[#F38A7A]/50 w-full"
-                                onChange={(e) =>
-                                    setBodyReq({ ...bodyReq, [item.tag]: e.target.value })
-                                }
-                                placeholder={item.placeholder}
-                                autoComplete="off"
-                            />
+                            </form>
 
                             {index === data.length - 1 && (
                                 <button
                                     className="mt-5 bg-[#F38A7A] text-white p-2 rounded-lg"
                                     onClick={goToLastPage}
                                 >
-                                    Generate
+                                    Generate <code>↩︎</code>
                                 </button>
                             )}
                         </div>
@@ -269,7 +215,7 @@ function NameGenerator() {
                             `bg-gray-100 text-black rounded-lg p-5 text-center` +
                             (page === 1 ? ' opacity-50 cursor-not-allowed' : '')
                         }
-                        onClick={() => paginate(-1)}
+                        onClick={(e) => paginate(-1, e)}
                         disabled={page === 1}
                     >
                         <ArrowSmallLeftIcon className="h-5 w-5" />
@@ -281,7 +227,7 @@ function NameGenerator() {
                             `bg-gray-100 text-black rounded-lg p-5 text-center` +
                             (page === data.length ? ' opacity-50 cursor-not-allowed' : '')
                         }
-                        onClick={() => paginate(1)}
+                        onClick={(e) => paginate(1, e)}
                         disabled={page === data.length}
                     >
                         <ArrowSmallRightIcon className="h-5 w-5" />
