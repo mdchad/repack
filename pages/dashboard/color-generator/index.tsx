@@ -12,8 +12,13 @@ const isColorAccessible = (color1:any , color2:any) => {
 };
 
 const generateHarmoniousPalette: any = () => {
-    const color = chroma.random();
-    const scale = chroma.scale([color, chroma.random()]).colors(5);
+    // const color = chroma.random();
+    // const colo1 = chroma.random();
+    const colo1 = 'green'
+    const colo2 = 'red';
+
+    // const scale = chroma.scale([color, chroma.random()]).colors(5);
+    const scale = chroma.scale([colo1, colo2]).colors(5);
     return scale;
 };
 

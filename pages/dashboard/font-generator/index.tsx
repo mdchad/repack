@@ -1,299 +1,178 @@
-import { createRef, useEffect, useRef, useState } from 'react';
 import DashboardLayout from '@/components/Layout/DashboardLayout';
-import {
-    ExclamationCircleIcon,
-    ArrowSmallLeftIcon,
-    ArrowSmallRightIcon
-} from '@heroicons/react/24/outline';
-const name = require('@rstacruz/startup-name-generator');
-import { motion, useAnimation } from 'framer-motion';
-import Link from 'next/link';
+import React, { useState, useRef, useEffect } from "react";
+import { ChevronDoubleDownIcon } from '@heroicons/react/24/solid';
 import LoadingDots from '@/components/ui/LoadingDots';
+import axios from 'axios';
 
-const variants = {
-    enter: (direction: number) => {
-        return {
-            x: direction > 0 ? 1000 : -1000,
-            opacity: 0
-        };
-    },
-    center: {
-        zIndex: 1,
-        x: 0,
-        opacity: 1
-    },
-    exit: (direction: number) => {
-        return {
-            zIndex: 0,
-            x: direction < 0 ? 1000 : -1000,
-            opacity: 0
-        };
-    }
-};
+const fontGenerator: any = () => {
+    const [fonts, setFonts] = useState<any>([]);
+    const [ready, setReady] = useState<boolean>(false);
+    let [categories, setCategories] = useState<any>([]);
+    const [headingCategory, setHeadingCategory] = useState<any>(null);
+    const [headingFont, setHeadingFont] = useState<any>(null);
+    const [bodyCategory, setBodyCategory] = useState<any>(null);
+    const [headingStandart, setHeadingStandart] = useState<any>(null);
+    const [headingImport, setHeadingImport] = useState<any>(null);
+    const [headingFontUrl, setHeadingFontUrl] = useState<any>(null);
+    const [bodyStandart, setBodyStandart] = useState<any>(null);
+    const [bodyImport, setBodyImport] = useState<any>(null);
+    const [bodyFont, setBodyFont] = useState<any>(null);
+    const [bodyFontUrl, setBodyFontUrl] = useState<any>(null);
+    const [bodyFontSize, setBodyFontSize] = useState<number>(18);
+    const [headingFontSize, setHeadingFontSize] = useState<number>(32);
+    const [darkBackground, setDarkBackground] = useState<boolean>(false);
 
-const data = [
-    {
-        id: 0,
-        tag: 'values',
-        title: 'What do you want your brand name to signify in terms of values?',
-        placeholder: 'e.g. trustworthy, innovative, etc.',
-        background: 'bg-white-500'
-    },
-    {
-        id: 1,
-        tag: 'words',
-        title: 'What are the keywords that describe your brand?',
-        placeholder: 'e.g. tech, fashion, etc.',
-        background: 'bg-white-500'
-    },
-    {
-        id: 2,
-        tag: 'type',
-        title: 'What type of brand are you?',
-        placeholder: 'e.g. product, service, etc.',
-        background: 'bg-white-500'
-    }
-];
+    useEffect(() => {
+        const url = `https://www.googleapis.com/webfonts/v1/webfonts?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`;
 
-function NameGenerator() {
-    const controls = useAnimation();
-    const resultPage = useRef(null);
-    const [loading, setLoading] = useState(false);
-    const [bodyReq, setBodyReq] = useState({
-        values: '',
-        words: '',
-        type: ''
-    });
-    const [[page, direction], setPage] = useState([1, 0]);
-    const [buttonLeftDisabled, setbuttonLeftDisabled] = useState();
-    const [buttonRightDisabled, setbuttonRightDisabled] = useState();
+        axios.get(url)
+            .then((res: any) => {
+                setFonts(res.data.items);
+                setReady(true);
+                allCategories(res.data.items);
+                // generate();
+            })
+            .then(() => {
+            })
+            .catch((err: any) => {
+                console.log(err);
+            });
+    }, []);
 
-    const refArr: any = useRef([]);
-    refArr.current = data.map((item, index) => {
-        return refArr.current[index] || createRef();
-    });
+    const allCategories = (fonts: any) => {
+        fonts.map((item: { category: any; }) => {
+            if (!categories.includes(item.category)) {
+                // remove duplicates
+                categories.push(item.category);
 
-    const [brandName, setBrandName] = useState('');
-    const [brandNameResult, setBrandNameResult] = useState([]);
-
-    const paginate = (newDirection: number) => {
-        const currentPage = page + newDirection;
-
-        if (currentPage < 1 || currentPage > data.length) {
-            return;
-        }
-
-        if (refArr.current[currentPage - 1]) {
-
-            if (newDirection === 1) {
-                controls.start({
-                    y: -refArr.current[currentPage - 1].current.offsetTop,
-                    transition: { duration: 0.5 }
-                });
-
-                setPage([currentPage, newDirection]);
+                // sort alphabetically
+                // categories.sort(function (a: any, b: any) {
+                //     if (a < b) {
+                //         return -1;
+                //     }
+                //     if (a > b) {
+                //         return 1;
+                //     }
+                //     return 0;
+                // });
             }
+        });
 
-            if (newDirection === -1) {
-                controls.start({
-                    y: -refArr.current[currentPage - 1].current.offsetTop,
-                    transition: { duration: 0.5 }
-                });
 
-                setPage([currentPage, newDirection]);
-            }
-        }
+
+        setHeadingCategory(categories[0]);
+        setBodyCategory(categories[1]);
     };
 
-    async function goToLastPage() {
-        setLoading(true);
+    console.log(headingCategory, bodyCategory);
 
-        document.querySelector('.question')?.classList.add('hidden');
 
-        // const resultPage = document.querySelector('.display-answer');
-        // resultPage?.scrollIntoView({ behavior: 'smooth' });
+    const fontFilter = (category: any) => {
+        let tempFonts: any[] = [], font;
 
-        if (resultPage !== null) {
-            controls.start({
-                // @ts-ignore
-                y: -resultPage.current.offsetTop,
-                transition: { duration: 0.5 }
+        fonts
+            .filter((item: { category: any; }) => item.category == category)
+            .map((obj: any) => {
+                tempFonts.push(obj);
             });
+        font = tempFonts[Math.floor(Math.random() * (tempFonts.length - 1) + 1)];
+        return font;
+    };
 
-            document.querySelector('.button-navigation')?.classList.add('hidden');
+    const generate = () => {
+        setHeadingFont(fontFilter(headingCategory));
+        setBodyFont(fontFilter(bodyCategory));
+        const googleUrl = "https://fonts.googleapis.com/specimen/";
+        setHeadingFontUrl(
+            googleUrl + headingFont.family.replace(/ /g, "+")
+        );
+        setBodyFontUrl(googleUrl + bodyFont.family.replace(/ /g, "+"));
+        const link = document.createElement("link");
+        link.id = "combined-font";
+        link.href = `https://fonts.googleapis.com/css?family=${headingFont.family.replace(/ /g, "+")}|${bodyFont.family.replace(/ /g, "+")}`;
+        link.rel = "stylesheet";
+        document.head.appendChild(link);
+    };
 
-            const res: Response = await fetch('/api/generate-name', {
-                method: 'POST',
-                headers: new Headers({ 'Content-Type': 'application/json' }),
-                credentials: 'same-origin',
-                body: JSON.stringify(bodyReq)
-            });
-
-            if (!res.ok) {
-                console.log('Error in postData');
-
-                throw Error(res.statusText);
-            }
-
-            const response = await res.json()
-            setLoading(false);
-            let result = name(brandName);
-
-            // take the first 15 results
-            result = result.slice(0, 8);
-
-            setBrandNameResult(response.result);
-        }
-    }
 
     return (
-        <section className="h-[calc(100vh-50px)] md:h-screen p-5">
-            <div className="bg-white overflow-hidden rounded-lg w-full h-full">
-                {/* <section className="question hidden">
-                    {data.map((item, index) => (
-                        <motion.div
-                            id={`${item.id}`}
-                            key={item.id}
-                            variants={variants}
-                            initial="enter"
-                            animate="center"
-                            exit="exit"
-                            className={`h-screen flex flex-1 grow flex-col justify-center items-center ${item.background}`}
-                            data-index={item.id}
-                            ref={refArr.current[item.id]}
-                        >
-                            <div className="w-full flex flex-col items-center justify-center rounded-lg h-screen">
-                                <label htmlFor={`field-${item.id}`}>{item.title}</label>
-                                <input
-                                    type="text"
-                                    id={`field-${index}`}
-                                    className="p-2 text-2xl lg:text-5xl bg-transparent border-none w-screen text-center focus:ring-0 text-black placeholder-[#F38A7A]/50"
-                                    onChange={(e) =>
-                                        setBodyReq({ ...bodyReq, [item.tag]: e.target.value })
-                                    }
-                                    placeholder={item.placeholder}
-                                    autoComplete="off"
-                                />
+        <div className="flex flex-col lg:flex-row p-5 gap-5">
 
-                                {index === data.length - 1 && (
-                                    <button
-                                        className="mt-5 bg-[#F38A7A] text-white p-2 rounded-lg"
-                                        onClick={goToLastPage}
-                                    >
-                                        Generate
-                                    </button>
-                                )}
-                            </div>
-                        </motion.div>
-                    ))}
-
-                    <motion.div
-                        variants={variants}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        className="min-h-full h-screen w-full bg-white overflow-y-auto pb-10"
-                        data-index={data.length}
-                    >
-                        {!loading ? (
-                            <div className="display-answer columns-1 md:columns-2 lg:columns-3 p-5">
-                                {brandNameResult.map((brandName, i) => (
-                                    <Link
-                                        href={`/dashboard/name-generator/${brandName}`}
-                                        key={i}
-                                    >
-                                        <a className="bg-white shadow rounded-lg flex justify-center items-center p-6 hover:text-black hover:bg-[#F38A7A]/10 mb-5 text-center">
-                                            {brandName}
-                                        </a>
-                                    </Link>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="flex h-screen items-center justify-center">
-                                <LoadingDots />
-                            </div>
-                        )}
-                    </motion.div>
-                </section> */}
-
-                <motion.div animate={controls} className="h-screen w-full question">
-                    {data.map((item, index) => (
-                        <div className="w-full h-screen flex flex-col text-center items-center justify-center" ref={refArr.current[item.id]}>
-                            <label htmlFor={`field-${item.id}`}>{item.title}</label>
-                            <input
-                                type="text"
-                                id={`field-${index}`}
-                                className="p-2 text-2xl lg:text-5xl bg-transparent border-none text-center focus:ring-0 text-black placeholder-[#F38A7A]/50 w-full"
-                                onChange={(e) =>
-                                    setBodyReq({ ...bodyReq, [item.tag]: e.target.value })
-                                }
-                                placeholder={item.placeholder}
-                                autoComplete="off"
-                            />
-
-                            {index === data.length - 1 && (
-                                <button
-                                    className="mt-5 bg-[#F38A7A] text-white p-2 rounded-lg"
-                                    onClick={goToLastPage}
-                                >
-                                    Generate
-                                </button>
-                            )}
-                        </div>
-                    ))}
-                </motion.div>
-
-                {!loading ? (
-                    <div className="display-answer w-full h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 p-5 overflow-y-auto" ref={resultPage}>
-                        {brandNameResult.map((brandName, i) => (
-                            <Link
-                                href={`/dashboard/name-generator/${brandName}`}
-                                key={i}
-                            >
-                                <a className="bg-white shadow rounded-lg flex justify-center items-center p-6 hover:text-black hover:bg-[#F38A7A]/10 mb-5 text-center">
-                                    {brandName}
-                                </a>
-                            </Link>
-                        ))}
+            <div className="bg-white p-5 rounded-lg overflow-hidden w-full xl:w-4/12">
+                <div className="flex flex-col gap-3 mb-5">
+                    <div className="w-full">
+                        <label htmlFor="select_heading" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Heading</label>
+                        <select id="select_heading" className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 capitalize">
+                            {categories.map((item: any, index: number) => {
+                                return (
+                                    // get selected from headingCategory
+                                    <option key={index} value={item} selected={headingCategory == item}>{item}</option>
+                                )
+                            })}
+                        </select>
                     </div>
-                ) : (
-                    <div className="flex h-screen items-center justify-center">
-                        <LoadingDots />
+
+                    <div className="w-full">
+                        <label htmlFor="select_body" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Body</label>
+                        <select id="select_body" className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 capitalize">
+                            {categories.map((item: any, index: number) => {
+                                return (
+                                    // get selected from headingCategory
+                                    <option key={index} value={item} selected={bodyCategory == item}>{item}</option>
+                                )
+                            })}
+                        </select>
                     </div>
-                )}
+                </div>
 
-                <div className="absolute bottom-5 right-5 z-10 p-5 flex gap-3 button-navigation">
-                    <button
-                        type="button"
-                        className={
-                            `bg-gray-100 text-black rounded-lg p-5 text-center` +
-                            (page === 1 ? ' opacity-50 cursor-not-allowed' : '')
-                        }
-                        onClick={() => paginate(-1)}
-                        disabled={page === 1}
-                    >
-                        <ArrowSmallLeftIcon className="h-5 w-5" />
-                    </button>
-
-                    <button
-                        type="button"
-                        className={
-                            `bg-gray-100 text-black rounded-lg p-5 text-center` +
-                            (page === data.length ? ' opacity-50 cursor-not-allowed' : '')
-                        }
-                        onClick={() => paginate(1)}
-                        disabled={page === data.length}
-                    >
-                        <ArrowSmallRightIcon className="h-5 w-5" />
+                <div>
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={generate}>
+                        Generate
                     </button>
                 </div>
+
             </div>
-        </section >
+
+            {ready ? (
+                <div>
+                    <div className="flex flex-col lg:flex-row rounded-lg overflow-hidden">
+                        <div className="bg-white p-8">
+                            <div>
+                                <h1 className="mb-4 text-2xl">The Importance of Typography in Web Design</h1>
+                                <div className="flex flex-col gap-3">
+                                    <p>
+                                        Typography plays a crucial role in web design, as it helps to create a visual hierarchy, establish a tone and mood, and improve the overall user experience. Effective web typography involves choosing the right typefaces, font sizes, line lengths, and other elements to make the content legible, readable, and appealing on different devices and screen sizes.</p>
+                                    <p>
+                                        Good web typography requires an understanding of the technical limitations and possibilities of web browsers, as well as the needs and preferences of the target audience. It also involves an awareness of accessibility concerns, such as ensuring that the text can be easily read by people with visual impairments or dyslexia.
+                                    </p>
+                                    <p>
+                                        By considering typography in web design, designers can create websites that are visually appealing, easy to read, and engaging for the user. This can help to improve the user's experience and increase the chances of them staying on the website and interacting with the content.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="animate-bounce flex flex-col items-center py-5">
+                        <span>See examples</span>
+                        <ChevronDoubleDownIcon className="h-5 w-5" />
+                    </div>
+                </div>
+            ) : (
+                <LoadingDots />
+            )}
+            <div>
+
+            </div>
+
+
+        </div>
     );
+};
+
+export default fontGenerator;
+fontGenerator.getLayout = (page: any) => <DashboardLayout>{page}</DashboardLayout>;
+
+function axious(url: string) {
+    throw new Error('Function not implemented.');
 }
-
-export default NameGenerator;
-
-NameGenerator.getLayout = (page: any) => (
-    <DashboardLayout>{page}</DashboardLayout>
-);
