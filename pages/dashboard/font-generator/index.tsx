@@ -48,19 +48,19 @@ const fontGenerator: any = () => {
     }
 
     const handleBaseSize = (e: any) => {
+        setBaseSize(e.target.value);
+
         // field cant go below 0    
         if (e.target.value < 0) {
             e.target.value = 0;
         }
-
-        setBaseSize(e.target.value);
-
+        
         const pxToEm = (px: any) => {
             return px / 16;
         }
 
-        const headingEm = pxToEm(baseSize) * 2.5;
-        const bodyEm = pxToEm(baseSize) * 1;
+        const headingEm = pxToEm(e.target.value) * 2.5;
+        const bodyEm = pxToEm(e.target.value) * 1;
 
         headerCopyRef.current.style.fontSize = `${headingEm}em`;
         bodyCopyRef.current.style.fontSize = `${bodyEm}em`;
