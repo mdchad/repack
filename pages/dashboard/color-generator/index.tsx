@@ -2,7 +2,6 @@ import DashboardLayout from '@/components/Layout/DashboardLayout';
 import React, { useState, useRef, useEffect } from "react";
 import chroma from "chroma-js";
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
-var nicePalette = require("nice-color-palettes");
 
 const MIN_CONTRAST_RATIO = 4.5;
 
