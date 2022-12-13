@@ -13,8 +13,7 @@ const fontGenerator: any = () => {
 
     const [headingCategory, setHeadingCategory] = useState<string>('serif');
     const [headingFont, setHeadingFont] = useState<string>('');
-    const [headingVariant, setHeadingVariant] = useState<string>([]);
-    const [headingStandart, setHeadingStandart] = useState<any>(null);
+    const [headingVariant, setHeadingVariant] = useState<any>([]);
     const [headingImport, setHeadingImport] = useState<any>(null);
     const [headingFontUrl, setHeadingFontUrl] = useState<any>(null);
     const [lockHeading, setLockHeading] = useState<boolean>(false);
@@ -22,7 +21,6 @@ const fontGenerator: any = () => {
     const [bodyCategory, setBodyCategory] = useState<string>('sans-serif');
     const [bodyFont, setBodyFont] = useState<any>(null);
     const [bodyVariant, setBodyVariant] = useState<any>([]);
-    const [bodyStandart, setBodyStandart] = useState<any>(null);
     const [bodyImport, setBodyImport] = useState<any>(null);
     const [bodyFontUrl, setBodyFontUrl] = useState<any>(null);
     const [lockBody, setLockBody] = useState<boolean>(false);
@@ -151,8 +149,6 @@ const fontGenerator: any = () => {
                     families: [headingFamily, bodyFamily],
                 },
                 active: () => {
-                    setHeadingStandart(heading);
-                    setBodyStandart(body);
                     setReady(true);
 
                     setHeadingImport(`<style>
