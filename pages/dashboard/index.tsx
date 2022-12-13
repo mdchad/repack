@@ -2,7 +2,7 @@ import DashboardLayout from '@/components/Layout/DashboardLayout';
 import Card from '@/components/ui/Dashboard/Card';
 import { ArrowUpRightIcon, CloudIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
-import { Tabs } from '@/utils/enums';
+import { TYPE } from '@/utils/enums';
 import Link from 'next/link';
 
 const features = [
@@ -44,19 +44,19 @@ const features = [
 
 const tabs = [
     {
-        name: Tabs.Branding,
+        name: TYPE.Branding,
         title: 'Branding',
         color: 'bg-white',
         description: 'Generate your own startup brand guide.',
     },
     {
-        name: Tabs.Website,
+        name: TYPE.Website,
         title: 'Website',
         color: 'bg-white',
         description: 'Turn a title and an outline into a fully SEO-optimized and long article with this AI editor.'
     },
     {
-        name: Tabs.Blog,
+        name: TYPE.Blog,
         title: 'Blog',
         color: 'bg-white',
         description: 'Turn a title and an outline into a fully SEO-optimized and long article with this AI editor.'

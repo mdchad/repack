@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/Layout/DashboardLayout';
-import { Tabs } from '@/utils/enums';
+import { TYPE } from '@/utils/enums';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import Link from 'next/link';
 import { ArrowUpRightIcon, CloudIcon } from '@heroicons/react/24/outline';
 import moment from 'moment';
 
 const tabs = [
-    { name: Tabs.Branding },
-    { name: Tabs.Website },
-    { name: Tabs.Blog }
+    { name: TYPE.Branding },
+    { name: TYPE.Website },
+    { name: TYPE.Blog }
 ];
 
 function capitalizeFirstLetter(string: any) {
