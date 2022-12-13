@@ -1,6 +1,6 @@
 import { Configuration, OpenAIApi } from "openai";
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { Tabs } from '@/utils/enums';
+import { SUBTYPE, TYPE } from '@/utils/enums';
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -44,7 +44,8 @@ export default async function (req: any, res: any) {
   const outputLogs = {
     created_at:  new Date().toISOString(),
     user_id: session.user.id,
-    type: Tabs.Branding,
+    type: TYPE.Branding,
+    subtype: SUBTYPE.Name,
     // @ts-ignore
     output: completion.data.choices[0].text.trim(),
     meta: completion.data
