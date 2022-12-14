@@ -1,14 +1,13 @@
 import { createRef, useEffect, useRef, useState } from 'react';
 import DashboardLayout from '@/components/Layout/DashboardLayout';
 import {
-    ExclamationCircleIcon,
     ArrowSmallLeftIcon,
     ArrowSmallRightIcon
 } from '@heroicons/react/24/outline';
 const name = require('@rstacruz/startup-name-generator');
 import { motion, useAnimation } from 'framer-motion';
 import Link from 'next/link';
-import LoadingDots from '@/components/ui/LoadingDots';
+import LoadingLogo from '@/components/ui/LoadingLogo/LoadingLogo';
 
 const variants = {
     enter: (direction: number) => {
@@ -158,6 +157,7 @@ function NameGenerator() {
 
     return (
         <section className="h-[calc(100vh-50px)] md:h-screen p-5">
+
             <div className="bg-white overflow-hidden rounded-lg w-full h-full">
                 <motion.div animate={controls} className="h-screen w-full question">
                     {data.map((item, index) => (
@@ -204,7 +204,7 @@ function NameGenerator() {
                     </div>
                 ) : (
                     <div className="flex h-screen items-center justify-center">
-                        <LoadingDots />
+                        <LoadingLogo />
                     </div>
                 )}
 

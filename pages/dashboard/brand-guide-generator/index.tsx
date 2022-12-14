@@ -8,7 +8,7 @@ import {
 const name = require('@rstacruz/startup-name-generator');
 import { motion, useAnimation } from 'framer-motion';
 import Link from 'next/link';
-import LoadingDots from '@/components/ui/LoadingDots';
+import LoadingLogo from '@/components/ui/LoadingLogo/LoadingLogo';
 
 const variants = {
     enter: (direction: number) => {
@@ -258,7 +258,7 @@ function NameGenerator() {
                     </div>
                 ) : (
                     <div className="flex h-screen items-center justify-center">
-                        <LoadingDots />
+                        <LoadingLogo />
                     </div>
                 )}
 
