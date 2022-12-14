@@ -1,4 +1,5 @@
 import { Price } from 'types';
+import { join } from 'lodash';
 
 export const getURL = () => {
   const url =
@@ -40,3 +41,11 @@ export const toDateTime = (secs: number) => {
   t.setSeconds(secs);
   return t;
 };
+
+export const splitHashURL = (result: string[]) => {
+  const transformed = result.map((color: string, index: number) => {
+    return color.replace('#', '');
+  });
+
+  return transformed.join('-');
+}

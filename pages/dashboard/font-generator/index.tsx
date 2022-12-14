@@ -75,7 +75,7 @@ const fontGenerator: any = () => {
     const handleBaseSize = (e: any) => {
         setBaseSize(e.target.value);
 
-        // field cant go below 0    
+        // field cant go below 0
         if (e.target.value < 0) {
             e.target.value = 0;
         }
@@ -199,7 +199,7 @@ const fontGenerator: any = () => {
             created_at: new Date().toISOString(),
             type: TYPE.Branding,
             subtype: SUBTYPE.Font,
-            value: [headingFont, bodyFont],
+            saved: { value: [headingFont, bodyFont] },
             user_id: user?.id
         };
 

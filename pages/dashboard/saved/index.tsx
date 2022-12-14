@@ -1,16 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/Layout/DashboardLayout';
-import { TYPE } from '@/utils/enums';
+import { SUBTYPE, TYPE } from '@/utils/enums';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import Link from 'next/link';
 import { ArrowUpRightIcon, CloudIcon } from '@heroicons/react/24/outline';
 import moment from 'moment';
+import { splitHashURL } from '@/utils/helpers';
 
 const tabs = [
     { name: TYPE.Branding },
     { name: TYPE.Website },
     { name: TYPE.Blog }
 ];
+
+function urlType(subtype: any, queryParams: any): any {
+    if (subtype === SUBTYPE.Colour) {
+        queryParams = splitHashURL(queryParams)
+    }
+    // @ts-ignore
+    return {
+        [SUBTYPE.Name]: `name-generator/${queryParams}`,
+        [SUBTYPE.Colour]: `color-generator?colors=${queryParams}`,
+        [SUBTYPE.Font]: 'font-generator'
+    }[subtype]
+}
 
 function capitalizeFirstLetter(string: any) {
     return string[0].toUpperCase() + string.slice(1);
@@ -83,13 +96,13 @@ function Saved() {
             <div className="bg-white overflow-y-scroll rounded-lg p-5 h-screen flex flex-col gap-3">
                 <div className="content">
                     <ul className='grid md:grid-cols-2 gap-2'>
-                        {saved?.map((saveContent, id) => {
+                        {saved?.map((saveContent: any, id) => {
                             if (saveContent.type === currentTab) {
                                 return <li key={id}>
-                                    <Link href={`/dashboard/name-generator/${saveContent.value}`}>
+                                    <Link href={`/dashboard/${urlType(saveContent.subtype, saveContent.saved.value)}`}>
                                         <a className="border rounded-lg p-5 flex justify-between items-center hover:bg-[#F38A7A]/10 hover:border-[#F38A7A]" target="_blank">
                                             <div className="flex flex-col gap-1">
-                                                <span className="text-lg font-semibold">{saveContent.value}</span>
+                                                <span className="text-lg font-semibold">{saveContent.saved.value}</span>
                                                 <p className="text-sm text-gray-500">{moment(saveContent.created_at).fromNow()}</p>
                                             </div>
                                             <ArrowUpRightIcon className="w-4 h-4" />
