@@ -1,12 +1,17 @@
 import DashboardLayout from '@/components/Layout/DashboardLayout';
 import React, { useState, useRef, useEffect } from "react";
 import { ArrowPathIcon, ChevronDoubleDownIcon, LinkIcon, MoonIcon, SunIcon, LockOpenIcon, LockClosedIcon, BookmarkIcon, AdjustmentsVerticalIcon } from '@heroicons/react/24/solid';
-import LoadingDots from '@/components/ui/LoadingDots';
 import axios from 'axios';
 import WebFont from 'webfontloader';
+import { SUBTYPE, TYPE } from '@/utils/enums';
+import { toast } from 'react-toastify';
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 
 const fontGenerator: any = () => {
     let [categories, setCategories] = useState<any>([]);
+    const supabaseClient = useSupabaseClient();
+    const user = useUser();
+
     const [theme, setTheme] = useState<any>('light');
     const [fonts, setFonts] = useState<any>([]);
     const [ready, setReady] = useState<boolean>(false);
@@ -31,6 +36,24 @@ const fontGenerator: any = () => {
 
     const headerCopyRef = useRef<any>(null);
     const bodyCopyRef = useRef<any>(null);
+
+
+    useEffect(() => {
+        const url = `https://www.googleapis.com/webfonts/v1/webfonts?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`;
+        console.log('url: ', url)
+
+        axios.get(url)
+          .then((res: any) => {
+              // setReady(true);
+              setFonts(res.data.items);
+              allCategories(res.data.items);
+              handleBaseSize({ target: { value: 16 } });
+          })
+          .catch((err: any) => {
+              console.log(err);
+          });
+    }, []);
+
 
     const handleLockHeading = () => {
         setLockHeading(!lockHeading);
@@ -169,21 +192,48 @@ const fontGenerator: any = () => {
         })
     };
 
-    useEffect(() => {
-        const url = `https://www.googleapis.com/webfonts/v1/webfonts?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`;
-        console.log('url: ', url)
+    async function saveFont() {
+        const duration = 2000;
 
-        axios.get(url)
-            .then((res: any) => {
-                // setReady(true);
-                setFonts(res.data.items);
-                allCategories(res.data.items);
-                handleBaseSize({ target: { value: 16 } });
-            })
-            .catch((err: any) => {
-                console.log(err);
+        if (!headingFont && bodyFont) {
+            return;
+        }
+
+        const newSave = {
+            created_at: new Date().toISOString(),
+            type: TYPE.Branding,
+            subtype: SUBTYPE.Font,
+            value: [headingFont, bodyFont],
+            user_id: user?.id
+        };
+
+        let { error } = await supabaseClient.from('favourites').insert(newSave);
+
+        if (error) {
+            console.log(error);
+            toast.error('Fail to save', {
+                position: 'top-right',
+                autoClose: duration,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+                theme: 'light'
             });
-    }, []);
+        } else {
+            toast.success('Added to saved', {
+                position: 'top-right',
+                autoClose: duration,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+                theme: 'light'
+            });
+        }
+    }
 
     return (
         <section>
@@ -248,6 +298,7 @@ const fontGenerator: any = () => {
                         </button>
 
                         <button
+                            onClick={() => saveFont()}
                             className="w-8 h-8 bg-gray-100 rounded-lg dark:bg-slate-800 flex items-center justify-center hover:ring-2 ring-gray-400 transition-all duration-300 focus:outline-none"
                         >
                             <BookmarkIcon className="h-5 w-5 text-gray-400" />
