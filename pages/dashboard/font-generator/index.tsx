@@ -8,13 +8,14 @@ import { toast } from 'react-toastify';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 
 const fontGenerator: any = () => {
-    let [categories, setCategories] = useState<any>([]);
     const supabaseClient = useSupabaseClient();
     const user = useUser();
 
-    const [theme, setTheme] = useState<any>('light');
-    const [fonts, setFonts] = useState<any>([]);
     const [ready, setReady] = useState<boolean>(false);
+    const [theme, setTheme] = useState<any>('light');
+    let [category, setCategory] = useState<any>([]);
+    const fonts = useRef<any>([]);
+    const categories = useRef<any>([]);
 
     const [headingCategory, setHeadingCategory] = useState<string>('serif');
     const [headingFont, setHeadingFont] = useState<string>('');
@@ -43,15 +44,16 @@ const fontGenerator: any = () => {
         console.log('url: ', url)
 
         axios.get(url)
-          .then((res: any) => {
-              // setReady(true);
-              setFonts(res.data.items);
-              allCategories(res.data.items);
-              handleBaseSize({ target: { value: 16 } });
-          })
-          .catch((err: any) => {
-              console.log(err);
-          });
+            .then((res: any) => {
+                setReady(true);
+                fonts.current = res.data.items;
+                handleBaseSize({ target: { value: 16 } });
+                allCategories();
+                generate()
+            })
+            .catch((err: any) => {
+                console.log(err);
+            });
     }, []);
 
 
@@ -89,36 +91,23 @@ const fontGenerator: any = () => {
         bodyCopyRef.current.style.fontSize = `${bodyEm}em`;
     }
 
-    const allCategories = (fonts: any) => {
-        fonts.map((item: { category: any; }) => {
-            if (!categories.includes(item.category)) {
-                categories.push(item.category);
+    const allCategories = () => {
+        fonts.current.map((font: { category: any; }) => {
+            if (!categories.current.includes(font.category)) {
+                categories.current.push(font.category);
             }
         });
 
-        setHeadingCategory(categories[1]);
-        setBodyCategory(categories[0]);
-
-        setHeadingFont(fontFilter(headingCategory));
-        setBodyFont(fontFilter(bodyCategory));
+        setCategory(categories.current);
     };
 
     const fontFilter = (category: any) => {
-        // v1
-        // // get random font from category base on Heading or Body
-        // const filtered = fonts.filter((item: { category: any; }) => item.category === category);
-        // const random = Math.floor(Math.random() * filtered.length);
+        // get random font from category
+        const randomFont = fonts.current.filter((font: { category: any; }) => font.category === category);
 
-        // console.log(filtered[random])
-        // return filtered[random];
+        const randomFontFamily = randomFont[Math.floor(Math.random() * randomFont.length)].family;
 
-        // v2
-        const fontFamilies = fonts.map((font: { family: any; }) => font.family);
-        const filtered = fontFamilies.filter((font: any) => fonts.find((f: { family: any; }) => f.family === font).category === category);
-        const randomIndex = Math.floor(Math.random() * filtered.length);
-        const randomFont = filtered[randomIndex];
-
-        return randomFont;
+        return randomFontFamily;
     };
 
     const generate = () => {
@@ -126,28 +115,31 @@ const fontGenerator: any = () => {
         let heading = '';
         let body = '';
 
+        const getHeadingCat = categories.current[1];
+        const getBodyCat = categories.current[0];
+
+        setHeadingCategory(getHeadingCat);
+        setBodyCategory(getBodyCat);
+
         if (!lockHeading) {
-            heading = fontFilter(headingCategory);
-            setHeadingFont(heading);
+            heading = fontFilter(getHeadingCat);
         } else {
             heading = headingFont;
         }
 
         if (!lockBody) {
-            body = fontFilter(bodyCategory);
-            setBodyFont(body);
+            body = fontFilter(getBodyCat);
         } else {
             body = bodyFont;
         }
 
         // get details of font from fonts
-        const headingDetails = fonts.find((font: { family: any; }) => font.family === heading);
+        const headingDetails = fonts.current.find((font: { family: any; }) => font.family === heading);
         // console.log(headingDetails)
-        setHeadingVariant(headingDetails.variants);
 
-        const bodyDetails = fonts.find((font: { family: any; }) => font.family === body);
+        const bodyDetails = fonts.current.find((font: { family: any; }) => font.family === body);
         // console.log(bodyDetails)
-        setBodyVariant(bodyDetails.variants);
+        
 
         const headingVariant = headingDetails.variants.map((variant: any) => {
             return variant.replace(/ /g, ",");
@@ -173,6 +165,10 @@ const fontGenerator: any = () => {
                 },
                 active: () => {
                     setReady(true);
+                    setHeadingFont(heading);
+                    setBodyFont(body);
+                    setHeadingVariant(headingDetails.variants);
+                    setBodyVariant(bodyDetails.variants);
 
                     setHeadingImport(`<style>
                     @import url('https://fonts.googleapis.com/css2?family=${headingFamily}&display=swap');
@@ -248,11 +244,8 @@ const fontGenerator: any = () => {
                                 value={headingCategory || ''}
                                 onChange={(e) => setHeadingCategory(e.target.value)}
                             >
-                                {categories.map((item: any, index: number) => {
-                                    return (
-                                        // get selected from headingCategory
-                                        <option key={index} value={item}>{item}</option>
-                                    )
+                                {category.map((category: any) => {
+                                    return <option key={category} value={category}>{category}</option>
                                 })}
                             </select>
                         </div>
@@ -272,11 +265,8 @@ const fontGenerator: any = () => {
                                 value={bodyCategory || ''}
                                 onChange={(e) => setBodyCategory(e.target.value)}
                             >
-                                {categories.map((item: any, index: number) => {
-                                    return (
-                                        // get selected from headingCategory
-                                        <option key={index} value={item}>{item}</option>
-                                    )
+                                {category.map((category: any) => {
+                                    return <option key={category} value={category}>{category}</option>
                                 })}
                             </select>
                         </div>
@@ -382,9 +372,9 @@ const fontGenerator: any = () => {
 
                     <h3 className="text-center text-3xl py-5">Styles</h3>
 
-                    <div className="flex flex-col lg:flex-row items-start gap-3">
+                    <div className="flex flex-col xl:flex-row items-start gap-3">
                         <div className='rounded-lg bg-white p-5 flex-1 w-full'>
-                            <h3 className="text-center mb-5">{headingFont}</h3>
+                            <h3 className="mb-5">{headingFont}</h3>
                             <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                                 {headingVariant && headingVariant.map((variant: any, index: number) => (
                                     <div
@@ -410,7 +400,7 @@ const fontGenerator: any = () => {
                         </div>
 
                         <div className='rounded-lg bg-white p-5 flex-1 w-full'>
-                            <h3 className="text-center mb-5">{bodyFont}</h3>
+                            <h3 className="mb-5">{bodyFont}</h3>
                             <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                                 {bodyVariant && bodyVariant.map((bodyVariant: any, index: number) => (
                                     <div
@@ -437,7 +427,7 @@ const fontGenerator: any = () => {
 
                     <h3 className="text-center text-3xl py-5">Characther Set (Normal)</h3>
 
-                    <div className="flex flex-col lg:flex-row items-start gap-3">
+                    <div className="flex flex-col xl:flex-row items-start gap-3">
                         <div className='rounded-lg bg-white p-5 flex-1 w-full'>
                             <h3 className="mb-5">{headingFont}</h3>
 
