@@ -1,9 +1,12 @@
 import DashboardLayout from '@/components/Layout/DashboardLayout';
 import React, { useState, useRef, useEffect } from 'react';
 import chroma from 'chroma-js';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { BookmarkIcon } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/router';
+import cn from 'classnames';
+import { toast } from 'react-toastify';
+import { SUBTYPE, TYPE } from '@/utils/enums';
 
 const MIN_CONTRAST_RATIO = 4.5;
 
@@ -83,6 +86,7 @@ const GeneratePalette = () => {
   const [colorData, setColorData] = useState<any>([]);
   const supabaseClient = useSupabaseClient();
   const router = useRouter();
+  const user = useUser();
 
   const paletteType = useRef(null);
 
@@ -204,8 +208,47 @@ const GeneratePalette = () => {
     }
   };
 
-  const savePalette = () => {
-    console.log('save palette');
+  async function savePalette() {
+    const duration = 2000;
+
+    if (!palette.length) {
+      return;
+    }
+
+    const newSave = {
+      created_at: new Date().toISOString(),
+      type: TYPE.Branding,
+      subtype: SUBTYPE.Colour,
+      value: palette,
+      user_id: user?.id
+    };
+
+    let { error } = await supabaseClient.from('favourites').insert(newSave);
+
+    if (error) {
+      console.log(error);
+      toast.error('Fail to save', {
+        position: 'top-right',
+        autoClose: duration,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      });
+    } else {
+      toast.success('Added to saved', {
+        position: 'top-right',
+        autoClose: duration,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      });
+    }
   };
 
   return (
@@ -239,14 +282,23 @@ const GeneratePalette = () => {
             </span>
           </button>
         </div>
-
-        <div>
-          <button
-            className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
-            onClick={savePalette}
-          >
-            <BookmarkIcon className="h-5 w-5 inline" /> Save this palette
-          </button>
+        <div className="flex flex-row">
+          <div className="flex">
+            {palette.map((color: any) => {
+              const style = { backgroundColor: color}
+              return (
+                <div className={"mr-2 h-10 w-10 rounded-full"} style={style} key={color}></div>
+              );
+            })}
+          </div>
+          <div>
+            <button
+              className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+              onClick={savePalette}
+            >
+              <BookmarkIcon className="h-5 w-5 inline" /> Save this palette
+            </button>
+          </div>
         </div>
       </div>
 

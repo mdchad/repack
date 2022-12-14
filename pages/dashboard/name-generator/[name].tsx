@@ -10,6 +10,7 @@ import {
 import { toast } from 'react-toastify';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import Link from 'next/link';
+import { SUBTYPE, TYPE } from '@/utils/enums';
 
 const urls = [
   {
@@ -117,8 +118,9 @@ function Name() {
 
     const newSave = {
       created_at: new Date().toISOString(),
-      type: 'branding',
+      type: TYPE.Branding,
       value: name,
+      subtype: SUBTYPE.Name,
       user_id: user?.id
     };
 
