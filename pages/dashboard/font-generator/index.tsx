@@ -1,6 +1,6 @@
 import DashboardLayout from '@/components/Layout/DashboardLayout';
 import React, { useState, useRef, useEffect } from "react";
-import { ArrowPathIcon, ChevronDoubleDownIcon, LinkIcon, MoonIcon, SunIcon, LockOpenIcon, LockClosedIcon, BookmarkIcon, AdjustmentsVerticalIcon } from '@heroicons/react/24/solid';
+import { ChevronDoubleDownIcon, MoonIcon, SunIcon, LockOpenIcon, LockClosedIcon, BookmarkIcon, AdjustmentsVerticalIcon } from '@heroicons/react/24/solid';
 import axios from 'axios';
 import WebFont from 'webfontloader';
 import { SUBTYPE, TYPE } from '@/utils/enums';
@@ -73,11 +73,11 @@ const fontGenerator: any = () => {
     const handleBaseSize = (e: any) => {
         setBaseSize(e.target.value);
 
-        // field cant go below 0    
+        // field cant go below 0
         if (e.target.value < 0) {
             e.target.value = 0;
         }
-        
+
         const pxToEm = (px: any) => {
             return px / 16;
         }
@@ -203,7 +203,7 @@ const fontGenerator: any = () => {
             created_at: new Date().toISOString(),
             type: TYPE.Branding,
             subtype: SUBTYPE.Font,
-            value: [headingFont, bodyFont],
+            saved: { value: [headingFont, bodyFont] },
             user_id: user?.id
         };
 

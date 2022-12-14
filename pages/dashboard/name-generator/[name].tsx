@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/Layout/DashboardLayout';
 import { useRouter } from 'next/router';
-import { HeartIcon } from '@heroicons/react/24/outline';
+import {
+  HeartIcon,
+  BookmarkIcon as BookmarkOutlineIcon
+} from '@heroicons/react/24/outline';
 import {
   HeartIcon as HeartSolidIcon,
   CheckCircleIcon,
-  XCircleIcon
+  XCircleIcon,
+  BookmarkIcon
 } from '@heroicons/react/24/solid';
 import { toast } from 'react-toastify';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
@@ -103,13 +107,12 @@ function Name() {
     let { data, error } = await supabase
       .from('favourites')
       .select()
-      .eq('value', name)
+      .contains('saved', { value: name })
       .single();
     setSavedData(data);
   }
 
   async function saveName() {
-    setSave(true);
     const duration = 2000;
 
     if (savedData) {
@@ -119,7 +122,7 @@ function Name() {
     const newSave = {
       created_at: new Date().toISOString(),
       type: TYPE.Branding,
-      value: name,
+      saved: { value: name },
       subtype: SUBTYPE.Name,
       user_id: user?.id
     };
@@ -139,6 +142,7 @@ function Name() {
         theme: 'light'
       });
     } else {
+      setSave(true);
       toast.success('Added to saved', {
         position: 'top-right',
         autoClose: duration,
@@ -165,20 +169,15 @@ function Name() {
                 <button
                   type="button"
                   onClick={() => saveName()}
-                  className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="w-10 h-10 bg-gray-100 rounded-lg dark:bg-slate-800 flex items-center justify-center hover:ring-2 ring-gray-400 transition-all duration-300 focus:outline-none"
                 >
-                  {savedData || save ? (
+                  {(savedData || save) ? (
                     <>
-                      <HeartSolidIcon
-                        className="h-4 w-4 mr-2"
-                        aria-hidden="true"
-                      />{' '}
-                      Saved
+                      <BookmarkIcon className="h-5 w-5 text-yellow-400" />
                     </>
                   ) : (
                     <>
-                      <HeartIcon className="h-4 w-4 mr-2" aria-hidden="true" />{' '}
-                      Save
+                      <BookmarkOutlineIcon className="h-5 w-5" />
                     </>
                   )}
                 </button>

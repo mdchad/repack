@@ -3,10 +3,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import chroma from 'chroma-js';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { BookmarkIcon } from '@heroicons/react/24/solid';
+import { BookmarkIcon as BookmarkIconOutline } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
-import cn from 'classnames';
 import { toast } from 'react-toastify';
 import { SUBTYPE, TYPE } from '@/utils/enums';
+import { splitHashURL } from '@/utils/helpers';
 
 const MIN_CONTRAST_RATIO = 4.5;
 
@@ -16,13 +17,11 @@ const isColorAccessible = (color1: any, color2: any) => {
 };
 
 const generateHarmoniousPalette: any = () => {
-  // const color = chroma.random();
-  // const colo1 = chroma.random();
-  const colo1 = 'green';
-  const colo2 = 'red';
+  const color = chroma.random();
+  const color1 = chroma.random();
 
   // const scale = chroma.scale([color, chroma.random()]).colors(5);
-  return chroma.scale([colo1, colo2]).colors(5);
+  return chroma.scale([color, color1]).colors(5);
 };
 
 const generateAnalogousPalette: any = () => {
@@ -83,6 +82,7 @@ const GeneratePalette = () => {
   const [palette, setPalette] = useState([]);
   const [convertedValue, setConvertedValue] = useState([]);
   const [type, setType] = useState('');
+  const [saved, setSaved] = useState(false)
   const [colorData, setColorData] = useState<any>([]);
   const supabaseClient = useSupabaseClient();
   const router = useRouter();
@@ -91,8 +91,20 @@ const GeneratePalette = () => {
   const paletteType = useRef(null);
 
   useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const myParam = urlParams.get('colors');
+
     getColors();
-    handleGeneratePalette();
+    if (!myParam) {
+      handleGeneratePalette();
+    } else {
+      const colorParam = myParam?.split('-');
+      const transformedParams: any = colorParam.map((color: string) => {
+        return '#'.concat(color);
+      });
+      getSaved(transformedParams)
+      setPalette(transformedParams);
+    }
 
     // detect if G key is pressed
     const handleSpaceBar = (e: any) => {
@@ -109,6 +121,19 @@ const GeneratePalette = () => {
       document.removeEventListener('keydown', handleSpaceBar);
     };
   }, []);
+
+  // console.log(saved)
+  async function getSaved(savedData: string[]) {
+    let { data, error } = await supabaseClient
+      .from('favourites')
+      .select()
+      .contains('saved', { value: savedData })
+      .single();
+
+    if (data) {
+      setSaved(true)
+    }
+  }
 
   const handleGeneratePalette = () => {
     const list = [
@@ -154,18 +179,16 @@ const GeneratePalette = () => {
         break;
     }
 
-    const transformed = result.map((color: string, index: number) => {
-      return color.replace('#', '');
-    });
+    const joined = splitHashURL(result)
+    getSaved(result)
 
-    // Use the join() method to join the transformed elements of the array, using the dash character as the separator
-    const joined = transformed.join('-');
     router.push({
       pathname: '',
       query: {
         colors: joined
       }
     });
+
   };
 
   async function getColors() {
@@ -211,6 +234,10 @@ const GeneratePalette = () => {
   async function savePalette() {
     const duration = 2000;
 
+    if (saved) {
+      return
+    }
+
     if (!palette.length) {
       return;
     }
@@ -219,7 +246,9 @@ const GeneratePalette = () => {
       created_at: new Date().toISOString(),
       type: TYPE.Branding,
       subtype: SUBTYPE.Colour,
-      value: palette,
+      saved: {
+        value: palette
+      },
       user_id: user?.id
     };
 
@@ -249,7 +278,7 @@ const GeneratePalette = () => {
         theme: 'light'
       });
     }
-  };
+  }
 
   return (
     <div className="flex flex-col p-5">
@@ -285,18 +314,24 @@ const GeneratePalette = () => {
         <div className="flex flex-row">
           <div className="flex">
             {palette.map((color: any) => {
-              const style = { backgroundColor: color}
+              const style = { backgroundColor: color };
               return (
-                <div className={"mr-2 h-10 w-10 rounded-full"} style={style} key={color}></div>
+                <div
+                  className={'mr-2 h-10 w-10 rounded-full'}
+                  style={style}
+                  key={color}
+                ></div>
               );
             })}
           </div>
           <div>
             <button
-              className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
               onClick={savePalette}
+              className="w-10 h-10 bg-gray-100 rounded-lg dark:bg-slate-800 flex items-center justify-center hover:ring-2 ring-gray-400 transition-all duration-300 focus:outline-none"
             >
-              <BookmarkIcon className="h-5 w-5 inline" /> Save this palette
+              {
+                saved ? <BookmarkIcon className="h-5 w-5 text-yellow-400" /> : <BookmarkIconOutline className="h-5 w-5" />
+              }
             </button>
           </div>
         </div>
