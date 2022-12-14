@@ -193,7 +193,7 @@ function NameGenerator() {
                     <div className="display-answer w-full h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 p-5 overflow-y-auto" ref={resultPage}>
                         {brandNameResult.map((brandName, i) => (
                             <Link
-                                href={`/dashboard/name-generator/${brandName}`}
+                                href={`/dashboard/name-generator/${encodeURIComponent(brandName)}`}
                                 key={i}
                             >
                                 <a className="bg-white shadow rounded-lg flex justify-center items-center p-6 hover:text-black hover:bg-[#F38A7A]/10 mb-5 text-center">
