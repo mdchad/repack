@@ -6,10 +6,13 @@ import WebFont from 'webfontloader';
 import { SUBTYPE, TYPE } from '@/utils/enums';
 import { toast } from 'react-toastify';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
+import { useRouter } from 'next/router';
+import NextError from 'next/error'
 
 const fontGenerator: any = () => {
     const supabaseClient = useSupabaseClient();
     const user = useUser();
+    const router = useRouter();
 
     const [ready, setReady] = useState<boolean>(false);
     const [theme, setTheme] = useState<any>('light');
@@ -38,10 +41,8 @@ const fontGenerator: any = () => {
     const headerCopyRef = useRef<any>(null);
     const bodyCopyRef = useRef<any>(null);
 
-
     useEffect(() => {
         const url = `https://www.googleapis.com/webfonts/v1/webfonts?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`;
-        console.log('url: ', url)
 
         axios.get(url)
             .then((res: any) => {
@@ -49,7 +50,75 @@ const fontGenerator: any = () => {
                 fonts.current = res.data.items;
                 handleBaseSize({ target: { value: 16 } });
                 allCategories();
-                generate()
+
+                // check if url has params
+                const url = window.location.href;
+                // console.log('url: ', url)
+
+                if (url.includes('?')) {
+                    // ?font=IM+Fell+DW+Pica-Noto+Sans+Siddham
+                    // remove ?font= first
+                    const font = url.split('?font=');
+                    // split the text by -
+                    const fonts = font[1].split('-');
+                    // console.log('fonts: ', fonts)
+
+                    let heading = fonts[0];
+                    let body = fonts[1];
+
+                    // remove + and replace with space
+                    heading = heading.replace(/\+/g, ' ');
+                    body = body.replace(/\+/g, ' ');
+
+                    const headingDetails = getFontDtailsByName(heading);
+                    const bodyDetails = getFontDtailsByName(body);
+
+                    const headingVariant = getFontVariant(headingDetails);
+                    const bodyVariant = getFontVariant(bodyDetails);
+
+                    const headingFamily = getFontFamily(heading, headingVariant);
+                    const bodyFamily = getFontFamily(body, bodyVariant);
+
+                    import('webfontloader').then(WebFontLoader => {
+                        WebFontLoader.load({
+                            timeout: 2000,
+                            google: {
+                                // families: [headingFamily]
+                                families: [headingFamily, bodyFamily],
+                            },
+                            active: () => {
+                                setReady(true);
+                                setHeadingFont(heading);
+                                setBodyFont(body);
+                                setHeadingVariant(headingDetails.variants);
+                                setBodyVariant(bodyDetails.variants);
+
+                                router.push({
+                                    pathname: '',
+                                    query: {
+                                        font: `${heading}-${body}`,
+                                    }
+                                });
+
+                                setHeadingImport(`<style>
+                                @import url('https://fonts.googleapis.com/css2?family=${headingFamily}&display=swap');
+                                </style>`);
+                                setBodyImport(`<style>
+                                @import url('https://fonts.googleapis.com/css2?family=${bodyFamily}&display=swap');
+                                </style>`);
+
+                                setHeadingFontUrl(`<link rel="preconnect" href="https://fonts.googleapis.com">
+                                                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                                                <link href="https://fonts.googleapis.com/css2?family=${headingFamily}&display=swap" rel="stylesheet"></link>`);
+                                setBodyFontUrl(`<link rel="preconnect" href="https://fonts.googleapis.com">
+                                                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                                                <link href="https://fonts.googleapis.com/css2?family=${bodyFamily}&display=swap" rel="stylesheet"></link>`);
+                            }
+                        })
+                    })
+                } else {
+                    generate();
+                }
             })
             .catch((err: any) => {
                 console.log(err);
@@ -110,6 +179,22 @@ const fontGenerator: any = () => {
         return randomFontFamily;
     };
 
+    const getFontDtailsByName = (name: any) => {
+        const font = fonts.current.find((font: { family: any; }) => font.family === name);
+        return font;
+    }
+
+    const getFontVariant = (fontDetails: any) => {
+        return fontDetails.variants.map((variant: any) => {
+            return variant.replace(/ /g, ",");
+        }).join(";");
+    }
+
+    const getFontFamily = (type: any, variant: any) => {
+        return `${type.replace(/ /g, "+")}:${variant}`;
+    }
+
+
     const generate = () => {
         setReady(false);
         let heading = '';
@@ -133,25 +218,23 @@ const fontGenerator: any = () => {
             body = bodyFont;
         }
 
+        console.log('heading: ' + heading)
+        console.log('body: ' + body)
+
         // get details of font from fonts
-        const headingDetails = fonts.current.find((font: { family: any; }) => font.family === heading);
+        const headingDetails = getFontDtailsByName(heading);
         // console.log(headingDetails)
 
-        const bodyDetails = fonts.current.find((font: { family: any; }) => font.family === body);
+        const bodyDetails = getFontDtailsByName(body);
         // console.log(bodyDetails)
-        
 
-        const headingVariant = headingDetails.variants.map((variant: any) => {
-            return variant.replace(/ /g, ",");
-        }).join(";");
 
-        const bodyVariant = bodyDetails.variants.map((variant: any) => {
-            return variant.replace(/ /g, ",");
-        }).join(";");
+        const headingVariant = getFontVariant(headingDetails);
+        const bodyVariant = getFontVariant(bodyDetails);
 
         // combine heading + variants
-        const headingFamily = `${heading.replace(/ /g, "+")}:${headingVariant}`;
-        const bodyFamily = `${body.replace(/ /g, "+")}:${bodyVariant}`;
+        const headingFamily = getFontFamily(heading, headingVariant);
+        const bodyFamily = getFontFamily(body, bodyVariant);
 
         // console.log('heading variant: ' + headingFamily)
         // console.log('body variant: ' + bodyFamily)
@@ -169,6 +252,13 @@ const fontGenerator: any = () => {
                     setBodyFont(body);
                     setHeadingVariant(headingDetails.variants);
                     setBodyVariant(bodyDetails.variants);
+
+                    router.push({
+                        pathname: '',
+                        query: {
+                            font: `${heading}-${body}`,
+                        }
+                    });
 
                     setHeadingImport(`<style>
                     @import url('https://fonts.googleapis.com/css2?family=${headingFamily}&display=swap');
@@ -381,7 +471,7 @@ const fontGenerator: any = () => {
                                         className="text-black p-5 shadow text-center h-58 w-58 rounded-lg"
                                         key={index}
                                     >
-                                        <span className="text-5xl lg:text-9xl block"
+                                        <span className="text-[5vw] block"
                                             style={{
                                                 fontFamily: headingFont + ',' + headingCategory,
                                                 fontWeight: (variant.includes('500') || variant.includes('600') || variant.includes('700') || variant.includes('800') || variant.includes('900')) ? variant.replace('italic', '') : 'normal',
@@ -407,7 +497,7 @@ const fontGenerator: any = () => {
                                         className="text-black p-5 shadow text-center h-58 w-58 rounded-lg"
                                         key={index}
                                     >
-                                        <span className="text-5xl lg:text-9xl block"
+                                        <span className="text-[5vw] block"
                                             style={{
                                                 fontFamily: bodyFont + ',' + bodyCategory,
                                                 fontWeight: (bodyVariant.includes('500') || bodyVariant.includes('600') || bodyVariant.includes('700') || bodyVariant.includes('800') || bodyVariant.includes('900')) ? bodyVariant.replace('italic', '') : 'normal',
