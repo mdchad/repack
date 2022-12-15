@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import { SUBTYPE, TYPE } from '@/utils/enums';
 import { splitHashURL } from '@/utils/helpers';
+import { Reorder } from "framer-motion"
 
 const MIN_CONTRAST_RATIO = 4.5;
 
@@ -79,7 +80,7 @@ const generateTetradicPalette: any = () => {
 };
 
 const GeneratePalette = () => {
-  const [palette, setPalette] = useState([]);
+  const [palette, setPalette] = useState<any>([]);
   const [convertedValue, setConvertedValue] = useState([]);
   const [type, setType] = useState('');
   const [saved, setSaved] = useState(false)
@@ -188,7 +189,6 @@ const GeneratePalette = () => {
         colors: joined
       }
     });
-
   };
 
   async function getColors() {
@@ -198,7 +198,7 @@ const GeneratePalette = () => {
 
   const convertValueTo = (convert: string) => {
     if (convert === 'hex') {
-      palette.map((color) => {
+      palette.map((color: any) => {
         return chroma(color).hex();
       });
 
@@ -206,7 +206,7 @@ const GeneratePalette = () => {
     }
 
     if (convert === 'hsl') {
-      const hsl: any = palette.map((color) => {
+      const hsl: any = palette.map((color: any) => {
         return chroma(color)
           .hsl()
           .map((value) => {
@@ -219,7 +219,7 @@ const GeneratePalette = () => {
     }
 
     if (convert === 'rgb') {
-      const rgb: any = palette.map((color) => {
+      const rgb: any = palette.map((color: any) => {
         return chroma(color)
           .rgb()
           .map((value) => {
@@ -280,6 +280,18 @@ const GeneratePalette = () => {
     }
   }
 
+  function order(val: string[]) {
+    const joined = splitHashURL(val)
+
+    router.push({
+      pathname: '',
+      query: {
+        colors: joined
+      }
+    });
+    setPalette(val)
+  }
+
   return (
     <div className="flex flex-col p-5">
       <div className="hidden">
@@ -312,18 +324,21 @@ const GeneratePalette = () => {
           </button>
         </div>
         <div className="flex flex-row">
-          <div className="flex">
-            {palette.map((color: any) => {
-              const style = { backgroundColor: color };
-              return (
-                <div
-                  className={'mr-2 h-10 w-10 rounded-full'}
-                  style={style}
-                  key={color}
-                ></div>
-              );
-            })}
-          </div>
+            <Reorder.Group className="flex" axis="x" values={palette} onReorder={order}>
+              {palette.map((color: any) => {
+                  const style = { backgroundColor: color };
+                  return (
+                    <Reorder.Item key={color} value={color}>
+                      <div
+                        className={'mr-2 h-10 w-10 rounded-full cursor-grab'}
+                        style={style}
+                        key={color}
+                      ></div>
+                    </Reorder.Item>
+                  )}
+                )
+              }
+            </Reorder.Group>
           <div>
             <button
               onClick={savePalette}
@@ -367,7 +382,7 @@ const GeneratePalette = () => {
               </span>
 
               <div className="flex items-center justify-center overflow-hidden rounded-xl">
-                {palette.map((color) => (
+                {palette.map((color: any) => (
                   <div
                     key={color}
                     style={{ backgroundColor: color }}
