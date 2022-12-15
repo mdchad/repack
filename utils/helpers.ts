@@ -49,3 +49,11 @@ export const splitHashURL = (result: string[]) => {
 
   return transformed.join('-');
 }
+
+export const splitFontURL = (result: string[]) => {
+  const transformed = result.map((color: string, index: number) => {
+    return color.replace(/ /g, '+');
+  });
+
+  return transformed.join('-');
+}
