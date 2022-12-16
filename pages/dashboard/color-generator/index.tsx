@@ -303,7 +303,6 @@ const GeneratePalette = () => {
     }
   }
 
-  console.log(lockColor)
   return (
     <div className="flex flex-col p-5">
       <div className="hidden">
