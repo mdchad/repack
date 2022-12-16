@@ -8,7 +8,8 @@ import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import { SUBTYPE, TYPE } from '@/utils/enums';
 import { splitHashURL } from '@/utils/helpers';
-import { Reorder } from "framer-motion"
+import { Reorder } from 'framer-motion';
+import { Popover } from '@headlessui/react';
 
 const MIN_CONTRAST_RATIO = 4.5;
 
@@ -83,8 +84,10 @@ const GeneratePalette = () => {
   const [palette, setPalette] = useState<any>([]);
   const [convertedValue, setConvertedValue] = useState([]);
   const [type, setType] = useState('');
-  const [saved, setSaved] = useState(false)
+  const [saved, setSaved] = useState(false);
   const [colorData, setColorData] = useState<any>([]);
+  const [lockColor, setLockColor] = useState('');
+  const [pointerGrabbing, setPointerGrabbing] = useState(false);
   const supabaseClient = useSupabaseClient();
   const router = useRouter();
   const user = useUser();
@@ -103,7 +106,7 @@ const GeneratePalette = () => {
       const transformedParams: any = colorParam.map((color: string) => {
         return '#'.concat(color);
       });
-      getSaved(transformedParams)
+      getSaved(transformedParams);
       setPalette(transformedParams);
     }
 
@@ -132,7 +135,7 @@ const GeneratePalette = () => {
       .single();
 
     if (data) {
-      setSaved(true)
+      setSaved(true);
     }
   }
 
@@ -180,8 +183,8 @@ const GeneratePalette = () => {
         break;
     }
 
-    const joined = splitHashURL(result)
-    getSaved(result)
+    const joined = splitHashURL(result);
+    getSaved(result);
 
     router.push({
       pathname: '',
@@ -235,7 +238,7 @@ const GeneratePalette = () => {
     const duration = 2000;
 
     if (saved) {
-      return
+      return;
     }
 
     if (!palette.length) {
@@ -281,7 +284,7 @@ const GeneratePalette = () => {
   }
 
   function order(val: string[]) {
-    const joined = splitHashURL(val)
+    const joined = splitHashURL(val);
 
     router.push({
       pathname: '',
@@ -289,7 +292,11 @@ const GeneratePalette = () => {
         colors: joined
       }
     });
-    setPalette(val)
+    setPalette(val);
+  }
+
+  function pointerEvent(bool: any) {
+    setPointerGrabbing(bool)
   }
 
   return (
@@ -324,29 +331,35 @@ const GeneratePalette = () => {
           </button>
         </div>
         <div className="flex flex-row">
-            <Reorder.Group className="flex" axis="x" values={palette} onReorder={order}>
-              {palette.map((color: any) => {
-                  const style = { backgroundColor: color };
-                  return (
-                    <Reorder.Item key={color} value={color}>
-                      <div
-                        className={'mr-2 h-10 w-10 rounded-full cursor-grab'}
-                        style={style}
-                        key={color}
-                      ></div>
-                    </Reorder.Item>
-                  )}
-                )
-              }
-            </Reorder.Group>
+          <Reorder.Group
+            className="flex"
+            axis="x"
+            values={palette}
+            onReorder={order}
+          >
+            {palette.map((color: any) => {
+              const style = { backgroundColor: color };
+              return (
+                <Reorder.Item key={color} value={color} onPointerDown={() => pointerEvent(true)} onPointerUp={() => pointerEvent(false)}>
+                  <div
+                    className={`mr-2 h-10 w-10 rounded-full ${pointerGrabbing ? 'cursor-grabbing' : 'cursor-grab'}`}
+                    style={style}
+                    key={color}
+                  ></div>
+                </Reorder.Item>
+              );
+            })}
+          </Reorder.Group>
           <div>
             <button
               onClick={savePalette}
               className="w-10 h-10 bg-gray-100 rounded-lg dark:bg-slate-800 flex items-center justify-center hover:ring-2 ring-gray-400 transition-all duration-300 focus:outline-none"
             >
-              {
-                saved ? <BookmarkIcon className="h-5 w-5 text-yellow-400" /> : <BookmarkIconOutline className="h-5 w-5" />
-              }
+              {saved ? (
+                <BookmarkIcon className="h-5 w-5 text-yellow-400" />
+              ) : (
+                <BookmarkIconOutline className="h-5 w-5" />
+              )}
             </button>
           </div>
         </div>
