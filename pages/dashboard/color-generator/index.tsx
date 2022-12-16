@@ -8,8 +8,8 @@ import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import { SUBTYPE, TYPE } from '@/utils/enums';
 import { splitHashURL } from '@/utils/helpers';
-import { Reorder } from 'framer-motion';
-import { Popover } from '@headlessui/react';
+import PopoverMenu from '@/components/ui/Popover/Popover';
+import { Reorder, useDragControls } from 'framer-motion';
 
 const MIN_CONTRAST_RATIO = 4.5;
 
@@ -86,7 +86,7 @@ const GeneratePalette = () => {
   const [type, setType] = useState('');
   const [saved, setSaved] = useState(false);
   const [colorData, setColorData] = useState<any>([]);
-  const [lockColor, setLockColor] = useState('');
+  const [lockColor, setLockColor] = useState<any>({});
   const [pointerGrabbing, setPointerGrabbing] = useState(false);
   const supabaseClient = useSupabaseClient();
   const router = useRouter();
@@ -293,12 +293,17 @@ const GeneratePalette = () => {
       }
     });
     setPalette(val);
+
+    if (Object.keys(lockColor).length) {
+      const object = val.reduce((acc: any, value: any, i: any) => {
+        acc[i] = value;
+        return acc;
+      }, lockColor);
+      setLockColor(object)
+    }
   }
 
-  function pointerEvent(bool: any) {
-    setPointerGrabbing(bool)
-  }
-
+  console.log(lockColor)
   return (
     <div className="flex flex-col p-5">
       <div className="hidden">
@@ -317,10 +322,6 @@ const GeneratePalette = () => {
 
       <div className="flex flex-row justify-between items-end bg-white p-5 rounded-lg overflow-hidden">
         <div className="flex gap-3 sticky top-0">
-          {/* <button className="py-3 px-8 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" onClick={() => convertValueTo('hex')} > HEX </button>
-                    <button className="py-3 px-8 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" onClick={() => convertValueTo('hsl')}> HSL </button>
-                    <button className="py-3 px-8 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" onClick={() => convertValueTo('rgb')}> RGB </button> */}
-
           <button
             className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400"
             onClick={handleGeneratePalette}
@@ -337,17 +338,10 @@ const GeneratePalette = () => {
             values={palette}
             onReorder={order}
           >
-            {palette.map((color: any) => {
-              const style = { backgroundColor: color };
+            {palette.map((color: any, index: any) => {
               return (
-                <Reorder.Item key={color} value={color} onPointerDown={() => pointerEvent(true)} onPointerUp={() => pointerEvent(false)}>
-                  <div
-                    className={`mr-2 h-10 w-10 rounded-full ${pointerGrabbing ? 'cursor-grabbing' : 'cursor-grab'}`}
-                    style={style}
-                    key={color}
-                  ></div>
-                </Reorder.Item>
-              );
+                <PopoverMenu index={index} key={color} bgColor={color} setLockColor={setLockColor} lockColor={lockColor}/>
+              )
             })}
           </Reorder.Group>
           <div>
