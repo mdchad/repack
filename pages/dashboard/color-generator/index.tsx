@@ -5,11 +5,11 @@ import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { BookmarkIcon } from '@heroicons/react/24/solid';
 import { BookmarkIcon as BookmarkIconOutline } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
-import { toast } from 'react-toastify';
 import { SUBTYPE, TYPE } from '@/utils/enums';
 import { splitHashURL } from '@/utils/helpers';
 import PopoverMenu from '@/components/ui/Popover/Popover';
 import { Reorder, useDragControls } from 'framer-motion';
+import notification from '@/utils/toast-helper';
 
 const MIN_CONTRAST_RATIO = 4.5;
 
@@ -140,6 +140,7 @@ const GeneratePalette = () => {
   }
 
   const handleGeneratePalette = () => {
+    setSaved(false)
     const list = [
       'harmonious',
       'analogous',
@@ -257,30 +258,7 @@ const GeneratePalette = () => {
 
     let { error } = await supabaseClient.from('favourites').insert(newSave);
 
-    if (error) {
-      console.log(error);
-      toast.error('Fail to save', {
-        position: 'top-right',
-        autoClose: duration,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      });
-    } else {
-      toast.success('Added to saved', {
-        position: 'top-right',
-        autoClose: duration,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      });
-    }
+    notification(error, 'Fail to save the color palette', 'Added to saved', () => setSaved(true))
   }
 
   function order(val: string[]) {
@@ -296,7 +274,9 @@ const GeneratePalette = () => {
 
     if (Object.keys(lockColor).length) {
       const object = val.reduce((acc: any, value: any, i: any) => {
-        acc[i] = value;
+        if (Object.keys(lockColor).includes(value)) {
+          acc[i] = value;
+        }
         return acc;
       }, lockColor);
       setLockColor(object)

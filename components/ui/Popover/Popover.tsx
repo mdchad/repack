@@ -14,6 +14,7 @@ import {
 import { Square2StackIcon } from '@heroicons/react/24/outline';
 import chroma from 'chroma-js';
 import { toast } from 'react-toastify';
+import notification from '@/utils/toast-helper';
 
 function PopoverMenu({ bgColor, setLockColor, lockColor, index }: any) {
   const style = { backgroundColor: bgColor };
@@ -45,16 +46,16 @@ function PopoverMenu({ bgColor, setLockColor, lockColor, index }: any) {
   function copyColor() {
     navigator.clipboard.writeText(bgColor);
 
-    toast.success('Color copied to clipboard!', {
-      position: 'top-right',
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: false,
-      progress: undefined,
-      theme: 'light'
-    });
+    notification(null, '', 'Color copied to clipboard!')
+  }
+
+  function onLockingColor() {
+    if (lockColor[index] === bgColor) {
+      delete lockColor[index]
+      setLockColor({ ...lockColor });
+    } else {
+      setLockColor({ ...lockColor, [index]: bgColor });
+    }
   }
 
   // Again, we're using framer-motion for the transition effect
@@ -125,13 +126,7 @@ function PopoverMenu({ bgColor, setLockColor, lockColor, index }: any) {
                 <li
                   key={2}
                   className="px-4 flex justify-center w-full py-2 cursor-pointer hover:bg-gray-100"
-                  onClick={() => {
-                    if (lockColor[index] === bgColor) {
-                      setLockColor({ ...lockColor, [index]: bgColor });
-                    } else {
-                      setLockColor({ ...lockColor, [index]: bgColor });
-                    }
-                  }}
+                  onClick={onLockingColor}
                 >
                   <AnimatePresence initial={false}>
                     <motion.div
