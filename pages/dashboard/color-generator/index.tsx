@@ -283,6 +283,26 @@ const GeneratePalette = () => {
     }
   }
 
+  function order(val: string[]) {
+    const joined = splitHashURL(val);
+
+    router.push({
+      pathname: '',
+      query: {
+        colors: joined
+      }
+    });
+    setPalette(val);
+
+    if (Object.keys(lockColor).length) {
+      const object = val.reduce((acc: any, value: any, i: any) => {
+        acc[i] = value;
+        return acc;
+      }, lockColor);
+      setLockColor(object)
+    }
+  }
+
   return (
     <div className="flex flex-col p-5">
       <div className="hidden">
