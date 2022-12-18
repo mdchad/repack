@@ -296,7 +296,9 @@ const GeneratePalette = () => {
 
     if (Object.keys(lockColor).length) {
       const object = val.reduce((acc: any, value: any, i: any) => {
-        acc[i] = value;
+        if (Object.keys(lockColor).includes(value)) {
+          acc[i] = value;
+        }
         return acc;
       }, lockColor);
       setLockColor(object)
