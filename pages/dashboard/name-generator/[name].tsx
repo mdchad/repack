@@ -2,11 +2,9 @@ import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/Layout/DashboardLayout';
 import { useRouter } from 'next/router';
 import {
-  HeartIcon,
   BookmarkIcon as BookmarkOutlineIcon
 } from '@heroicons/react/24/outline';
 import {
-  HeartIcon as HeartSolidIcon,
   CheckCircleIcon,
   XCircleIcon,
   BookmarkIcon
@@ -15,6 +13,7 @@ import { toast } from 'react-toastify';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import Link from 'next/link';
 import { SUBTYPE, TYPE } from '@/utils/enums';
+import notification from '@/utils/toast-helper';
 
 const urls = [
   {
@@ -72,7 +71,7 @@ function CheckMark({ data, social }: any) {
 function Name() {
   const router = useRouter();
   const { name } = router.query;
-  const [save, setSave] = useState(false);
+  const [saved, setSaved] = useState(false);
   const supabase = useSupabaseClient();
   const user = useUser();
   const [data, setData] = useState(null);
@@ -129,31 +128,7 @@ function Name() {
 
     let { error } = await supabase.from('favourites').insert(newSave);
 
-    if (error) {
-      console.log(error);
-      toast.error('Fail to save', {
-        position: 'top-right',
-        autoClose: duration,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      });
-    } else {
-      setSave(true);
-      toast.success('Added to saved', {
-        position: 'top-right',
-        autoClose: duration,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      });
-    }
+    notification(error, 'Fail to save the brand name', 'Added to saved', () => setSaved(true))
   }
 
   return (
@@ -171,7 +146,7 @@ function Name() {
                   onClick={() => saveName()}
                   className="w-10 h-10 bg-gray-100 rounded-lg dark:bg-slate-800 flex items-center justify-center hover:ring-2 ring-gray-400 transition-all duration-300 focus:outline-none"
                 >
-                  {(savedData || save) ? (
+                  {(savedData || saved) ? (
                     <>
                       <BookmarkIcon className="h-5 w-5 text-yellow-400" />
                     </>
