@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/router';
 import NextError from 'next/error'
+import notification from '@/utils/toast-helper';
 
 const fontGenerator: any = () => {
     const supabaseClient = useSupabaseClient();
@@ -279,8 +280,6 @@ const fontGenerator: any = () => {
     };
 
     async function saveFont() {
-        const duration = 2000;
-
         if (!headingFont && bodyFont) {
             return;
         }
@@ -295,30 +294,7 @@ const fontGenerator: any = () => {
 
         let { error } = await supabaseClient.from('favourites').insert(newSave);
 
-        if (error) {
-            console.log(error);
-            toast.error('Fail to save', {
-                position: 'top-right',
-                autoClose: duration,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: false,
-                progress: undefined,
-                theme: 'light'
-            });
-        } else {
-            toast.success('Added to saved', {
-                position: 'top-right',
-                autoClose: duration,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: false,
-                progress: undefined,
-                theme: 'light'
-            });
-        }
+        notification(error, 'Fail to save the font', 'Added to saved')
     }
 
     return (
