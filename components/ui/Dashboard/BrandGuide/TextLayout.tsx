@@ -46,22 +46,6 @@ function TextLayout({ type, text, font, variant, category }: any) {
                 <div>
                     <h3 className="text-2xl">{type} - <span style={{ fontFamily: font + ',' + category }}>{font}</span></h3>
                 </div>
-
-                <div>
-                    <h2 className='w-full block'>Variants:</h2>
-                    <div className="flex flex-row flex-wrap gap-2">
-                        {variant.map((v: any) => {
-                            return (
-                                <div className="lg:text-2xl" key={v} style={{
-                                    fontWeight: (v.includes('500') || v.includes('600') || v.includes('700') || v.includes('800') || v.includes('900')) ? v.replace('italic', '') : 'normal',
-                                    fontStyle: v.includes('italic') ? 'italic' : 'normal',
-                                }}>
-                                    {v}
-                                </div>
-                            )
-                        })}
-                    </div>
-                </div>
             </div>
 
             <div className='flex flex-col gap-5'>
@@ -74,6 +58,21 @@ function TextLayout({ type, text, font, variant, category }: any) {
                 </div>
             </div>
 
+            <div>
+                <h2 className='w-full block'>Variants:</h2>
+                <div className="flex flex-row flex-wrap gap-2">
+                    {variant.map((v: any) => {
+                        return (
+                            <div className="lg:text-2xl" key={v} style={{
+                                fontWeight: (v.includes('500') || v.includes('600') || v.includes('700') || v.includes('800') || v.includes('900')) ? v.replace('italic', '') : 'normal',
+                                fontStyle: v.includes('italic') ? 'italic' : 'normal',
+                            }}>
+                                {v}
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
 
             {/* tyle scale 1rem/16px */}
             <div>
