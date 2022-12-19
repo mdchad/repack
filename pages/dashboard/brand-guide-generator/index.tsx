@@ -1,299 +1,309 @@
-import { createRef, useEffect, useRef, useState } from 'react';
 import DashboardLayout from '@/components/Layout/DashboardLayout';
-import {
-    ExclamationCircleIcon,
-    ArrowSmallLeftIcon,
-    ArrowSmallRightIcon
-} from '@heroicons/react/24/outline';
-const name = require('@rstacruz/startup-name-generator');
-import { motion, useAnimation } from 'framer-motion';
-import Link from 'next/link';
-import LoadingLogo from '@/components/ui/LoadingLogo/LoadingLogo';
+import React, { useState, useRef, useEffect } from 'react';
+import chroma from 'chroma-js';
+import { useRouter } from 'next/router';
+import axios from 'axios';
+import TextLayout from '@/components/ui/Dashboard/BrandGuide/TextLayout';
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
+import LoadingDots from '@/components/ui/LoadingDots';
 
-const variants = {
-    enter: (direction: number) => {
-        return {
-            x: direction > 0 ? 1000 : -1000,
-            opacity: 0
-        };
-    },
-    center: {
-        zIndex: 1,
-        x: 0,
-        opacity: 1
-    },
-    exit: (direction: number) => {
-        return {
-            zIndex: 0,
-            x: direction < 0 ? 1000 : -1000,
-            opacity: 0
-        };
+const GeneratePalette = () => {
+    const supabase = useSupabaseClient();
+    const user = useUser();
+    const router = useRouter();
+
+    const [loading, setLoading] = useState<boolean>(false);
+    const [savedColor, setSavedColor] = useState<any>([]);
+    const [savedFont, setSavedFont] = useState<any>([]);
+
+    const [palette, setPalette] = useState([]);
+    const [headingText, setHeadingText] = useState('');
+    const [bodyText, setBodyText] = useState('');
+
+    const [headingCategory, setHeadingCategory] = useState<string>('serif');
+    const [headingFont, setHeadingFont] = useState<string>('');
+    const [headingVariant, setHeadingVariant] = useState<any>([]);
+
+    const [bodyCategory, setBodyCategory] = useState<string>('sans-serif');
+    const [bodyFont, setBodyFont] = useState<any>(null);
+    const [bodyVariant, setBodyVariant] = useState<any>([]);
+
+    const allFonts = useRef<any>([]);
+    const heading = useRef<any>([]);
+    const body = useRef<any>([]);
+    // const savedColor = useRef<any>([]);
+    // const savedFont = useRef<any>([]);
+
+    useEffect(() => {
+        getSavedColor();
+        getSavedFont();
+    }, []);
+
+    async function getSavedColor() {
+
+        let { data: favourites, error }: any = await supabase
+            .from('favourites')
+            .select('*')
+            .eq('user_id', user?.id)
+            .eq('subtype', 'colour')
+            .order('created_at', { ascending: false });
+
+        favourites = favourites?.map((favourite: any) => {
+            return favourite.saved.value;
+        });
+
+        setSavedColor(favourites);
     }
-};
 
-const data = [
-    {
-        id: 0,
-        tag: 'values',
-        title: 'What do you want your brand name to signify in terms of values?',
-        placeholder: 'e.g. trustworthy, innovative, etc.',
-        background: 'bg-white-500'
-    },
-    {
-        id: 1,
-        tag: 'words',
-        title: 'What are the keywords that describe your brand?',
-        placeholder: 'e.g. tech, fashion, etc.',
-        background: 'bg-white-500'
-    },
-    {
-        id: 2,
-        tag: 'type',
-        title: 'What type of brand are you?',
-        placeholder: 'e.g. product, service, etc.',
-        background: 'bg-white-500'
+    async function getSavedFont() {
+        let { data: favourites, error }: any = await supabase
+            .from('favourites')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .eq('user_id', user?.id)
+            .eq('subtype', 'font');
+
+        favourites = favourites?.map((favourite: any) => {
+            return favourite.saved.value;
+        });
+
+        setSavedFont(favourites);
     }
-];
 
-function NameGenerator() {
-    const controls = useAnimation();
-    const resultPage = useRef(null);
-    const [loading, setLoading] = useState(false);
-    const [bodyReq, setBodyReq] = useState({
-        values: '',
-        words: '',
-        type: ''
-    });
-    const [[page, direction], setPage] = useState([1, 0]);
-    const [buttonLeftDisabled, setbuttonLeftDisabled] = useState();
-    const [buttonRightDisabled, setbuttonRightDisabled] = useState();
+    // check if there's param
+    useEffect(() => {
+        const url = `https://www.googleapis.com/webfonts/v1/webfonts?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`;
 
-    const refArr: any = useRef([]);
-    refArr.current = data.map((item, index) => {
-        return refArr.current[index] || createRef();
-    });
+        axios.get(url)
+            .then((res: any) => {
+                allFonts.current = res.data.items;
 
-    const [brandName, setBrandName] = useState('');
-    const [brandNameResult, setBrandNameResult] = useState([]);
+                if (router.query.colors) {
+                    heading.current = router.query.fonts ? (router.query.fonts as string).split('-')[0] : '';
+                    body.current = router.query.fonts ? (router.query.fonts as string).split('-')[1] : '';
 
-    const paginate = (newDirection: number) => {
-        const currentPage = page + newDirection;
+                    const headingDetails = getFontDtailsByName(heading.current);
+                    const bodyDetails = getFontDtailsByName(body.current);
 
-        if (currentPage < 1 || currentPage > data.length) {
-            return;
+                    setHeadingText(headingDetails.family);
+                    setBodyText(bodyDetails.family);
+
+                    generateFont(heading.current, body.current);
+                } else {
+                    // no params
+                    // heading.current = allFonts.current[Math.floor(Math.random() * allFonts.current.length)].family;
+                    // body.current = allFonts.current[Math.floor(Math.random() * allFonts.current.length)].family;
+
+                    // setHeadingText(heading.current);
+                    // setBodyText(body.current);
+
+                    // generateFont(heading.current, body.current);
+                }
+            })
+            .catch((err: any) => {
+                console.log(err);
+            });
+
+        if (router.query.colors) {
+            let colors = router.query.colors as any;
+            colors ? colors = colors.split('-').map((color: any) => `#${color}`) : colors = [];
+
+            setPalette(colors);
         }
 
-        if (refArr.current[currentPage - 1]) {
+        if (router.query.fonts) {
+            let fonts = router.query.fonts as any;
+            fonts ? fonts = fonts.split('-') : fonts = [];
 
-            if (newDirection === 1) {
-                controls.start({
-                    y: -refArr.current[currentPage - 1].current.offsetTop,
-                    transition: { duration: 0.5 }
-                });
-
-                setPage([currentPage, newDirection]);
-            }
-
-            if (newDirection === -1) {
-                controls.start({
-                    y: -refArr.current[currentPage - 1].current.offsetTop,
-                    transition: { duration: 0.5 }
-                });
-
-                setPage([currentPage, newDirection]);
-            }
+            allFonts.current = fonts;
         }
+
+    }, [router.query.colors, router.query.fonts]);
+
+    // console.log(palette)
+
+    const generateScale = (color: any, steps: any) => {
+        const shades = chroma.scale([chroma(color).luminance(0.15, 'hsl'), chroma(color).luminance(0.9, 'hsl')])
+            // .scale()
+            .correctLightness()
+            .colors(steps);
+
+        return shades;
     };
 
-    async function goToLastPage() {
+    const generateFont = (heading: any, body: any) => {
+
+        const headingDetails = getFontDtailsByName(heading);
+        const bodyDetails = getFontDtailsByName(body);
+
+        const headingCategory = headingDetails.category.split(' ')[0];
+        const bodyCategory = bodyDetails.category.split(' ')[0];
+
+        const headingVariant = getFontVariant(headingDetails);
+        const bodyVariant = getFontVariant(bodyDetails);
+
+        const headingFamily = getFontFamily(heading, headingVariant);
+        const bodyFamily = getFontFamily(body, bodyVariant);
+
+        import('webfontloader').then(WebFontLoader => {
+            WebFontLoader.load({
+                timeout: 2000,
+                google: {
+                    // families: [headingFamily]
+                    families: [headingFamily, bodyFamily],
+                },
+                active: () => {
+                    setHeadingFont(heading);
+                    setHeadingVariant(headingDetails.variants);
+                    setHeadingCategory(headingCategory);
+
+                    setBodyFont(body);
+                    setBodyVariant(bodyDetails.variants);
+                    setBodyCategory(bodyCategory);
+
+                    // router.push({
+                    //     pathname: '',
+                    //     query: {
+                    //         font: `${heading}-${body}`,
+                    //     }
+                    // });
+                }
+            })
+        })
+    }
+
+    const getFontDtailsByName = (name: any) => {
+        const font = allFonts.current.find((font: { family: any; }) => font.family === name);
+        return font;
+    }
+
+    const getFontVariant = (fontDetails: any) => {
+        return fontDetails.variants.map((variant: any) => {
+            return variant.replace(/ /g, ",");
+        }).join(";");
+    }
+
+    const getFontFamily = (type: any, variant: any) => {
+        return `${type.replace(/ /g, "+")}:${variant}`;
+    }
+
+    const updatePalette = (color: any) => {
+        const colors = color.split(',');
+        setPalette(colors);
+
         setLoading(true);
+    }
 
-        document.querySelector('.question')?.classList.add('hidden');
+    const updateFont = (font: any) => {
+        const fonts = font.split(',');
 
-        // const resultPage = document.querySelector('.display-answer');
-        // resultPage?.scrollIntoView({ behavior: 'smooth' });
+        const heading = fonts[0];
+        const body = fonts[1];
 
-        if (resultPage !== null) {
-            controls.start({
-                // @ts-ignore
-                y: -resultPage.current.offsetTop,
-                transition: { duration: 0.5 }
-            });
-
-            document.querySelector('.button-navigation')?.classList.add('hidden');
-
-            const res: Response = await fetch('/api/generate-name', {
-                method: 'POST',
-                headers: new Headers({ 'Content-Type': 'application/json' }),
-                credentials: 'same-origin',
-                body: JSON.stringify(bodyReq)
-            });
-
-            if (!res.ok) {
-                console.log('Error in postData');
-
-                throw Error(res.statusText);
-            }
-
-            const response = await res.json()
-            setLoading(false);
-            let result = name(brandName);
-
-            // take the first 15 results
-            result = result.slice(0, 8);
-
-            setBrandNameResult(response.result);
-        }
+        generateFont(heading, body);
+        setLoading(true);
     }
 
     return (
-        <section className="h-[calc(100vh-50px)] md:h-screen p-5">
-            <div className="bg-white overflow-hidden rounded-lg w-full h-full">
-                {/* <section className="question hidden">
-                    {data.map((item, index) => (
-                        <motion.div
-                            id={`${item.id}`}
-                            key={item.id}
-                            variants={variants}
-                            initial="enter"
-                            animate="center"
-                            exit="exit"
-                            className={`h-screen flex flex-1 grow flex-col justify-center items-center ${item.background}`}
-                            data-index={item.id}
-                            ref={refArr.current[item.id]}
-                        >
-                            <div className="w-full flex flex-col items-center justify-center rounded-lg h-screen">
-                                <label htmlFor={`field-${item.id}`}>{item.title}</label>
-                                <input
-                                    type="text"
-                                    id={`field-${index}`}
-                                    className="p-2 text-2xl lg:text-5xl bg-transparent border-none w-screen text-center focus:ring-0 text-black placeholder-[#F38A7A]/50"
-                                    onChange={(e) =>
-                                        setBodyReq({ ...bodyReq, [item.tag]: e.target.value })
-                                    }
-                                    placeholder={item.placeholder}
-                                    autoComplete="off"
-                                />
+        <div className="p-5">
 
-                                {index === data.length - 1 && (
-                                    <button
-                                        className="mt-5 bg-[#F38A7A] text-white p-2 rounded-lg"
-                                        onClick={goToLastPage}
-                                    >
-                                        Generate
-                                    </button>
-                                )}
-                            </div>
-                        </motion.div>
-                    ))}
-
-                    <motion.div
-                        variants={variants}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        className="min-h-full h-screen w-full bg-white overflow-y-auto pb-10"
-                        data-index={data.length}
-                    >
-                        {!loading ? (
-                            <div className="display-answer columns-1 md:columns-2 lg:columns-3 p-5">
-                                {brandNameResult.map((brandName, i) => (
-                                    <Link
-                                        href={`/dashboard/name-generator/${brandName}`}
-                                        key={i}
-                                    >
-                                        <a className="bg-white shadow rounded-lg flex justify-center items-center p-6 hover:text-black hover:bg-[#F38A7A]/10 mb-5 text-center">
-                                            {brandName}
-                                        </a>
-                                    </Link>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="flex h-screen items-center justify-center">
-                                <LoadingDots />
-                            </div>
-                        )}
-                    </motion.div>
-                </section> */}
-
-                <motion.div animate={controls} className="h-screen w-full question">
-                    {data.map((item, index) => (
-                        <div className="w-full h-screen flex flex-col text-center items-center justify-center" ref={refArr.current[item.id]}>
-                            <label htmlFor={`field-${item.id}`}>{item.title}</label>
-                            <input
-                                type="text"
-                                id={`field-${index}`}
-                                className="p-2 text-2xl lg:text-5xl bg-transparent border-none text-center focus:ring-0 text-black placeholder-[#F38A7A]/50 w-full"
-                                onChange={(e) =>
-                                    setBodyReq({ ...bodyReq, [item.tag]: e.target.value })
-                                }
-                                placeholder={item.placeholder}
-                                autoComplete="off"
-                            />
-
-                            {index === data.length - 1 && (
-                                <button
-                                    className="mt-5 bg-[#F38A7A] text-white p-2 rounded-lg"
-                                    onClick={goToLastPage}
-                                >
-                                    Generate
-                                </button>
-                            )}
-                        </div>
-                    ))}
-                </motion.div>
-
-                {!loading ? (
-                    <div className="display-answer w-full h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 p-5 overflow-y-auto" ref={resultPage}>
-                        {brandNameResult.map((brandName, i) => (
-                            <Link
-                                href={`/dashboard/name-generator/${brandName}`}
-                                key={i}
+            <div className="flex flex-col gap-10">
+                <div className="bg-white p-5 rounded-lg overflow-hidden">
+                    <div className="flex items-end gap-3">
+                        <div className="flex-1">
+                            <label htmlFor="select_color" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Colors:</label>
+                            <select
+                                id="select_color"
+                                className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 capitalize"
+                                // value={savedColor ? savedColor[0] : ''}
+                                onChange={(e) => updatePalette(e.target.value)}
                             >
-                                <a className="bg-white shadow rounded-lg flex justify-center items-center p-6 hover:text-black hover:bg-[#F38A7A]/10 mb-5 text-center">
-                                    {brandName}
-                                </a>
-                            </Link>
-                        ))}
+                                {savedColor.map((color: any, index: any) => (
+                                    <option key={index} value={color}>{color}</option>
+                                ))}
+
+                            </select>
+                        </div>
+
+                        <div className="flex-1">
+                            <label htmlFor="select_font" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fonts:</label>
+                            <select
+                                id="select_font"
+                                className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 capitalize"
+                                // value={''}
+                                onChange={(e) => updateFont(e.target.value)}
+                            >
+                                {savedFont.map((font: any) => {
+                                        return <option key={font} value={font}> {font} </option>
+                                    })
+                                }
+                            </select>
+                        </div>
                     </div>
-                ) : (
-                    <div className="flex h-screen items-center justify-center">
-                        <LoadingLogo />
+                </div>
+
+                {!loading ? <LoadingDots /> : (
+                    <div className="bg-white p-5 rounded-lg overflow-hidden">
+                        <div className="flex flex-col gap-10 container mx-auto">
+
+                            <section className="flex flex-col gap-5">
+                                <h2 className='text-3xl text-center'>Style Guide</h2>
+                                <div className="relative flex items-center justify-center">
+                                    <span className="font-bold text-gray-200 text-9xl mr-32">01</span>
+                                    <h3 className='text-xl absolute'>Color Palette</h3>
+                                </div>
+
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                                    {palette.map((color, index) => (
+                                        <div key={index} className="flex">
+                                            <div className="w-full lg:h-80" style={{ background: color }}>{''}</div>
+
+                                            <div className="flex flex-col">
+                                                {generateScale(color, 6).map((shade, index) => (
+                                                    <div key={index} className="w-16 h-12 lg:h-full" style={{ background: shade }}>{''}</div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+
+                            <hr />
+
+                            <section className="flex flex-col gap-5">
+                                <div className="relative flex items-center justify-center">
+                                    <span className="font-bold text-gray-200 text-9xl mr-32">02</span>
+                                    <h3 className='text-xl absolute'>Typography</h3>
+                                </div>
+
+                                <div className="flex flex-col gap-5">
+                                    <TextLayout
+                                        type="Primary"
+                                        text={headingText}
+                                        font={headingFont}
+                                        variant={headingVariant}
+                                        category={headingCategory}
+                                    />
+
+                                    <hr />
+
+                                    <TextLayout
+                                        type="Secondary"
+                                        text={bodyText}
+                                        font={bodyFont}
+                                        variant={bodyVariant}
+                                        category={bodyCategory}
+                                    />
+                                </div>
+                            </section>
+                        </div>
+
                     </div>
                 )}
-
-                <div className="absolute bottom-5 right-5 z-10 p-5 flex gap-3 button-navigation">
-                    <button
-                        type="button"
-                        className={
-                            `bg-gray-100 text-black rounded-lg p-5 text-center` +
-                            (page === 1 ? ' opacity-50 cursor-not-allowed' : '')
-                        }
-                        onClick={() => paginate(-1)}
-                        disabled={page === 1}
-                    >
-                        <ArrowSmallLeftIcon className="h-5 w-5" />
-                    </button>
-
-                    <button
-                        type="button"
-                        className={
-                            `bg-gray-100 text-black rounded-lg p-5 text-center` +
-                            (page === data.length ? ' opacity-50 cursor-not-allowed' : '')
-                        }
-                        onClick={() => paginate(1)}
-                        disabled={page === data.length}
-                    >
-                        <ArrowSmallRightIcon className="h-5 w-5" />
-                    </button>
-                </div>
-            </div>
-        </section >
+            </div >
+        </div >
     );
-}
+};
 
-export default NameGenerator;
-
-NameGenerator.getLayout = (page: any) => (
-    <DashboardLayout>{page}</DashboardLayout>
-);
+export default GeneratePalette;
+GeneratePalette.getLayout = (page: any) => (<DashboardLayout>{page}</DashboardLayout>);
