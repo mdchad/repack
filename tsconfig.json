@@ -25,7 +25,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "components/Layout/DashboardLayout.tsx.bak"
+    "components/Layout/DashboardLayout.tsx.bak",
+    "components/ui/Dashboard/BrandGuide/TextLayout.tsx"
   ],
   "exclude": ["node_modules"]
 }

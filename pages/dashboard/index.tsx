@@ -72,7 +72,7 @@ export default function Dashboard() {
                 <section className="flex flex-row flex-wrap">
                     {/* <span className="text-2xl font-bold">Popular</span> */}
                     {tabs.map((tab) => (
-                        <button onClick={() => setActiveTab(tab.name)} className={`block p-1 w-1/4 lg:w-1/6`}>
+                        <button onClick={() => setActiveTab(tab.name)} className={`block p-1 w-1/4 lg:w-1/6`} key={tab.name}>
                             <span className={`p-3 rounded-lg hover:bg-gray-100 w-full ${tab.color}-500 flex flex-col items-center justify-center text-center gap-1 border h-6/6`}>
                                 <CloudIcon className="w-8 h-8" />
                                 <p className="text-sm">{tab.title}</p>
@@ -89,7 +89,7 @@ export default function Dashboard() {
                         {features.map((feature) => {
                             if (feature.tab === activeTab) {
                                 return (
-                                    <Link href={`/dashboard/${feature.href}`}>
+                                    <Link href={`/dashboard/${feature.href}`} key={feature.title}>
                                         <a className="block p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 overflow-hidden ring-inset">
                                             <span className="mb-3 text-md font-bold tracking-tight text-gray-900 dark:text-white flex flex-grow justify-between items-center">
                                                 {feature.title}
