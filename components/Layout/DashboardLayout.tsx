@@ -8,7 +8,7 @@ import {
 import DashboardSideBar from '@/components/ui/Dashboard/Sidebar/DashboardSidebar';
 import { useUser } from '@/utils/useUser';
 import { useSessionContext, useSupabaseClient } from '@supabase/auth-helpers-react';
-import { ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
 
 export default function DashboardLayout({ children }: any) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }: any) {
         return (
             <>
                 <div>
-                    <ToastContainer />
+                    <Toaster/>
                     <Transition.Root show={sidebarOpen} as={Fragment}>
                         <Dialog as="div" className="relative z-40 md:hidden" onClose={setSidebarOpen}>
                             <Transition.Child

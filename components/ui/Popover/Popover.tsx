@@ -13,7 +13,6 @@ import {
 } from '@heroicons/react/24/solid';
 import { Square2StackIcon } from '@heroicons/react/24/outline';
 import chroma from 'chroma-js';
-import { toast } from 'react-toastify';
 import notification from '@/utils/toast-helper';
 
 function PopoverMenu({ bgColor, setLockColor, lockColor, index }: any) {

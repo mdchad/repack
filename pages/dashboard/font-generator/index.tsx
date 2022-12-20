@@ -4,7 +4,6 @@ import { ArrowPathIcon, ChevronDoubleDownIcon, LinkIcon, MoonIcon, SunIcon, Lock
 import axios from 'axios';
 import WebFont from 'webfontloader';
 import { SUBTYPE, TYPE } from '@/utils/enums';
-import { toast } from 'react-toastify';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/router';
 import NextError from 'next/error'

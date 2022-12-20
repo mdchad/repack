@@ -4,13 +4,11 @@ import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import {
     useUser,
-    useSession,
     useSupabaseClient,
     useSessionContext
 } from '@supabase/auth-helpers-react';
 import { Database } from 'types_db';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import notification from '@/utils/toast-helper';
 
 type Profiles = Database['public']['Tables']['users']['Row'];
 
@@ -25,47 +23,6 @@ function settings() {
     const [full_name, setFullName] = useState<Profiles['full_name']>(null);
     const [email, setEmail] = useState('');
     const [avatar_url, setAvatarUrl] = useState<Profiles['avatar_url']>(null);
-
-    function notify(msg: string, type: 'success' | 'error' | 'warning') {
-        const duration = 2000;
-
-        if (type === 'success') {
-            toast.success(msg, {
-                position: "top-right",
-                autoClose: duration,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: false,
-                progress: undefined,
-                theme: "light",
-            });
-        } else if (type === 'error') {
-            toast.error(msg, {
-                position: "top-right",
-                autoClose: duration,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: false,
-                progress: undefined,
-                theme: "light",
-            });
-        }
-        else {
-            toast(msg, {
-                position: "top-right",
-                autoClose: duration,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: false,
-                progress: undefined,
-                theme: "light",
-            }
-            );
-        }
-    }
 
     useEffect(() => {
         if (user) {
@@ -126,9 +83,10 @@ function settings() {
 
             if (error) throw error;
 
-            notify('Profile updated!', 'success')
+            notification(false, '', 'Profile updated!')
         } catch (error) {
-            notify('Error updating profile!', 'error')
+            notification(true, 'Error updating profile!', '')
+
             // console.log(error)
         } finally {
             setLoading(false)
