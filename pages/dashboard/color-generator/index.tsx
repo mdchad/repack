@@ -97,7 +97,7 @@ function GeneratePalette() {
   const [saved, setSaved] = useState(false);
   const [colorData, setColorData] = useState<any>([]);
   const [lockColor, setLockColor] = useState<any>({});
-  const [activeExampleTab, setActiveExampleTab] = useState<any>({});
+  const [activeExampleTab, setActiveExampleTab] = useState<any>('website');
   const supabaseClient = useSupabaseClient();
   const router = useRouter();
   const user = useUser();
