@@ -15,7 +15,13 @@ import { Square2StackIcon } from '@heroicons/react/24/outline';
 import chroma from 'chroma-js';
 import notification from '@/utils/toast-helper';
 
-function PopoverMenu({ bgColor, setLockColor, lockColor, index }: any) {
+function PopoverMenu({
+  bgColor,
+  setLockColor,
+  lockColor,
+  index,
+  paletteLock
+}: any) {
   const style = { backgroundColor: bgColor };
   const [isOpen, setOpen] = useState(false);
   const [pointerGrabbing, setPointerGrabbing] = useState(false);
@@ -45,14 +51,16 @@ function PopoverMenu({ bgColor, setLockColor, lockColor, index }: any) {
   function copyColor() {
     navigator.clipboard.writeText(bgColor);
 
-    notification(null, '', 'Color copied to clipboard!')
+    notification(null, '', 'Color copied to clipboard!');
   }
 
   function onLockingColor() {
     if (lockColor[index] === bgColor) {
-      delete lockColor[index]
+      delete lockColor[index];
+      paletteLock.current = { ...lockColor };
       setLockColor({ ...lockColor });
     } else {
+      paletteLock.current = { ...lockColor, [index]: bgColor };
       setLockColor({ ...lockColor, [index]: bgColor });
     }
   }
@@ -118,9 +126,7 @@ function PopoverMenu({ bgColor, setLockColor, lockColor, index }: any) {
                   }`}
                   onPointerDown={(e) => controls.start(e)}
                 >
-                  <ArrowsRightLeftIcon
-                    className="w-5 h-5"
-                  />
+                  <ArrowsRightLeftIcon className="w-5 h-5" />
                 </li>
                 <li
                   key={2}
