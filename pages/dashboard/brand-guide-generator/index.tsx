@@ -6,8 +6,6 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import TextLayout from '@/components/ui/Dashboard/BrandGuide/TextLayout';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
-import * as htmlToReact from 'html-to-react';
-import * as FigmaAPI from 'figma-js';
 
 const GeneratePalette = () => {
     const supabase = useSupabaseClient();
