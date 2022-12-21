@@ -9,7 +9,6 @@ import {
   XCircleIcon,
   BookmarkIcon
 } from '@heroicons/react/24/solid';
-import { toast } from 'react-toastify';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import Link from 'next/link';
 import { SUBTYPE, TYPE } from '@/utils/enums';
