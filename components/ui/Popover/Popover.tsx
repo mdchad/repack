@@ -15,6 +15,12 @@ import { Square2StackIcon } from '@heroicons/react/24/outline';
 import chroma from 'chroma-js';
 import notification from '@/utils/toast-helper';
 
+const variants = {
+  open: { opacity: 1, x: 0, height: "150px" },
+  closed: { opacity: 0, x: "-100%", height: "100px" },
+}
+
+
 function PopoverMenu({ bgColor, setLockColor, lockColor, index }: any) {
   const style = { backgroundColor: bgColor };
   const [isOpen, setOpen] = useState(false);
@@ -99,9 +105,9 @@ function PopoverMenu({ bgColor, setLockColor, lockColor, index }: any) {
               <motion.ul
                 {...layerProps}
                 key={bgColor}
-                transition={{ duration: 0.3 }}
-                initial={{ scale: 0.9, opacity: 0.7 }}
-                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.2 }}
+                initial={{ clipPath: "inset(10% 50% 90% 50% round 10px)", opacity: 0.5 }}
+                animate={{ clipPath: "inset(0% 0% 0% 0% round 10px)", opacity: 1 }}
                 className="py-3 border-gray-100 border-opacity-50 shadow-lg w-32 flex flex-col items-center bg-white border rounded-md text-gray-600"
               >
                 <li
