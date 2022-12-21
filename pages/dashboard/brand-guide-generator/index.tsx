@@ -1,11 +1,11 @@
-import DashboardLayout from '@/components/Layout/DashboardLayout';
 import React, { useState, useRef, useEffect } from 'react';
+import { ArrowDownTrayIcon } from '@heroicons/react/24/solid';
+import DashboardLayout from '@/components/Layout/DashboardLayout';
 import chroma from 'chroma-js';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import TextLayout from '@/components/ui/Dashboard/BrandGuide/TextLayout';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
-import LoadingDots from '@/components/ui/LoadingDots';
 
 const GeneratePalette = () => {
     const supabase = useSupabaseClient();
@@ -15,6 +15,9 @@ const GeneratePalette = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [savedColor, setSavedColor] = useState<any>([]);
     const [savedFont, setSavedFont] = useState<any>([]);
+
+    const [selectedFont, setSelectedFont] = useState<any>('');
+    const [selectedColor, setSelectedColor] = useState<any>('');
 
     const [palette, setPalette] = useState([]);
     const [headingText, setHeadingText] = useState('');
@@ -37,6 +40,16 @@ const GeneratePalette = () => {
     useEffect(() => {
         getSavedColor();
         getSavedFont();
+
+        const url = `https://www.googleapis.com/webfonts/v1/webfonts?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`;
+
+        axios.get(url)
+            .then((res: any) => {
+                allFonts.current = res.data.items;
+            })
+            .catch((err: any) => {
+                console.log(err);
+            });
     }, []);
 
     async function getSavedColor() {
@@ -53,6 +66,8 @@ const GeneratePalette = () => {
         });
 
         setSavedColor(favourites);
+        setSelectedColor(favourites[0])
+        setPalette(favourites[0])
     }
 
     async function getSavedFont() {
@@ -68,57 +83,60 @@ const GeneratePalette = () => {
         });
 
         setSavedFont(favourites);
+        setSelectedFont(favourites[0])
+        updateFont(favourites[0].join(','))
     }
 
     // check if there's param
-    useEffect(() => {
-        const url = `https://www.googleapis.com/webfonts/v1/webfonts?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`;
+    // useEffect(() => {
+    //     const url = `https://www.googleapis.com/webfonts/v1/webfonts?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`;
 
-        axios.get(url)
-            .then((res: any) => {
-                allFonts.current = res.data.items;
+    //     axios.get(url)
+    //         .then((res: any) => {
+    //             allFonts.current = res.data.items;
 
-                if (router.query.colors) {
-                    heading.current = router.query.fonts ? (router.query.fonts as string).split('-')[0] : '';
-                    body.current = router.query.fonts ? (router.query.fonts as string).split('-')[1] : '';
+    //             if (router.query.colors) {
+    //                 heading.current = router.query.fonts ? (router.query.fonts as string).split('-')[0] : '';
+    //                 body.current = router.query.fonts ? (router.query.fonts as string).split('-')[1] : '';
 
-                    const headingDetails = getFontDtailsByName(heading.current);
-                    const bodyDetails = getFontDtailsByName(body.current);
+    //                 const headingDetails = getFontDtailsByName(heading.current);
+    //                 const bodyDetails = getFontDtailsByName(body.current);
 
-                    setHeadingText(headingDetails.family);
-                    setBodyText(bodyDetails.family);
+    //                 setHeadingText(headingDetails.family);
+    //                 setBodyText(bodyDetails.family);
 
-                    generateFont(heading.current, body.current);
-                } else {
-                    // no params
-                    // heading.current = allFonts.current[Math.floor(Math.random() * allFonts.current.length)].family;
-                    // body.current = allFonts.current[Math.floor(Math.random() * allFonts.current.length)].family;
+    //                 generateFont(heading.current, body.current);
+    //             } else {
+    //                 // no params
+    //                 // setLoading(true);
+    //                 // heading.current = allFonts.current[Math.floor(Math.random() * allFonts.current.length)].family;
+    //                 // body.current = allFonts.current[Math.floor(Math.random() * allFonts.current.length)].family;
 
-                    // setHeadingText(heading.current);
-                    // setBodyText(body.current);
+    //                 // setHeadingText(heading.current);
+    //                 // setBodyText(body.current);
 
-                    // generateFont(heading.current, body.current);
-                }
-            })
-            .catch((err: any) => {
-                console.log(err);
-            });
+    //                 // generateFont(heading.current, body.current);
+    //             }
+    //         })
+    //         .catch((err: any) => {
+    //             console.log(err);
+    //         });
 
-        if (router.query.colors) {
-            let colors = router.query.colors as any;
-            colors ? colors = colors.split('-').map((color: any) => `#${color}`) : colors = [];
+    //     if (router.query.colors) {
+    //         let colors = router.query.colors as any;
+    //         colors ? colors = colors.split('-').map((color: any) => `#${color}`) : colors = [];
 
-            setPalette(colors);
-        }
+    //         setPalette(colors);
+    //     }
 
-        if (router.query.fonts) {
-            let fonts = router.query.fonts as any;
-            fonts ? fonts = fonts.split('-') : fonts = [];
+    //     if (router.query.fonts) {
+    //         let fonts = router.query.fonts as any;
+    //         fonts ? fonts = fonts.split('-') : fonts = [];
 
-            allFonts.current = fonts;
-        }
+    //         allFonts.current = fonts;
+    //     }
 
-    }, [router.query.colors, router.query.fonts]);
+    // }, [router.query.colors, router.query.fonts]);
 
     // console.log(palette)
 
@@ -190,7 +208,7 @@ const GeneratePalette = () => {
     const updatePalette = (color: any) => {
         const colors = color.split(',');
         setPalette(colors);
-
+        setSelectedColor(color);
         setLoading(true);
     }
 
@@ -201,7 +219,12 @@ const GeneratePalette = () => {
         const body = fonts[1];
 
         generateFont(heading, body);
+        setSelectedFont(font);
         setLoading(true);
+    }
+
+    const exportToFigma = () => {
+        console.log('export to figma');
     }
 
     return (
@@ -215,11 +238,13 @@ const GeneratePalette = () => {
                             <select
                                 id="select_color"
                                 className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 capitalize"
-                                // value={savedColor ? savedColor[0] : ''}
+                                value={selectedColor || ''}
                                 onChange={(e) => updatePalette(e.target.value)}
                             >
                                 {savedColor.map((color: any, index: any) => (
-                                    <option key={index} value={color}>{color}</option>
+                                    <option key={index} value={color}>
+                                        {color}
+                                    </option>
                                 ))}
 
                             </select>
@@ -230,76 +255,80 @@ const GeneratePalette = () => {
                             <select
                                 id="select_font"
                                 className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 capitalize"
-                                // value={''}
                                 onChange={(e) => updateFont(e.target.value)}
+                                value={selectedFont || ''}
                             >
                                 {savedFont.map((font: any) => {
-                                        return <option key={font} value={font}> {font} </option>
-                                    })
+                                    return <option key={font} value={font}> {font} </option>
+                                })
                                 }
                             </select>
+                        </div>
+
+                        <div>
+                            <button onClick={exportToFigma} className="border rounded-lg block p-2">
+                                {<ArrowDownTrayIcon className="h-5 w-5 text-gray-400" />}
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                {!loading ? <LoadingDots /> : (
-                    <div className="bg-white p-5 rounded-lg overflow-hidden">
-                        <div className="flex flex-col gap-10 container mx-auto">
+                <div className="bg-white p-5 rounded-lg overflow-hidden" id="brand_guide">
+                    <div className="flex flex-col gap-10 container mx-auto">
 
-                            <section className="flex flex-col gap-5">
-                                <h2 className='text-3xl text-center'>Style Guide</h2>
-                                <div className="relative flex items-center justify-center">
-                                    <span className="font-bold text-gray-200 text-9xl mr-32">01</span>
-                                    <h3 className='text-xl absolute'>Color Palette</h3>
-                                </div>
+                        <section className="flex flex-col gap-5">
+                            <h2 className='text-3xl text-center'>Style Guide</h2>
+                            <div className="relative flex items-center justify-center">
+                                <span className="font-bold text-gray-200 text-9xl mr-32">01</span>
+                                <h3 className='text-xl absolute'>Color Palette</h3>
+                            </div>
 
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                                    {palette.map((color, index) => (
-                                        <div key={index} className="flex">
-                                            <div className="w-full lg:h-80" style={{ background: color }}>{''}</div>
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                                {palette.map((color, index) => (
+                                    <div key={index} className="flex">
+                                        <div className="w-full lg:h-80" style={{ background: color }}>{''}</div>
 
-                                            <div className="flex flex-col">
-                                                {generateScale(color, 6).map((shade, index) => (
-                                                    <div key={index} className="w-16 h-12 lg:h-full" style={{ background: shade }}>{''}</div>
-                                                ))}
-                                            </div>
+                                        <div className="flex flex-col">
+                                            {generateScale(color, 6).map((shade, index) => (
+                                                <div key={index} className="w-16 h-12 lg:h-full" style={{ background: shade }}>{''}</div>
+                                            ))}
                                         </div>
-                                    ))}
-                                </div>
-                            </section>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
 
-                            <hr />
+                        <hr />
 
-                            <section className="flex flex-col gap-5">
-                                <div className="relative flex items-center justify-center">
-                                    <span className="font-bold text-gray-200 text-9xl mr-32">02</span>
-                                    <h3 className='text-xl absolute'>Typography</h3>
-                                </div>
+                        <section className="flex flex-col gap-5">
+                            <div className="relative flex items-center justify-center">
+                                <span className="font-bold text-gray-200 text-9xl mr-32">02</span>
+                                <h3 className='text-xl absolute'>Typography</h3>
+                            </div>
 
-                                <div className="flex flex-col gap-5">
-                                    <TextLayout
-                                        type="Primary"
-                                        text={headingText}
-                                        font={headingFont}
-                                        variant={headingVariant}
-                                        category={headingCategory}
-                                    />
+                            <div className="flex flex-col gap-5">
+                                <TextLayout
+                                    type="Primary"
+                                    text={headingText}
+                                    font={headingFont}
+                                    variant={headingVariant}
+                                    category={headingCategory}
+                                />
 
-                                    <hr />
+                                <hr />
 
-                                    <TextLayout
-                                        type="Secondary"
-                                        text={bodyText}
-                                        font={bodyFont}
-                                        variant={bodyVariant}
-                                        category={bodyCategory}
-                                    />
-                                </div>
-                            </section>
-                        </div>
-
+                                <TextLayout
+                                    type="Secondary"
+                                    text={bodyText}
+                                    font={bodyFont}
+                                    variant={bodyVariant}
+                                    category={bodyCategory}
+                                />
+                            </div>
+                        </section>
                     </div>
-                )}
+
+                </div>
             </div >
         </div >
     );
