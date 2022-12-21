@@ -99,9 +99,9 @@ function PopoverMenu({ bgColor, setLockColor, lockColor, index }: any) {
               <motion.ul
                 {...layerProps}
                 key={bgColor}
-                transition={{ duration: 0.3 }}
-                initial={{ scale: 0.9, opacity: 0.7 }}
-                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.2 }}
+                initial={{ clipPath: "inset(10% 50% 90% 50% round 10px)", opacity: 0.5 }}
+                animate={{ clipPath: "inset(0% 0% 0% 0% round 10px)", opacity: 1 }}
                 className="py-3 border-gray-100 border-opacity-50 shadow-lg w-32 flex flex-col items-center bg-white border rounded-md text-gray-600"
               >
                 <li
