@@ -112,6 +112,8 @@ function GeneratePalette() {
     const urlParams = new URLSearchParams(window.location.search);
     const myParam = urlParams.get('colors');
 
+    paletteLock.current = {} as any;
+
     getColors();
     if (!myParam) {
       handleGeneratePalette();
@@ -123,7 +125,6 @@ function GeneratePalette() {
       getSaved(transformedParams);
       setPalette(transformedParams);
 
-      paletteLock.current = {} as any;
       paletteColor.current = transformedParams;
     }
 
@@ -314,7 +315,7 @@ function GeneratePalette() {
         return parseInt(key);
       }
     );
-    // console.log('checkingPosition', checkingPosition)
+    console.log('checkingPosition', checkingPosition);
 
     // generate new palette
     const newColorPalette = generateHarmoniousPalette();
