@@ -3,7 +3,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import chroma from 'chroma-js';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { BookmarkIcon } from '@heroicons/react/24/solid';
-import { BookmarkIcon as BookmarkIconOutline } from '@heroicons/react/24/outline';
+import {
+  BookmarkIcon as BookmarkIconOutline,
+  SwatchIcon
+} from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
 import { SUBTYPE, TYPE } from '@/utils/enums';
 import { splitHashURL } from '@/utils/helpers';
@@ -329,6 +332,17 @@ function GeneratePalette() {
     setPalette(newPalette);
   };
 
+  const getPaletteInspo = (index: any) => {
+    console.log('index', index);
+
+    let newPalette = colorData[index].color;
+    newPalette = JSON.parse(newPalette);
+    console.log('newPalette', newPalette);
+    console.log('palette', palette);
+
+    setPalette(newPalette);
+  };
+
   return (
     <div className="flex flex-col p-5">
       <div className="hidden">
@@ -468,11 +482,20 @@ function GeneratePalette() {
           {/*</div>*/}
 
           <div className="flex flex-col gap-5">
-            <h1 className="text-2xl">Color Palette Inspiration</h1>
+            <div>
+              <h1 className="text-2xl">Color Palette Inspiration</h1>
+              <span className="text-sm text-gray-400">
+                Click on swatch icon beside name to preview
+              </span>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {colorData.map((palette: any, index: number) => (
-                <div className="overflow-hidden rounded-lg" key={index}>
+                <div
+                  className="overflow-hidden rounded-lg"
+                  key={index}
+                  data-palette-index={index}
+                >
                   <div className="flex mb-1">
                     {JSON.parse(palette.color).map((color: any, i: number) => (
                       <span
@@ -484,7 +507,12 @@ function GeneratePalette() {
                       </span>
                     ))}
                   </div>
-                  <p className="text-gray-500">Color Palette {index + 1}</p>
+                  <div className="flex justify-between">
+                    <p className="text-gray-500">Color Palette {index + 1}</p>
+                    <button onClick={() => getPaletteInspo(index)} className="">
+                      <SwatchIcon className="h-5 w-5 text-gray-500 hover:text-gray-900" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
