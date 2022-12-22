@@ -5,7 +5,7 @@ import {
   useDragControls,
   Reorder
 } from 'framer-motion';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   ArrowsRightLeftIcon,
   LockOpenIcon,
@@ -20,7 +20,8 @@ function PopoverMenu({
   setLockColor,
   lockColor,
   index,
-  paletteLock
+  paletteLock,
+  constraintsRef
 }: any) {
   const style = { backgroundColor: bgColor };
   const [isOpen, setOpen] = useState(false);
@@ -74,6 +75,10 @@ function PopoverMenu({
       onPointerUp={() => pointerEvent(false)}
       dragListener={false}
       dragControls={controls}
+      whileDrag={{ scale: 1.1 }}
+      dragConstraints={constraintsRef}
+      dragElastic={0.1}
+      dragTransition={{ bounceStiffness: 300, bounceDamping: 10 }}
     >
       <div
         {...triggerProps}
@@ -108,9 +113,17 @@ function PopoverMenu({
                 {...layerProps}
                 key={bgColor}
                 transition={{ duration: 0.2 }}
-                initial={{ clipPath: "inset(10% 50% 90% 50% round 10px)", opacity: 0.5 }}
-                animate={{ clipPath: "inset(0% 0% 0% 0% round 10px)", opacity: 1 }}
-                className="py-3 border-gray-100 border-opacity-50 shadow-lg w-32 flex flex-col items-center bg-white border rounded-md text-gray-600"
+                initial={{
+                  clipPath: 'inset(10% 50% 90% 50% round 10px)',
+                  opacity: 0.5
+                }}
+                animate={{
+                  clipPath: 'inset(0% 0% 0% 0% round 10px)',
+                  opacity: 1
+                }}
+                className={`py-3 border-gray-100 border-opacity-50 shadow-lg w-32 flex flex-col items-center bg-white border rounded-md text-gray-600 ${
+                  pointerGrabbing ? 'select-none' : ''
+                }`}
               >
                 <li
                   key={0}

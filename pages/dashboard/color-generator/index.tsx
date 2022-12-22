@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import { SUBTYPE, TYPE } from '@/utils/enums';
 import { splitHashURL } from '@/utils/helpers';
 import PopoverMenu from '@/components/ui/Popover/Popover';
-import { Reorder, useDragControls } from 'framer-motion';
+import { Reorder, motion } from 'framer-motion';
 import notification from '@/utils/toast-helper';
 import WebsiteExampleFrame from '@/components/ui/WebsiteExampleFrame/WebsiteExampleFrame';
 import classNames from 'classnames';
@@ -107,6 +107,7 @@ function GeneratePalette() {
   const paletteType = useRef(null);
   const paletteLock = useRef(null);
   const paletteColor = useRef(null);
+  const constraintsRef = useRef(null);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -370,12 +371,13 @@ function GeneratePalette() {
           {/*  </span>*/}
           {/*</button>*/}
         </div>
-        <div className="flex flex-row">
+        <motion.div className="flex flex-row">
           <Reorder.Group
             className="flex"
             axis="x"
             values={palette}
             onReorder={order}
+            ref={constraintsRef}
           >
             {palette.map((color: any, index: any) => {
               return (
@@ -386,6 +388,7 @@ function GeneratePalette() {
                   setLockColor={setLockColor}
                   lockColor={lockColor}
                   paletteLock={paletteLock}
+                  constraintsRef={constraintsRef}
                 />
               );
             })}
@@ -402,7 +405,7 @@ function GeneratePalette() {
               )}
             </button>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       <div>
