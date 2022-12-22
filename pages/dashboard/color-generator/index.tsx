@@ -315,7 +315,6 @@ function GeneratePalette() {
         return parseInt(key);
       }
     );
-    console.log('checkingPosition', checkingPosition);
 
     // generate new palette
     const newColorPalette = generateHarmoniousPalette();
