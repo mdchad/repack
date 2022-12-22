@@ -12,9 +12,6 @@
   "dependencies": {
     "@headlessui/react": "^1.7.4",
     "@heroicons/react": "^2.0.13",
-    "@progress/kendo-drawing": "^1.17.2",
-    "@progress/kendo-licensing": "^1.2.2",
-    "@progress/kendo-react-pdf": "^5.9.0",
     "@react-three/fiber": "^8.9.1",
     "@rstacruz/startup-name-generator": "0.3.0",
     "@stripe/stripe-js": "1.22.0",
