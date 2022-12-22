@@ -334,12 +334,12 @@ function GeneratePalette() {
   };
 
   const getPaletteInspo = (index: any) => {
-    console.log('index', index);
+    paletteLock.current = {} as any;
 
     let newPalette = colorData[index].color;
     newPalette = JSON.parse(newPalette);
     console.log('newPalette', newPalette);
-    console.log('palette', palette);
+    // console.log('palette', palette);
 
     setPalette(newPalette);
   };
