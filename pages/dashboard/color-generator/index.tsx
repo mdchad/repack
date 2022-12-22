@@ -3,7 +3,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import chroma from 'chroma-js';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { BookmarkIcon } from '@heroicons/react/24/solid';
-import { BookmarkIcon as BookmarkIconOutline } from '@heroicons/react/24/outline';
+import {
+  BookmarkIcon as BookmarkIconOutline,
+  SwatchIcon
+} from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
 import { SUBTYPE, TYPE } from '@/utils/enums';
 import { splitHashURL } from '@/utils/helpers';
@@ -16,478 +19,511 @@ import classNames from 'classnames';
 const MIN_CONTRAST_RATIO = 4.5;
 
 const isColorAccessible = (color1: any, color2: any) => {
-	const contrastRatio = chroma.contrast(color1, color2);
-	return contrastRatio >= MIN_CONTRAST_RATIO;
+  const contrastRatio = chroma.contrast(color1, color2);
+  return contrastRatio >= MIN_CONTRAST_RATIO;
 };
 
 const generateHarmoniousPalette: any = () => {
-	const color = chroma.random();
-	const color1 = chroma.random();
+  const color = chroma.random();
+  const color1 = chroma.random();
 
-	// const scale = chroma.scale([color, chroma.random()]).colors(5);
-	return chroma.scale([color, color1]).colors(5);
+  // const scale = chroma.scale([color, chroma.random()]).colors(5);
+  return chroma.scale([color, color1]).colors(5);
 };
 
 const generateAnalogousPalette: any = () => {
-	const color = chroma.random();
-	const h = color.get('hsl.h');
-	const s = color.get('hsl.s');
-	const l = color.get('hsl.l');
-	const color1 = chroma.hsl(h - 30, s, l);
-	const color2 = chroma.hsl(h + 30, s, l);
-	return chroma.scale([color1, color2]).mode('hsl').colors(3);
+  const color = chroma.random();
+  const h = color.get('hsl.h');
+  const s = color.get('hsl.s');
+  const l = color.get('hsl.l');
+  const color1 = chroma.hsl(h - 30, s, l);
+  const color2 = chroma.hsl(h + 30, s, l);
+  return chroma.scale([color1, color2]).mode('hsl').colors(3);
 };
 
 const generateComplimentaryPalette: any = () => {
-	const color = chroma.random();
-	const h = color.get('hsl.h');
-	const s = color.get('hsl.s');
-	const l = color.get('hsl.l');
-	const complement = chroma.hsl(h - 180, s, l);
-	return chroma.scale([color, complement]).colors(2);
+  const color = chroma.random();
+  const h = color.get('hsl.h');
+  const s = color.get('hsl.s');
+  const l = color.get('hsl.l');
+  const complement = chroma.hsl(h - 180, s, l);
+  return chroma.scale([color, complement]).colors(2);
 };
 
 const generateMonochromaticPalette: any = () => {
-	const color = chroma.random();
-	const l = color.get('lch.l');
-	const c = color.get('lch.c');
-	const h = color.get('lch.h');
-	const brighter = chroma.lch(l + 10, c, h);
-	const scale = chroma.scale([color, brighter]).colors(3);
-	return scale;
+  const color = chroma.random();
+  const l = color.get('lch.l');
+  const c = color.get('lch.c');
+  const h = color.get('lch.h');
+  const brighter = chroma.lch(l + 10, c, h);
+  const scale = chroma.scale([color, brighter]).colors(3);
+  return scale;
 };
 
 const generateTriadicPalette: any = () => {
-	const color = chroma.random();
-	const h = color.get('hsl.h');
-	const s = color.get('hsl.s');
-	const l = color.get('hsl.l');
-	const color1 = chroma.hsl(h - 120, s, l);
-	const color2 = chroma.hsl(h + 120, s, l);
-	return chroma.scale([color, color1, color2]).mode('hsl').colors(3);
+  const color = chroma.random();
+  const h = color.get('hsl.h');
+  const s = color.get('hsl.s');
+  const l = color.get('hsl.l');
+  const color1 = chroma.hsl(h - 120, s, l);
+  const color2 = chroma.hsl(h + 120, s, l);
+  return chroma.scale([color, color1, color2]).mode('hsl').colors(3);
 };
 
 const generateTetradicPalette: any = () => {
-	const color = chroma.random();
-	const h = color.get('hsl.h');
-	const s = color.get('hsl.s');
-	const l = color.get('hsl.l');
-	const color1 = chroma.hsl(h - 90, s, l);
-	const color2 = chroma.hsl(h + 90, s, l);
-	const color3 = chroma.hsl(h + 180, s, l);
-	const scale = chroma
-		.scale([color, color1, color2, color3])
-		.mode('hsl')
-		.colors(4);
-	return scale;
+  const color = chroma.random();
+  const h = color.get('hsl.h');
+  const s = color.get('hsl.s');
+  const l = color.get('hsl.l');
+  const color1 = chroma.hsl(h - 90, s, l);
+  const color2 = chroma.hsl(h + 90, s, l);
+  const color3 = chroma.hsl(h + 180, s, l);
+  const scale = chroma
+    .scale([color, color1, color2, color3])
+    .mode('hsl')
+    .colors(4);
+  return scale;
 };
 
 const exampleTab = [
-	{ name: 'website', title: 'Website' },
-	{ name: 'typography', title: 'Typography' }
-]
-
+  { name: 'website', title: 'Website' },
+  { name: 'typography', title: 'Typography' }
+];
 
 // -----------------------COMPONENT--------------------------
 
 function GeneratePalette() {
-	const [palette, setPalette] = useState<any>([]);
-	const [convertedValue, setConvertedValue] = useState([]);
-	const [type, setType] = useState('');
-	const [saved, setSaved] = useState(false);
-	const [colorData, setColorData] = useState<any>([]);
-	const [lockColor, setLockColor] = useState<any>({});
-	const [activeExampleTab, setActiveExampleTab] = useState<any>('website');
-	const supabaseClient = useSupabaseClient();
-	const router = useRouter();
-	const user = useUser();
+  const [palette, setPalette] = useState<any>([]);
+  const [convertedValue, setConvertedValue] = useState([]);
+  const [type, setType] = useState('');
+  const [saved, setSaved] = useState(false);
+  const [colorData, setColorData] = useState<any>([]);
+  const [lockColor, setLockColor] = useState<any>({});
+  const [activeExampleTab, setActiveExampleTab] = useState<any>('website');
+  const supabaseClient = useSupabaseClient();
+  const router = useRouter();
+  const user = useUser();
 
-	const paletteType = useRef(null);
-	const paletteLock = useRef(null);
-	const paletteColor = useRef(null);
+  const paletteType = useRef(null);
+  const paletteLock = useRef(null);
+  const paletteColor = useRef(null);
 
-	useEffect(() => {
-		const urlParams = new URLSearchParams(window.location.search);
-		const myParam = urlParams.get('colors');
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const myParam = urlParams.get('colors');
 
-		getColors();
-		if (!myParam) {
-			handleGeneratePalette();
-		} else {
-			const colorParam = myParam?.split('-');
-			const transformedParams: any = colorParam.map((color: string) => {
-				return '#'.concat(color);
-			});
-			getSaved(transformedParams);
-			setPalette(transformedParams);
+    paletteLock.current = {} as any;
 
-			paletteLock.current = {} as any;
-			paletteColor.current = transformedParams;
-		}
+    getColors();
+    if (!myParam) {
+      handleGeneratePalette();
+    } else {
+      const colorParam = myParam?.split('-');
+      const transformedParams: any = colorParam.map((color: string) => {
+        return '#'.concat(color);
+      });
+      getSaved(transformedParams);
+      setPalette(transformedParams);
 
-		// detect if G key is pressed
-		const handleSpaceBar = (e: any) => {
-			if (e.keyCode === 71) {
-				// handleGeneratePalette();
-				generatePalette()
-			}
-		};
+      paletteColor.current = transformedParams;
+    }
 
-		// add event listener
-		document.addEventListener('keydown', handleSpaceBar);
+    // detect if G key is pressed
+    const handleSpaceBar = (e: any) => {
+      if (e.keyCode === 71) {
+        // handleGeneratePalette();
+        generatePalette();
+      }
+    };
 
-		// remove event listener on unmount
-		return () => {
-			document.removeEventListener('keydown', handleSpaceBar);
-		};
-	}, []);
+    // add event listener
+    document.addEventListener('keydown', handleSpaceBar);
 
-	// console.log(saved)
-	async function getSaved(savedData: string[]) {
-		let { data, error } = await supabaseClient
-			.from('favourites')
-			.select()
-			.contains('saved', { value: savedData })
-			.single();
+    // remove event listener on unmount
+    return () => {
+      document.removeEventListener('keydown', handleSpaceBar);
+    };
+  }, []);
 
-		if (data) {
-			setSaved(true);
-		}
-	}
+  // console.log(saved)
+  async function getSaved(savedData: string[]) {
+    let { data, error } = await supabaseClient
+      .from('favourites')
+      .select()
+      .contains('saved', { value: savedData })
+      .single();
 
-	const handleGeneratePalette = () => {
-		setSaved(false)
-		const list = [
-			'harmonious',
-			// 'analogous',
-			// 'complimentary',
-			// 'monochromatic',
-			// 'triadic',
-			// 'tetradic'
-		];
+    if (data) {
+      setSaved(true);
+    }
+  }
 
-		// select random value from list
-		const randomizer = list[Math.floor(Math.random() * list.length)];
-		setType(randomizer);
-		let result;
+  const handleGeneratePalette = () => {
+    setSaved(false);
+    const list = [
+      'harmonious'
+      // 'analogous',
+      // 'complimentary',
+      // 'monochromatic',
+      // 'triadic',
+      // 'tetradic'
+    ];
 
-		switch (randomizer) {
-			case 'harmonious':
-				result = generateHarmoniousPalette();
-				setPalette(result);
-				break;
-			case 'analogous':
-				result = generateAnalogousPalette();
-				setPalette(result);
-				break;
-			case 'complimentary':
-				result = generateComplimentaryPalette();
-				setPalette(result);
-				break;
-			case 'monochromatic':
-				result = generateMonochromaticPalette();
-				setPalette(result);
-				break;
-			case 'triadic':
-				result = generateTriadicPalette();
-				setPalette(result);
-				break;
-			case 'tetradic':
-				result = generateTetradicPalette();
-				setPalette(result);
-				break;
-			default:
-				break;
-		}
+    // select random value from list
+    const randomizer = list[Math.floor(Math.random() * list.length)];
+    setType(randomizer);
+    let result;
 
-		const joined = splitHashURL(result);
-		getSaved(result);
+    switch (randomizer) {
+      case 'harmonious':
+        result = generateHarmoniousPalette();
+        setPalette(result);
+        break;
+      case 'analogous':
+        result = generateAnalogousPalette();
+        setPalette(result);
+        break;
+      case 'complimentary':
+        result = generateComplimentaryPalette();
+        setPalette(result);
+        break;
+      case 'monochromatic':
+        result = generateMonochromaticPalette();
+        setPalette(result);
+        break;
+      case 'triadic':
+        result = generateTriadicPalette();
+        setPalette(result);
+        break;
+      case 'tetradic':
+        result = generateTetradicPalette();
+        setPalette(result);
+        break;
+      default:
+        break;
+    }
 
-		router.push({
-			pathname: '',
-			query: {
-				colors: joined
-			}
-		});
-	};
+    const joined = splitHashURL(result);
+    getSaved(result);
 
-	async function getColors() {
-		let { data, error } = await supabaseClient.from('colors').select();
-		setColorData(data);
-	}
+    router.push({
+      pathname: '',
+      query: {
+        colors: joined
+      }
+    });
+  };
 
-	const convertValueTo = (convert: string) => {
-		if (convert === 'hex') {
-			palette.map((color: any) => {
-				return chroma(color).hex();
-			});
+  async function getColors() {
+    let { data, error } = await supabaseClient.from('colors').select();
+    setColorData(data);
+  }
 
-			setConvertedValue(palette);
-		}
+  const convertValueTo = (convert: string) => {
+    if (convert === 'hex') {
+      palette.map((color: any) => {
+        return chroma(color).hex();
+      });
 
-		if (convert === 'hsl') {
-			const hsl: any = palette.map((color: any) => {
-				return chroma(color)
-					.hsl()
-					.map((value) => {
-						// return 2 decimal places and comma seperated
-						return Math.round(value * 100) / 100 + ', ';
-					});
-			});
+      setConvertedValue(palette);
+    }
 
-			setConvertedValue(hsl);
-		}
+    if (convert === 'hsl') {
+      const hsl: any = palette.map((color: any) => {
+        return chroma(color)
+          .hsl()
+          .map((value) => {
+            // return 2 decimal places and comma seperated
+            return Math.round(value * 100) / 100 + ', ';
+          });
+      });
 
-		if (convert === 'rgb') {
-			const rgb: any = palette.map((color: any) => {
-				return chroma(color)
-					.rgb()
-					.map((value) => {
-						return Math.round(value * 100) / 100;
-					});
-			});
+      setConvertedValue(hsl);
+    }
 
-			setConvertedValue(rgb);
-		}
-	};
+    if (convert === 'rgb') {
+      const rgb: any = palette.map((color: any) => {
+        return chroma(color)
+          .rgb()
+          .map((value) => {
+            return Math.round(value * 100) / 100;
+          });
+      });
 
-	async function savePalette() {
-		const duration = 2000;
+      setConvertedValue(rgb);
+    }
+  };
 
-		if (saved) {
-			return;
-		}
+  async function savePalette() {
+    const duration = 2000;
 
-		if (!palette.length) {
-			return;
-		}
+    if (saved) {
+      return;
+    }
 
-		const newSave = {
-			created_at: new Date().toISOString(),
-			type: TYPE.Branding,
-			subtype: SUBTYPE.Colour,
-			saved: {
-				value: palette
-			},
-			user_id: user?.id
-		};
+    if (!palette.length) {
+      return;
+    }
 
-		let { error } = await supabaseClient.from('favourites').insert(newSave);
+    const newSave = {
+      created_at: new Date().toISOString(),
+      type: TYPE.Branding,
+      subtype: SUBTYPE.Colour,
+      saved: {
+        value: palette
+      },
+      user_id: user?.id
+    };
 
-		notification(error, 'Fail to save the color palette', 'Added to saved', () => setSaved(true))
-	}
+    let { error } = await supabaseClient.from('favourites').insert(newSave);
 
-	function order(val: string[]) {
-		console.log(lockColor)
-		const joined = splitHashURL(val);
+    notification(
+      error,
+      'Fail to save the color palette',
+      'Added to saved',
+      () => setSaved(true)
+    );
+  }
 
-		router.push({
-			pathname: '',
-			query: {
-				colors: joined
-			}
-		});
-		setPalette(val);
+  function order(val: string[]) {
+    const joined = splitHashURL(val);
 
-		if (Object.keys(lockColor).length) {
-			const object = val.reduce((acc: any, value: any, i: any) => {
-				if (Object.values(lockColor).includes(value)) {
-					acc[i] = value;
-				}
-				return acc;
-			}, {});
-			setLockColor(object)
-		}
-	}
+    router.push({
+      pathname: '',
+      query: {
+        colors: joined
+      }
+    });
+    setPalette(val);
 
-	const generatePalette = () => {
-		const listLockPalette = Object.values(paletteLock.current as any);
-		// console.log('listLockPalette', listLockPalette)
+    if (Object.keys(lockColor).length) {
+      const object = val.reduce((acc: any, value: any, i: any) => {
+        if (Object.values(lockColor).includes(value)) {
+          acc[i] = value;
+        }
+        return acc;
+      }, {});
+      paletteLock.current = object;
+      setLockColor(object);
+    }
+  }
 
-		// get index of locked color
-		const listLockIndex = Object.keys(paletteLock.current as any);
-		// console.log('listLockIndex', listLockIndex)
+  const generatePalette = () => {
+    // before generating new palette, check if position of locked color is still the same
+    const checkingPosition = Object.keys(paletteLock.current as any).map(
+      (key) => {
+        return parseInt(key);
+      }
+    );
 
-		const listPalette = Object.values(paletteColor.current as any);
-		// console.log(listPalette)
+    // generate new palette
+    const newColorPalette = generateHarmoniousPalette();
+    // console.log('newColorPalette', newColorPalette)
 
-		// remove locked color from palette
-		const newPalette = listPalette.filter((color: any) => !listLockPalette.includes(color));
-		// console.log(newPalette)
+    // base on the position of locked color, replace the new palette with the locked color
+    const newPalette = newColorPalette.map((color: any, i: any) => {
+      if (checkingPosition.includes(i) && paletteLock.current) {
+        return paletteLock.current[i];
+      }
+      return color;
+    });
+    // console.log('newPalette', newPalette)
 
-		let newColorPalette = generateHarmoniousPalette(newPalette);
+    setPalette(newPalette);
+  };
 
-		// newColorPalette.map((color: any, i: any) => {
-		//     console.log('%c' + color, 'background: ' + color + '; color: #fff; padding:1em;');
-		// });
-		// console.log('newColorPalette', newColorPalette)
+  const getPaletteInspo = (index: any) => {
+    console.log('index', index);
 
-		// update palette with locked color
-		const updatedPalette = newColorPalette.map((color: any, i: any) => {
-			if (listLockIndex.includes(i.toString())) {
-				// replace color with locked color
-				return listLockPalette[listLockIndex.indexOf(i.toString())];
-			}
-			return color;
-		});
+    let newPalette = colorData[index].color;
+    newPalette = JSON.parse(newPalette);
+    console.log('newPalette', newPalette);
+    console.log('palette', palette);
 
-		console.log('generating...')
-		updatedPalette.map((color: any, i: any) => {
-			console.log('%c' + color, 'background: ' + color + '; color: #fff; padding:1em;');
-		});
+    setPalette(newPalette);
+  };
 
-		// set new color palette
-		setPalette(updatedPalette);
-	}
+  return (
+    <div className="flex flex-col p-5">
+      <div className="hidden">
+        <select defaultValue="harmonious" ref={paletteType}>
+          <option value="harmonious">Harmonious</option>
+          <option value="analogous">Analogous</option>
+          <option value="complimentary">Complimentary</option>
+          <option value="monochromatic">Monochromatic</option>
+          <option value="triadic">Triadic</option>
+          <option value="tetradic">Tetradic</option>
+        </select>
+        <button onClick={() => generatePalette()} className="bg-red-500 p-3">
+          Generate Palette
+        </button>
+      </div>
 
-	return (
-		<div className="flex flex-col p-5">
-			<div className="hidden">
-				<select defaultValue="harmonious" ref={paletteType}>
-					<option value="harmonious">Harmonious</option>
-					<option value="analogous">Analogous</option>
-					<option value="complimentary">Complimentary</option>
-					<option value="monochromatic">Monochromatic</option>
-					<option value="triadic">Triadic</option>
-					<option value="tetradic">Tetradic</option>
-				</select>
-				<button onClick={() => generatePalette()} className="bg-red-500 p-3">
-					Generate Palette
-				</button>
-			</div>
+      <div className="flex flex-row justify-between items-end bg-white p-5 rounded-lg overflow-hidden">
+        <div className="flex gap-3 sticky top-0">
+          {/*<button*/}
+          {/*  className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400"*/}
+          {/*  onClick={handleGeneratePalette}*/}
+          {/*>*/}
+          {/*  <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">*/}
+          {/*    Generate Palette*/}
+          {/*  </span>*/}
+          {/*</button>*/}
+        </div>
+        <div className="flex flex-row">
+          <Reorder.Group
+            className="flex"
+            axis="x"
+            values={palette}
+            onReorder={order}
+          >
+            {palette.map((color: any, index: any) => {
+              return (
+                <PopoverMenu
+                  index={index}
+                  key={color}
+                  bgColor={color}
+                  setLockColor={setLockColor}
+                  lockColor={lockColor}
+                  paletteLock={paletteLock}
+                />
+              );
+            })}
+          </Reorder.Group>
+          <div>
+            <button
+              onClick={savePalette}
+              className="w-10 h-10 bg-gray-100 rounded-lg dark:bg-slate-800 flex items-center justify-center hover:ring-2 ring-gray-400 transition-all duration-300 focus:outline-none"
+            >
+              {saved ? (
+                <BookmarkIcon className="h-5 w-5 text-yellow-400" />
+              ) : (
+                <BookmarkIconOutline className="h-5 w-5" />
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
 
-			<div className="flex flex-row justify-between items-end bg-white p-5 rounded-lg overflow-hidden">
-				<div className="flex gap-3 sticky top-0">
-					{/*<button*/}
-					{/*  className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400"*/}
-					{/*  onClick={handleGeneratePalette}*/}
-					{/*>*/}
-					{/*  <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">*/}
-					{/*    Generate Palette*/}
-					{/*  </span>*/}
-					{/*</button>*/}
-				</div>
-				<div className="flex flex-row">
-					<Reorder.Group
-						className="flex"
-						axis="x"
-						values={palette}
-						onReorder={order}
-					>
-						{palette.map((color: any, index: any) => {
-							return (
-								<PopoverMenu index={index} key={color} bgColor={color} setLockColor={setLockColor} lockColor={lockColor} paletteLock={paletteLock} />
-							)
-						})}
-					</Reorder.Group>
-					<div>
-						<button
-							onClick={savePalette}
-							className="w-10 h-10 bg-gray-100 rounded-lg dark:bg-slate-800 flex items-center justify-center hover:ring-2 ring-gray-400 transition-all duration-300 focus:outline-none"
-						>
-							{saved ? (
-								<BookmarkIcon className="h-5 w-5 text-yellow-400" />
-							) : (
-								<BookmarkIconOutline className="h-5 w-5" />
-							)}
-						</button>
-					</div>
-				</div>
-			</div>
+      <div>
+        <div className="flex gap-3 mb-5">
+          {convertedValue.map((color) => (
+            <span
+              key={color}
+              style={{ backgroundColor: chroma(color).hex() }}
+              className="w-50 h-50 p-5"
+            >
+              {color}
+            </span>
+          ))}
+        </div>
 
-			<div>
-				<div className="flex gap-3 mb-5">
-					{convertedValue.map((color) => (
-						<span
-							key={color}
-							style={{ backgroundColor: chroma(color).hex() }}
-							className="w-50 h-50 p-5"
-						>
-							{color}
-						</span>
-					))}
-				</div>
+        {/* palette container */}
+        <div className="w-full bg-white p-10 gap-12 flex flex-col rounded-lg">
+          <div className="sm:flex w-full">
+            <div className="flex flex-col mr-6">
+              {exampleTab.map((tab, index) => (
+                <button
+                  key={index}
+                  className={classNames(
+                    activeExampleTab === tab.name
+                      ? 'bg-[#F38A7A]/10 text-[#F38A7A]'
+                      : '',
+                    `text-center p-3 mb-4 rounded-lg`
+                  )}
+                  onClick={() => setActiveExampleTab(tab.name)}
+                >
+                  {tab.title}
+                </button>
+              ))}
+            </div>
+            <div className="w-full shadow-2xl rounded-md mb-20">
+              <WebsiteExampleFrame
+                primary={palette[0]}
+                secondary={palette[1]}
+                accent={palette[2]}
+              />
+            </div>
+          </div>
+          {/*<div className="flex flex-col gap-5">*/}
+          {/*  <div>*/}
+          {/*    <h1 className="text-2xl">Color Palette Generator</h1>*/}
+          {/*    <span className="text-sm color-gray-300">*/}
+          {/*      Press "G" to generate.*/}
+          {/*    </span>*/}
+          {/*  </div>*/}
 
-				{/* palette container */}
-				<div className="w-full bg-white p-10 gap-12 flex flex-col rounded-lg">
-					<div className="sm:flex w-full">
-						<div className="flex flex-col mr-6">
-							{exampleTab.map((tab, index) => (
-								<button key={index} className={classNames(
-									activeExampleTab === tab.name ? 'bg-[#F38A7A]/10 text-[#F38A7A]' : '',
-									`text-center p-3 mb-4 rounded-lg`
-								)} onClick={() => setActiveExampleTab(tab.name)}>{tab.title}</button>
-							))}
-						</div>
-						<div className="w-full shadow-2xl rounded-md mb-20">
-							<WebsiteExampleFrame primary={palette[0]} secondary={palette[1]} accent={palette[2]} />
-						</div>
-					</div>
-					{/*<div className="flex flex-col gap-5">*/}
-					{/*  <div>*/}
-					{/*    <h1 className="text-2xl">Color Palette Generator</h1>*/}
-					{/*    <span className="text-sm color-gray-300">*/}
-					{/*      Press "G" to generate.*/}
-					{/*    </span>*/}
-					{/*  </div>*/}
+          {/*  <div>*/}
+          {/*    <span className="text-base text-gray-400 capitalize mb-2 block">*/}
+          {/*      {' '}*/}
+          {/*      {type}{' '}*/}
+          {/*    </span>*/}
 
-					{/*  <div>*/}
-					{/*    <span className="text-base text-gray-400 capitalize mb-2 block">*/}
-					{/*      {' '}*/}
-					{/*      {type}{' '}*/}
-					{/*    </span>*/}
+          {/*    <div className="flex items-center justify-center overflow-hidden rounded-xl">*/}
+          {/*      {palette.map((color: any) => (*/}
+          {/*        <div*/}
+          {/*          key={color}*/}
+          {/*          style={{ backgroundColor: color }}*/}
+          {/*          className="flex w-full h-96 items-end justify-center pb-5 overflow-hidden"*/}
+          {/*        >*/}
+          {/*          <span*/}
+          {/*            className={`${*/}
+          {/*              chroma.contrast(color, 'white') > 4.5*/}
+          {/*                ? 'text-white'*/}
+          {/*                : 'text-black'*/}
+          {/*            }`}*/}
+          {/*          >*/}
+          {/*            {color}*/}
+          {/*          </span>*/}
+          {/*        </div>*/}
+          {/*      ))}*/}
+          {/*    </div>*/}
+          {/*  </div>*/}
+          {/*</div>*/}
 
-					{/*    <div className="flex items-center justify-center overflow-hidden rounded-xl">*/}
-					{/*      {palette.map((color: any) => (*/}
-					{/*        <div*/}
-					{/*          key={color}*/}
-					{/*          style={{ backgroundColor: color }}*/}
-					{/*          className="flex w-full h-96 items-end justify-center pb-5 overflow-hidden"*/}
-					{/*        >*/}
-					{/*          <span*/}
-					{/*            className={`${*/}
-					{/*              chroma.contrast(color, 'white') > 4.5*/}
-					{/*                ? 'text-white'*/}
-					{/*                : 'text-black'*/}
-					{/*            }`}*/}
-					{/*          >*/}
-					{/*            {color}*/}
-					{/*          </span>*/}
-					{/*        </div>*/}
-					{/*      ))}*/}
-					{/*    </div>*/}
-					{/*  </div>*/}
-					{/*</div>*/}
+          <div className="flex flex-col gap-5">
+            <div>
+              <h1 className="text-2xl">Color Palette Inspiration</h1>
+              <span className="text-sm text-gray-400">
+                Click on swatch icon beside name to preview
+              </span>
+            </div>
 
-					<div className="flex flex-col gap-5">
-						<h1 className="text-2xl">Color Palette Inspiration</h1>
-
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-							{colorData.map((palette: any, index: number) => (
-								<div className="overflow-hidden rounded-lg" key={index}>
-									<div className="flex mb-1">
-										{JSON.parse(palette.color).map((color: any, i: number) => (
-											<span
-												key={i}
-												style={{ backgroundColor: color }}
-												className="h-40 w-full"
-											>
-												{/* {color} */}
-											</span>
-										))}
-									</div>
-									<p className="text-gray-500">Color Palette {index + 1}</p>
-								</div>
-							))}
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
-};
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {colorData.map((palette: any, index: number) => (
+                <div
+                  className="overflow-hidden rounded-lg"
+                  key={index}
+                  data-palette-index={index}
+                >
+                  <div className="flex mb-1">
+                    {JSON.parse(palette.color).map((color: any, i: number) => (
+                      <span
+                        key={i}
+                        style={{ backgroundColor: color }}
+                        className="h-40 w-full"
+                      >
+                        {/* {color} */}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex justify-between">
+                    <p className="text-gray-500">Color Palette {index + 1}</p>
+                    <button onClick={() => getPaletteInspo(index)} className="">
+                      <SwatchIcon className="h-5 w-5 text-gray-500 hover:text-gray-900" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default GeneratePalette;
 GeneratePalette.getLayout = (page: any) => (
-	<DashboardLayout>{page}</DashboardLayout>
+  <DashboardLayout>{page}</DashboardLayout>
 );
