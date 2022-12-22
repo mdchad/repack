@@ -2,8 +2,8 @@ import Link from 'next/link';
 
 const Logo = ({ className = '', ...props }) => (
   <div className="flex flex-row gap-3">
-    <Link href="/">
-      <div className="cursor-pointer flex items-center gap-3 invert">
+    <Link href="/dashboard">
+      <div className="cursor-pointer flex items-center gap-3">
         <svg
           width="55"
           height="63"

@@ -30,6 +30,8 @@
     "classnames": "2.3.1",
     "dotenv": "^16.0.3",
     "feather-icons": "^4.29.0",
+    "flowbite": "^1.5.5",
+    "flowbite-react": "^0.3.7",
     "framer-motion": "^7.6.7",
     "jspdf": "^2.5.1",
     "lodash": "^4.17.21",
