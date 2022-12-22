@@ -84,7 +84,7 @@ function PopoverMenu({
         {...triggerProps}
         style={style}
         key={bgColor}
-        className="mr-2 h-10 w-10 rounded-full flex items-center justify-center cursor-pointer"
+        className="mr-2 h-10 w-10 rounded-full flex items-center justify-center cursor-pointer shadow-md"
         onClick={() => setOpen(!isOpen)}
       >
         <AnimatePresence>
