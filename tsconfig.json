@@ -26,7 +26,8 @@
     "**/*.ts",
     "**/*.tsx",
     "components/Layout/DashboardLayout.tsx.bak",
-    "components/ui/Dashboard/BrandGuide/TextLayout.tsx"
+    "components/ui/Dashboard/BrandGuide/TextLayout.tsx",
+    "components/Layout/DashboardLayout.tsx_back"
   ],
   "exclude": ["node_modules"]
 }
