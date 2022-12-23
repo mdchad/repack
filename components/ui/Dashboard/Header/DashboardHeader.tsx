@@ -118,7 +118,8 @@ function Header({ navigation }: any) {
                           <img
                             className="h-8 w-8 rounded-full"
                             src={user?.user_metadata.avatar_url}
-                            alt=""
+                            alt="avatar"
+                            referrerPolicy="no-referrer"
                           />
                         </Menu.Button>
                       </div>
@@ -180,7 +181,8 @@ function Header({ navigation }: any) {
                     <img
                       className="h-10 w-10 rounded-full"
                       src={user?.user_metadata.avatar_url}
-                      alt=""
+                      alt="avatar"
+                      referrerPolicy="no-referrer"
                     />
                   </div>
                   <div className="ml-3">
