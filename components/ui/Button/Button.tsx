@@ -1,5 +1,10 @@
 import cn from 'classnames';
-import React, { forwardRef, useRef, ButtonHTMLAttributes } from 'react';
+import React, {
+  forwardRef,
+  useRef,
+  ButtonHTMLAttributes,
+  ReactElement
+} from 'react';
 import mergeRefs from 'react-merge-refs';
 import styles from './Button.module.css';
 
@@ -10,7 +15,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   active?: boolean;
   width?: number;
   loading?: boolean;
-  Component?: React.ComponentType;
+  Component?: React.ComponentType<any> | any;
 }
 
 const Button = forwardRef<HTMLButtonElement, Props>((props, buttonRef) => {
