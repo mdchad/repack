@@ -76,18 +76,20 @@ export default function Dashboard() {
   const user = useUser();
 
   const [saved, setSaved] = useState<any>([]);
-  const [totalPages, setTotalPages] = useState<any>(0);
+  const [totalPages, setTotalPages] = useState<any>(1);
   let [page, setPage] = useState<any>(1);
-  const [size, setSize] = useState<any>(10);
+  const [limit, setLimit] = useState<any>(25);
 
-  async function getTableData(page = 1) {
+  async function getTableData(page: number = 1) {
     // set ts
     let favourites: any;
     let error: any;
     let count: any;
 
-    let from = (page - 1) * size;
-    let to = page * size;
+    let from = (page - 1) * limit;
+    let to = page * limit;
+
+    console.log('page', page);
 
     try {
       ({
@@ -100,15 +102,15 @@ export default function Dashboard() {
         .order('created_at', { ascending: false })
         .eq('type', 'branding')
         .eq('user_id', user?.id)
-        .limit(size)
+        .limit(limit)
         .range(from, to));
 
       setSaved(favourites);
+      setPage(page);
 
       // calc total pages
-      const total = Math.ceil(count / size);
+      const total = Math.ceil(count / limit);
       setTotalPages(total);
-      setPage(page++);
     } catch (error) {
       console.error(error);
     }
