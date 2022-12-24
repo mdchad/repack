@@ -16,15 +16,10 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-function Header({ navigation }: any) {
+function Header({ navigation, headerTheme }: any) {
   const { user } = useUser();
   const router = useRouter();
   const [display, setDisplay] = useState<any>('');
-  const [headerTheme, setHeaderTheme] = useState<any>([
-    '#6b9997',
-    '#6b9997',
-    '#8ab8a8'
-  ]);
 
   useEffect(() => {
     // check if url is /dashboard show Hi {user.name}, else show page title
