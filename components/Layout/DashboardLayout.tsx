@@ -21,9 +21,9 @@ export default function DashboardLayout({ children }: any) {
   const { session, error } = useSessionContext();
   const { user, isLoading, subscription } = useUser();
   const [headerTheme, setHeaderTheme] = useState<any>([
-    '#6b9997', // left
-    '#6b9997', // right
-    '#8ab8a8' // top
+    '#8ab8a8', // left
+    '#8ab8a8', // right
+    '#6b9997' // top
   ]);
 
   if (session) {
@@ -32,7 +32,7 @@ export default function DashboardLayout({ children }: any) {
         <Toaster />
         <DashboardHeader navigation={navigation} headerTheme={headerTheme} />
 
-        <main className="relative -mt-32 sm:mb-16">
+        <main className="relative -mt-28 lg:-mt-32 sm:mb-16">
           <div className="mx-auto max-w-screen-xl px-4 pb-6 sm:px-6 lg:px-8 lg:pb-16">
             <div className="overflow-hidden rounded-lg bg-white shadow">
               {children}

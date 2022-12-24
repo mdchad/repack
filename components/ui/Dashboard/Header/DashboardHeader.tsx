@@ -221,16 +221,16 @@ function Header({ navigation, headerTheme }: any) {
           >
             <div className="absolute inset-0 flex">
               <div
-                className="h-full w-1/2"
+                className="h-full w-full lg:w-1/2"
                 style={{ backgroundColor: headerTheme[0] }}
               />
               <div
-                className="h-full w-1/2"
+                className="h-full w-full lg:w-1/2 hidden lg:block"
                 style={{ backgroundColor: headerTheme[1] }}
               />
             </div>
 
-            <div className="relative flex justify-center">
+            <div className="relative justify-center lg:flex hidden">
               <svg
                 className="flex-shrink-0"
                 width={1750}
