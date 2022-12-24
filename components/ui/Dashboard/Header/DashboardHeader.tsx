@@ -65,7 +65,7 @@ function Header({ navigation }: any) {
                 <div className="hidden lg:flex flex-1 justify-center lg:justify-center">
                   <div className="flex gap-3">
                     {navigation.map((item: any) => (
-                      <Link href={item.href}>
+                      <Link href={item.href} key={item.name}>
                         <a
                           key={item.name}
                           className={classNames(
@@ -265,7 +265,7 @@ function Header({ navigation }: any) {
 
           <header className="relative py-5 lg:py-10">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <h1 className="text-2xl lg:text-4xl font-bold tracking-tight text-white capitalize">
+              <h1 className="text-3xl lg:text-5xl font-bold tracking-tight text-white capitalize">
                 {display}
               </h1>
             </div>

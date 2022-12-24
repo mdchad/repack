@@ -26,7 +26,7 @@ export default function DashboardLayout({ children }: any) {
         <Toaster />
         <DashboardHeader navigation={navigation} />
 
-        <main className="relative -mt-32">
+        <main className="relative -mt-32 sm:mb-16">
           <div className="mx-auto max-w-screen-xl px-4 pb-6 sm:px-6 lg:px-8 lg:pb-16">
             <div className="overflow-hidden rounded-lg bg-white shadow">
               {children}
