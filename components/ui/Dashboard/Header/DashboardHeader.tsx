@@ -45,7 +45,7 @@ function Header({ navigation }: any) {
   }, [router]);
 
   return (
-    <Disclosure as="div" className="relative overflow-hidden pb-32">
+    <Disclosure as="div" className="relative overflow-hidden pb-28">
       {({ open }) => (
         <>
           <nav
