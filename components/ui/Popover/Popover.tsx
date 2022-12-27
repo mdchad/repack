@@ -146,13 +146,30 @@ function PopoverMenu({
                   className="px-4 flex justify-center w-full py-2 cursor-pointer hover:bg-gray-100"
                   onClick={onLockingColor}
                 >
-                  <AnimatePresence initial={false}>
+                  <AnimatePresence initial={false} mode="wait">
                     <motion.div
-                      transition={{ duration: 0.5 }}
-                      initial={{ scale: 1 }}
-                      animate={{ scale: 1 }}
-                      exit={{ scale: 0 }}
-                      key={bgColor}
+                      key={lockColor[index] === bgColor ? 'less' : 'more'}
+                      initial={{
+                        rotateY: lockColor[index] === bgColor ? -90 : 90
+                      }}
+                      animate={{
+                        zIndex: 1,
+                        rotateY: 0,
+                        transition: {
+                          type: 'tween',
+                          duration: 0.15,
+                          ease: 'circOut'
+                        }
+                      }}
+                      exit={{
+                        zIndex: 0,
+                        rotateY: lockColor[index] === bgColor ? -90 : 90,
+                        transition: {
+                          type: 'tween',
+                          duration: 0.15,
+                          ease: 'circIn'
+                        }
+                      }}
                     >
                       {lockColor[index] === bgColor ? (
                         <LockClosedIcon className="w-4 h-4" />
